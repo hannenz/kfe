@@ -1,0 +1,53 @@
+#Don't commit any of the compiled (dist) files
+/dist
+
+# Cache, temp and logfiles
+.sass-cache
+/tmp
+._*
+__*
+/trash/
+
+# Development files
+/node_modules
+*.map
+*.svgo
+
+# Editors / IDEs
+
+# Created by https://www.gitignore.io/api/vim
+
+### Vim ###
+# swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
+
+# End of https://www.gitignore.io/api/vim
+
+### Eclipse ###
+/.project
+/.buildpath
+/.settings/
+
+### Sublime ###
+*.sublime-*
+
+# User uploaded stuff
+/media
+
+# Configuration
+prepros.cfg
+
+# Other
+/admin
+sitemap.xml
+

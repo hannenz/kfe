@@ -1,0 +1,14 @@
+/**
+ * partials/_common.scss
+ *
+ * Common styles, like e.g. resets, basic styles...
+ */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+

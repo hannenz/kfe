@@ -1,0 +1,25 @@
+{IF (!{LAYOUTMODE})}
+<video width="{HEAD:1}" height="{HEAD:2}" controls="controls"{IF({ISSET:head3:CONTENT})} poster="{HEAD:3}"{ENDIF}>
+	{IF ({ISSET:head4:CONTENT})}
+		<!-- MP4 -->
+		<source src="{PATHTOWEBROOT}{HEAD:4}" type="video/mp4" />
+	{ENDIF}
+	{IF ({ISSET:head5:CONTENT})}
+		<!-- WebM -->
+		<source src="{PATHTOWEBROOT}{HEAD:5}" type="video/webm" />
+	{ENDIF}
+</video>
+{ELSE}
+<div class="cmtLayoutObjectContainer">
+	<p>Breite</p>
+	<div>{HEAD:1}</div>
+	<p>Höhe</p>
+	<div>{HEAD:2}</div>
+	<p>Poster (Standbild)</p>
+	<div>{HEAD:3}</div>
+	<p>Filmdatei: MP4</p>
+	<div>{HEAD:4}</div>
+	<p>Filmdatei: WebM</p>
+	<div>{HEAD:5}</div>
+</div>
+{ENDIF}

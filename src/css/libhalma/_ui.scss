@@ -1,0 +1,54 @@
+/**
+ * _ui.scss
+ *
+ * @author Johannes Braun <j.braun@agentur-halma.de>
+ * @package libhalma
+ */
+
+
+$border-radius: 0px !default;
+
+/**
+ * Reset button
+ * See: https://fvsch.com/code/styling-buttons/
+ */
+%button-reset {
+	padding: 0;
+	border: none;
+	font: inherit;
+	color: inherit;
+	background-color: transparent;
+	cursor: pointer;
+}
+
+@mixin button ($color: $primary-color, $border-radius: $border-radius) {
+
+	@extend %button-reset;
+
+	display: inline-block;
+	text-align: center;
+	text-decoration: none;
+	margin: 2px 0;
+	border: 1px solid transparent;
+	border-radius: $border-radius;
+	padding: 0.5em 1em;
+	color: color-for-bg($color, #fff, $text-color);
+	background-color: $color;
+
+	outline: none;
+	&::-moz-focus-inner {
+		border: none;
+	}
+
+	&:active {
+		transform: translateY(1px);
+		filter: saturate(150%);
+	}
+
+	&:hover,
+	&:focus {
+		background-color: #fff;
+		color: color-for-bg(#fff, $text-color, $primary-color);
+		border-color: currentColor;
+	}
+}

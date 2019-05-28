@@ -1,0 +1,22 @@
+/**
+ * src/css/components/_samplebox.scss
+ *
+ * Sample component.
+ */
+
+.samplebox {
+	width:6 * $vertical-unit;
+	height:6 * $vertical-unit;
+	background-color:$primary-color;
+	position:relative;
+
+	&__spot {
+		width:3 * $vertical-unit;
+		height:3 * $vertical-unit;
+		background-color:$accent-color;
+		position:absolute;
+		top:1.5 * $vertical-unit;
+		left:1.5 * $vertical-unit;
+		color:#fff;
+	}
+}

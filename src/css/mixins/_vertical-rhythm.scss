@@ -1,0 +1,80 @@
+/**
+ * src/css/mixins/_vertical_rhythm.scss
+ */
+
+// Vertical Rhythm
+$base-font-size: 1rem;
+$vertical-unit: $base-font-size * 1.6; // "vertical unit"
+
+
+// $visual-base-line-grid:true;
+$visual-base-line-grid-offset:7px;
+$visual-base-line-grid-above:true;
+
+$headline-max-width:126em;
+$copy-text-max-width:50em;
+
+// Modular scale (Font sizes)
+$type-scale: (
+	-1: 1rem,			// small text
+	 0: 1.1875rem,		// body text
+	 1: 1.5000rem,		// large text
+	 2: 1.7777rem,		// larger text
+	 3: 3.5rem			// huge text 
+);
+
+@function type-scale($level) {
+	@return map-get($type-scale, $level);
+}
+
+$line-heights: (
+	-1: $vertical-unit * 1,
+	 0: $vertical-unit * 1,
+	 1: $vertical-unit * 1,
+	 2: $vertical-unit * 1,
+	 3: $vertical-unit * 2
+);
+
+@function line-height($level) {
+	@return map-get($line-heights, $level);
+}
+
+// Visual baseline grid for debugging ("Grundlinienraster")
+@if $debug-base-line-grid {
+	.debug-base-line-grid {
+		background-image:linear-gradient(
+			to bottom,
+			transparent 0,
+			transparent calc(#{$vertical-unit}),
+			rgba(gainsboro, 0.2) calc(#{$vertical-unit}),
+			rgba(gainsboro, 0.2)
+		);
+		background-size:100% (2 * $vertical-unit);
+		@include position(absolute, 0 0 0 0);
+		@if $visual-base-line-grid-above {
+			z-index:1;
+		}
+		@else {
+			z-index:-1;
+		}
+		top:$visual-base-line-grid-offset;
+		// opacity:0;
+		display:none;
+	}
+
+	.debug-base-line-grid--is-visible .debug-base-line-grid {
+		display:block;
+	}
+}
+
+@mixin type-setting($level:0, $margin-bottom:0) {
+	$font-size:type-scale($level);
+	$vertical-unit:line-height($level);
+
+	$line-height:($vertical-unit / $font-size);
+	
+	font-size:$font-size;
+	line-height:$line-height + em;
+	margin-bottom:($line-height * $margin-bottom) + em;
+}
+

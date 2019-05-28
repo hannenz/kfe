@@ -1,0 +1,45 @@
+{
+  "name": "CHANGE-ME",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@gitlab.halma.dyndns.org:25676/halma/CHANGE-ME"
+  },
+  "author": "CHANGE-ME",
+  "license": "MIT",
+  "copyright": "HALMA GmbG & Co. KG",
+  "devDependencies": {
+    "browser-sync": "^2.26.5",
+    "del": "^3.0.0",
+    "git-rev-sync": "^1.12.0",
+    "gulp": "github:gulpjs/gulp#v4.0.0",
+    "gulp-autoprefixer": "^4.1.0",
+    "gulp-buster": "^1.1.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-favicons": "^2.3.0",
+    "gulp-header": "^1.8.12",
+    "gulp-image-resize": "^0.13.0",
+    "gulp-imagemin": "^5.0.3",
+    "gulp-jsvalidate": "^3.0.0",
+    "gulp-load-plugins": "^1.5.0",
+    "gulp-newer": "^1.4.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-strip-debug": "^1.1.0",
+    "gulp-svgstore": "^6.1.1",
+    "gulp-uglify": "^3.0.2",
+    "gulp-util": "^3.0.8",
+    "moment": "^2.24.0",
+    "quagga": "^0.12.1"
+  },
+  "project_settings": {
+    "prefix": "./dist/"
+  }
+}
