@@ -1,0 +1,22 @@
+.main-header {
+	background-color: $primary-color;
+	padding: 2rem 0;
+	margin: 1rem 0 3rem 0;
+	font-family: "Gaegu";
+	transform: skewY(-4deg);
+	box-shadow: 0 0 30px rgba(30, 30, 30, 0.75);
+
+	.site-title {
+		color: #fff;
+		font-weight: 400;
+		line-height: 1.5;
+		@include type-setting(2, 0);
+	}
+
+	.site-subtitle {
+		color: $bg-color;
+		font-weight: 400;;
+		@include type-setting(1, 0);
+	}
+
+}

@@ -32,5 +32,11 @@ body {
 	// @see mixins in mixins/_vertical_rhythm.scss
 	@include type-setting(0);
 	color: $text-color;
+	// font-family: "ElliotSix", "Daniel Black", Borsok, Androgyne, Amatic, "Open Sans";
+	font-family: "Source Sans";
 }
 
+.headline {
+	font-family: "ElliotSix";
+	color: $primary-color;
+}

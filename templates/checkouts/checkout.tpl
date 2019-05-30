@@ -1,3 +1,6 @@
+<div id="cam"></div>
+
+
 <form class="checkout" id="checkout">
 	<input type="text" class="checkout-total" name="checkout-total" readonly value="0.00 &euro;" />
 	<input class="checkout-code-input" type="text" name="code[]" valu="" autofocus />
@@ -11,6 +14,27 @@
 <script>
 	document.addEventListener('DOMContentLoaded', init);
 	function init() {
+
+		Quagga.init({
+			inputStream: {
+				name: "Live",
+				type: "LiveStream",
+				target: document.getElementById('cam')
+			},
+			decoder: {
+				readers: ["ean_13_reader"]
+			},
+		}, function(err) {
+			if (err) {
+				alert(err);
+				return;
+			}
+			console.log("Quagga successfully initialised, now starting up");
+			Quagga.start();
+		});
+		Quagga.onDetected(function() {
+			console.log("Code has been detected");
+		});
 
 		var total = 0;
 

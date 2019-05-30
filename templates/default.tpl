@@ -10,13 +10,13 @@
 
 	<link rel="shortcut icon" href="/favicon.png" />
 
-	<link rel="stylesheet" type="text/css" href="{ASSET:dist/css/main.css}" />
+	<link rel="stylesheet" type="text/css" href="dist/css/main.css" />
 
 	{LAYOUTMODE_STARTSCRIPT}
 	{IF (!{LAYOUTMODE})}
 	<script type="text/javascript" src="/js/vendor/modernizr/modernizr.custom.js"></script>
 	<script src="/js/vendor/jquery/jquery-3.1.0.min.js"></script>
-	<script src="/js/vendor/quagga.min.js"></script>
+	<script src="/dist/js/vendor/quagga.min.js"></script>
 	{ENDIF}
 </head>
 <body>
@@ -30,13 +30,25 @@
 	{INCLUDE:PATHTOWEBROOT.'templates/partials/header.tpl'}
 
 	<section class="main-content">
-		{LOOP CONTENT(1)}{ENDLOOP CONTENT}
+		<div class="inner-bound">
+			<div class="callout">
+				<div class="callout__head">
+					Samstag, 16. März 2019<br>
+					9.30 &ndash; 11.30 Uhr
+				</div>
+				<div class="callout__subline">
+					Einlass für Schwangere <br>
+					(+1 Begleitperson) ab 9.00 Uhr
+				</div>
+			</div>
+			{LOOP CONTENT(1)}{ENDLOOP CONTENT}
+		</div>
 	</section>
 
 	{INCLUDE:PATHTOWEBROOT.'templates/partials/footer.tpl'}
 
 	{IF(!{LAYOUTMODE})}
-		<script src="{ASSET:dist/js/main.js}"></script>
+		<script src="dist/js/main.js"></script>
 	{ENDIF}
 	{LAYOUTMODE_ENDSCRIPT}
 </body>
