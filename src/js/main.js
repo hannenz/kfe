@@ -21,7 +21,7 @@ function APP () {
 			console.log('APP::init');
 		}
 		
-		this.pageInit();
+		self.pageInit();
 	};
 
 	this.pageInit = function() {
@@ -37,18 +37,6 @@ function APP () {
 
 	this.main = function() {
 
-		this.initThrottleResize();
-
-		// Lazy loadiong images
-		this.bLazy = new Blazy({
-			selector: '.lazy',
-			offset: 100,
-			successClass: 'lazy--loaded',
-			errorClass: 'lazy--failed',
-			error: function(el) {
-			 	el.src = '/img/noimage.svg';
-			}
-		});
 	};
 };
 

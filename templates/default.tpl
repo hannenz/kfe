@@ -10,7 +10,7 @@
 
 	<link rel="shortcut icon" href="/favicon.png" />
 
-	<link rel="stylesheet" type="text/css" href="dist/css/main.css" />
+	<link rel="stylesheet" type="text/css" href="/dist/css/main.css" />
 
 	{LAYOUTMODE_STARTSCRIPT}
 	{IF (!{LAYOUTMODE})}
@@ -31,16 +31,16 @@
 
 	<section class="main-content">
 		<div class="inner-bound">
-			<div class="callout">
-				<div class="callout__head">
-					Samstag, 16. März 2019<br>
-					9.30 &ndash; 11.30 Uhr
-				</div>
-				<div class="callout__subline">
-					Einlass für Schwangere <br>
-					(+1 Begleitperson) ab 9.00 Uhr
-				</div>
-			</div>
+			<!-- <div class="callout"> -->
+			<!-- 	<div class="callout__head"> -->
+			<!-- 		Samstag, 16. März 2019<br> -->
+			<!-- 		9.30 &#38;ndash; 11.30 Uhr -->
+			<!-- 	</div> -->
+			<!-- 	<div class="callout__subline"> -->
+			<!-- 		Einlass für Schwangere <br> -->
+			<!-- 		(+1 Begleitperson) ab 9.00 Uhr -->
+			<!-- 	</div> -->
+			<!-- </div> -->
 			{LOOP CONTENT(1)}{ENDLOOP CONTENT}
 		</div>
 	</section>
@@ -48,7 +48,7 @@
 	{INCLUDE:PATHTOWEBROOT.'templates/partials/footer.tpl'}
 
 	{IF(!{LAYOUTMODE})}
-		<script src="dist/js/main.js"></script>
+		<script src="/dist/js/main.min.js"></script>
 	{ENDIF}
 	{LAYOUTMODE_ENDSCRIPT}
 </body>

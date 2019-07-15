@@ -51,3 +51,4 @@ prepros.cfg
 /admin
 sitemap.xml
 
+phpincludes/vendor

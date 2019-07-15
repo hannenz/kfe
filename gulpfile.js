@@ -89,9 +89,6 @@ var settings = {
 				outputStyle: 'compact',
 				precision: 3,
 				errLogToConsole: true,
-			},
-			autoprefixer: {
-				browsers: ['last 3 versions', '>2%', 'IE 11']
 			}
 		},
 		optionsProd: {
@@ -99,9 +96,6 @@ var settings = {
 				outputStyle: 'compressed',
 				precision: 3,
 				errLogToConsole: true
-			},
-			autoprefixer: {
-				browsers: ['last 3 versions', '>2%', 'IE 11']
 			}
 		}
 	},

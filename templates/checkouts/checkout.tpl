@@ -1,3 +1,4 @@
+
 <div id="cam"></div>
 
 
@@ -5,13 +6,14 @@
 	<input type="text" class="checkout-total" name="checkout-total" readonly value="0.00 &euro;" />
 	<input class="checkout-code-input" type="text" name="code[]" valu="" autofocus />
 	<input class="checkout-price-input" type="text" name="price[]" value="" />
-	<button type="submit">
+	<button type="submit">Done</button>
 </form>
 
 <table class="checkout-table">
 </table>
 
 <script>
+	/*
 	document.addEventListener('DOMContentLoaded', init);
 	function init() {
 
@@ -72,4 +74,5 @@
 
 		}
 	}
+	*/
 </script>

@@ -1,0 +1,90 @@
+RewriteEngine on
+RewriteBase /
+
+#php_value upload_max_filesize 40M
+#php_value post_max_size 41M
+
+# Disable all PHP messages on production servers
+# (https://stackoverflow.com/a/8652987)
+# php_value error_reporting 1
+
+RewriteRule ^sitemap.xml$ /de/96/Sitemap.html
+
+# Force www
+RewriteCond %{HTTP_HOST} ^kinderflohmarkt-erbach.de [NC]
+RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
+
+#Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+
+# Own error documents
+ErrorDocument 404 /de/102/404-page-not-found.html
+ErrorDocument 500 /error500.html
+
+#stop auto filename correction if enabled
+<IfModule mod_speling.c>
+   CheckSpelling Off
+</IfModule>
+
+#### content-o-mat: start ####
+
+# Content-o-mat: regular pages
+RewriteRule ^([^/]*)\/([0-9]+)\/.*\.html$ index.php?pid=$2&lang=$1&%{QUERY_STRING}&cmtRequestURL=%{REQUEST_URI}
+
+# MLog: article
+RewriteRule ^([^/]*)\/([0-9]+)\/([^,]*),([0-9]{1,3}),([0-9]{1,2})?,([0-9]{1,6})\.html$ index.php?pid=$2&lang=$1&cp=$4&cat=$5&aid=$6&%{QUERY_STRING}&cmtRequestURL=%{REQUEST_URI}
+
+# MLog: category
+RewriteRule ^([^/]*)\/([0-9]+)\/([^/]*),([0-9]{1,3}),([0-9]{1,2})?\.html$ index.php?pid=$2&lang=$1&cp=$4&cat=$5&%{QUERY_STRING}&cmtRequestURL=%{REQUEST_URI}
+
+# MLog: shortcut
+#RewriteRule ^([^/^.]*)$ index.php?pid=10&lang=de&shortcut=$1&%{QUERY_STRING}&cmtRequestURL=%{REQUEST_URI}
+
+#### content-o-mat: end ####
+
+# don't list *.inc, *.tpl (Templates) and .htaccess files
+<FilesMatch "\.(htaccess|inc|tpl)$">
+	order deny,allow
+	deny from all
+</FilesMatch>
+
+# Ensure SVG is served with the correct file type
+AddType image/svg+xml .svg .svgz
+
+# Add browser caching to .svg files
+<IfModule mod_expires.c>
+	ExpiresActive on
+	ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# compress text, html, javascript, css, xml and svg:
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/plain
+	AddOutputFilterByType DEFLATE text/html
+	AddOutputFilterByType DEFLATE text/xml
+	AddOutputFilterByType DEFLATE text/css
+	AddOutputFilterByType DEFLATE image/svg+xml
+	AddOutputFilterByType DEFLATE application/xml
+	AddOutputFilterByType DEFLATE application/xhtml+xml
+	AddOutputFilterByType DEFLATE application/rss+xml
+	AddOutputFilterByType DEFLATE application/javascript
+	AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# Enable Browser caching
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresByType text/html "access plus 500 seconds"
+	ExpiresByType image/gif "access plus 14 days"
+	ExpiresByType image/ico "access plus 14 days"
+	ExpiresByType image/jpeg "access plus 14 days"
+	ExpiresByType image/jpg "access plus 14 days"
+	ExpiresByType image/png "access plus 14 days"
+	ExpiresByType text/css "access plus 14 days"
+	ExpiresByType text/javascript "access plus 14 days"
+	ExpiresByType application/x-javascript "access plus 14 days"
+	ExpiresByType application/javascript "access plus 14 days"
+</IfModule>
+
