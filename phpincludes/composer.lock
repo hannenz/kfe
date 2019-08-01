@@ -4,8 +4,49 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "34506b70f57310e1b59edcf8506a8864",
+    "content-hash": "2449991648642e07e93e1616823f6694",
     "packages": [
+        {
+            "name": "laurentbrieu/tcpdf",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LaurentBrieu/TCPDF.git",
+                "reference": "1352a46982eaf61cdeeae25c8440467a5127c2d2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LaurentBrieu/TCPDF/zipball/1352a46982eaf61cdeeae25c8440467a5127c2d2",
+                "reference": "1352a46982eaf61cdeeae25c8440467a5127c2d2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "TCPDF": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Laurent Brieu",
+                    "email": "contact@laurentbrieu.com"
+                }
+            ],
+            "description": "Composer wrapper for TCPDF PHP library",
+            "homepage": "https://github.com/LaurentBrieu/TCPDF",
+            "keywords": [
+                "TCPDF",
+                "pdf"
+            ],
+            "time": "2014-06-25T08:31:59+00:00"
+        },
         {
             "name": "picqer/php-barcode-generator",
             "version": "v0.3",
@@ -79,7 +120,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "laurentbrieu/tcpdf": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
