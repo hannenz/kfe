@@ -1,5 +1,5 @@
 <?php
-namespace Lorem;
+namespace KFE;
 /**
  * A model class that supports
  * data fetching, validation and saving
@@ -394,6 +394,9 @@ class Model {
 			if (preg_match('/^(.*)\s+([\=\!\>\<\%]+)\s*$/', $operand1, $matches)) {
 				$operand1 = $matches[1];
 				$operator = $matches[2];
+			}
+			if (is_string($operand2)) {
+				$operand2 = "'" . $operand2 . "'";
 			}
 			$strings[] = sprintf ('%s %s %s', $operand1, $operator, $operand2);
 		}
