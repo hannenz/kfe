@@ -118,6 +118,32 @@ class BarcodesController extends Controller {
 		$this->parser->setMultipleParserVars($this->postvars);
 		$this->content = $this->parser->parseTemplate($this->templatesPath . 'compose_sheet.tpl');
 	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 */
+	public function actionValidateSeller() {
+
+		$this->isAjax = true;
+		$this->isJson = true;
+
+		$sellerId = $_REQUEST['sellerId'];
+		$email = $_REQUEST['email'];
+
+		$seller = $this->Seller->filter([
+			'id' => $sellerId,
+			'seller_email' => $email
+		])->findOne();
+
+		$this->content = [
+			'success' => !empty($seller)
+		];
+
+		die (json_encode($this->content));
+	}
+	
 }
 
 $al = new PsrAutoloader();

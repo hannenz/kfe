@@ -117,5 +117,6 @@ class BarcodeSheet {
 
 		$this->pdf->Output($filename, 'I');
 	}
+
 }
 ?>

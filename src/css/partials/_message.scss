@@ -1,0 +1,7 @@
+.message {
+	padding: 0.5 * $vertical-unit $gutter;
+	&--error {
+		background-color: #c00000;
+		color: #fff;
+	}
+}

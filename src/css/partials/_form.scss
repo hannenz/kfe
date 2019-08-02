@@ -1,0 +1,25 @@
+form {
+	fieldset {
+		padding: 0.25 * $vertical-unit $gutter;
+		border: 1px solid #fff;
+	}
+
+	label {
+		display: block;
+	}
+
+	input[type=text],
+	input[type=email],
+	input[type=number] {
+		padding: 0.25 * $vertical-unit $gutter;
+	}
+}
+
+.form-field {
+}
+
+.form-field--amount {
+	label {
+		display: inline-block;
+	}
+}

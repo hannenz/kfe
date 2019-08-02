@@ -13,13 +13,16 @@ function Checkout() {
 	this.checkoutId = 1;
 
 	this.init = function() {
-		console.log("init");
+		if (!document.getElementById('cam')) {
+			return;
+		}
+		console.log("Checkout::init");
 		document.addEventListener('DOMContentLoaded', self.setup);
 	}
 
 	this.setup = function() {
 
-		console.log("setup");
+		console.log("Checkout::setup");
 
 		self.setupCameraBarcodeScanner();
 		self.setupBarcodeScanner();

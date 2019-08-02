@@ -1,0 +1,105 @@
+/**
+ * src/css/components/_button.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @see https://fvsch.com/code/styling-buttons/
+ * @package jakobus
+ */
+
+@mixin button-reset {
+	padding: 0;
+	border: 0;
+	font: inherit;
+	color: inherit;
+	background-color: transparent;
+	cursor: pointer;
+}
+
+.more, .back {
+	@include button-reset;
+	display: inline-block;
+	text-decoration: none;
+	color: $primary-color;
+	vertical-align: middle;
+	white-space: nowrap;
+	position: relative;
+	padding-left: 18px;
+
+	&::before {
+		// content: '▶ ';
+		// vertical-align: middle;
+		// font-size: 0.8125em;
+		// margin-right: 0.5em;
+		// display: inline-block;
+
+		content: '';
+		border: 7px solid rgba($primary-color, 0);
+		border-top-width: 5px;
+		border-bottom-width: 5px;
+		border-left-color: rgba($primary-color, 1);
+		position: absolute;
+		left: 0;
+		top: 5px;
+		width: 0;
+		height: 0;
+
+	}
+
+}
+
+.back::before {
+	border-left-color: rgba($primary-color, 0);
+	border-right-color: rgba($primary-color, 1);
+	left: -6px;
+}
+
+
+.button {
+	@include button-reset;
+
+	@include type-setting(0, 0);
+	display: inline-block;
+	text-align: center;
+	text-decoration: none;
+
+	margin: 2px 0;
+
+	border: 1px solid transparent;
+	border-radius: $global-radius;
+
+	padding: 0.35em 0.7em  0.2em 0.7em;
+
+	vertical-align: middle;
+
+	color: #fff;
+	background-color: $primary-color;
+
+	outline: none;
+	&::-moz-focus-inner {
+		border: none;
+	}
+
+	&:active {
+		transform: translateY(1px);
+		filter: saturate(150%);
+	}
+
+	&:hover,
+	&:focus {
+		color: $primary-color;
+		border-color: currentColor;
+		background-color: #fff;
+	}
+
+	&--secondary {
+		background-color: transparent;
+		color: $primary-color;
+	}
+
+	&:disabled {
+		background-color: #c0c0c0;
+		color: #505050;
+		cursor: not-allowed;
+	}
+}
+
