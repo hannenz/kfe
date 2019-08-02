@@ -127,7 +127,6 @@ function Checkout() {
 			total += item.value;
 		}
 
-
 		document.querySelector('.checkout-total').value = (total / 100).toFixed(2) + ' €';
 	}
 };

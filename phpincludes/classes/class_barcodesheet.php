@@ -3,7 +3,11 @@ namespace KFE;
 
 use \TCPDF;
 
+// error_reporting(E_ALL);
+// ini_set('display_errors', true);
+
 require_once(PATHTOWEBROOT . "phpincludes/vendor/laurentbrieu/tcpdf/src/TCPDF/TCPDF.php");
+
 
 class BarcodeSheet {
 
@@ -26,9 +30,9 @@ class BarcodeSheet {
 	 * @var Array
 	 */
 	protected $options = [
-		'barcode_width' => 50,
+		'barcode_width' => 60,
 		'barcode_height' => 30,
-		'gutter' => 10
+		'gutter' => 0
 	];
 
 	/**
@@ -41,8 +45,8 @@ class BarcodeSheet {
 		'fitwidth' => true,
 		'cellfitalign' => '',
 		'border' => true,
-		'hpadding' => 'auto',
-		'vpadding' => 'auto',
+		'hpadding' => 10,
+		'vpadding' => 7,
 		'fgcolor' => array(0,0,0),
 		'bgcolor' => false, //array(255,255,255),
 		'text' => true,
@@ -83,6 +87,8 @@ class BarcodeSheet {
 		}
 		$this->pdf->AddPage();
 
+		setlocale(LC_ALL, 'de_DE.UTF-8');
+
 		$n = 0;
 		foreach ($data as $value => $amount) {
 			for ($i = 0; $i < $amount; $i++) {
@@ -98,7 +104,14 @@ class BarcodeSheet {
 					$value
 				);
 				$this->pdf->write1DBarcode($code, 'C128', 15 + $x, 15 + $y, $this->options['barcode_width'], $this->options['barcode_height'], 0.5, $this->barcodeStyle);
+				$this->pdf->writeHTMLCell($this->options['barcode_width'], 10, 15 + $x, 15 + $y + 1, sprintf("%03u", $this->sellerData['id']), 0, 0, false, true, 'C');
+				$this->pdf->writeHTMLCell($this->options['barcode_width'], 10, 15 + $x, 15 + $y + $this->options['barcode_height'] - 7, sprintf("<b>%.2f &euro;</b>", $value / 100), 0, 0, false, true, 'C');
+
 				$n++;
+				if ($n % 24 == 0) {
+					$this->pdf->AddPage();
+					$n = 0;
+				}
 			}
 		}
 

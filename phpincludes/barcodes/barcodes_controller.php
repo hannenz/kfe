@@ -7,6 +7,7 @@ use Contentomat\PsrAutoloader;
 use KFE\BarcodeSheet;
 use KFE\Market;
 use KFE\Seller;
+use \Exception;
 
 /**
  * Class checkouts_controller
@@ -48,16 +49,7 @@ class BarcodesController extends Controller {
 	 * @return void
 	 */
 	public function actionDefault() {
-		$code = '2019091201700500';
-		$type = $this->BarcodeGenerator::TYPE_CODE_128;
-		
-		$barcode = $this->BarcodeGenerator->getBarcode($code, $type, 5, 80);
-		$this->parser->setMultipleParserVars([
-			'barcode' => $barcode,
-			'code' => $code,
-			'type' => 'CODE_128' 
-		]);
-		$this->content = $this->parser->parseTemplate($this->templatesPath . "test.tpl");
+		$this->changeAction('composeSheet');
 	}
 
 
@@ -65,37 +57,65 @@ class BarcodesController extends Controller {
 	public function actionComposeSheet() {
 
 		if (!empty($this->postvars)) {
+			$sellerId = (int)$this->postvars['sellerId'];
+			$marketId = (int)$this->postvars['marketId'];
 
-			$data = [];
-			for ($i = 50; $i <= 250; $i += 50) {
-				$amount = (int)$this->postvars['amount-' . $i];
-				if ($amount > 0) {
-					$data[$i] = $amount;
+			$errors = [];
+
+			try {
+				$seller = $this->Seller->findById($sellerId);
+				if (empty($seller)) {
+					$errors[] = 'errorIllegalSellerId';
+					throw new Exception();
 				}
-			};
+				if ($seller['seller_email'] != $this->postvars['sellerEmail']) {
+					$errors[] = 'errorEmailMismatch';
+					throw new Exception();
+				}
 
-			for ($i = 1; $i <= 3; $i++) {
-				$amount = (int)$this->postvars['amount-custom-' . $i];
-				$value = (int)$this->postvars['value-custom-' . $i] * 100;
-				if ($amount > 0 && $value > 0) {
-					if (isset($data[$value])) {
-						$data[$value] += $amount;
+				$data = [];
+				for ($i = 50; $i <= 1000; $i += 50) {
+					if (!isset($this->postvars['amount_' . $i])) {
+						continue;
 					}
-					else {
-						$data[$value] = $amount;
+					$amount = (int)$this->postvars['amount_' . $i];
+					if ($amount > 0) {
+						$data[$i] = $amount;
 					}
+				};
+
+				for ($i = 1; $i <= 3; $i++) {
+					$amount = (int)$this->postvars['amount_custom_' . $i];
+					$value = (int)$this->postvars['value_custom_' . $i] * 100;
+					if ($amount > 0 && $value > 0) {
+						if (isset($data[$value])) {
+							$data[$value] += $amount;
+						}
+						else {
+							$data[$value] = $amount;
+						}
+					}
+				}
+
+				$market = $this->Market->findById($marketId);
+				if (empty($market)) {
+					$errors[] = 'errorIllegalMarketId';
+					throw new Exception();
+				}
+				$this->BarcodeSheet = new BarcodeSheet($market, $seller);
+				$this->BarcodeSheet->create($data);
+				return;
+			}
+			catch (Exception $e) {
+				foreach ($errors as $error) {
+					$this->parser->setParserVar($error, true);
 				}
 			}
-
-			$market = $this->Market->findById($this->postvars['marketId']);
-			$seller = $this->Seller->findById(1);
-			$this->BarcodeSheet = new BarcodeSheet($market, $seller);
-			$this->BarcodeSheet->create($data);
-			return;
 		}
 
 		$markets = $this->Market->getMarketsWithOpenNumberAssignment();
 		$this->parser->setParserVar('markets', $markets);
+		$this->parser->setMultipleParserVars($this->postvars);
 		$this->content = $this->parser->parseTemplate($this->templatesPath . 'compose_sheet.tpl');
 	}
 }

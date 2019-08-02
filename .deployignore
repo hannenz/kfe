@@ -1,0 +1,10 @@
+.git*
+/src
+/node_modules
+settings_*
+/media
+deploy.sh
+.deployignore
+gulpfile.js
+package*
+dumps
