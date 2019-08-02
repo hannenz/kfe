@@ -45,9 +45,9 @@
     "prefix": "./dist/"
   },
   "browserslist": [
-	  "defaults"
+    "defaults"
   ],
   "stylelint": {
-	  "extends": "/home/hannenz/.stylelintrc.json"
+    "extends": "/home/hannenz/.stylelintrc.json"
   }
 }
