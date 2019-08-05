@@ -7,6 +7,8 @@ use \Exception;
 
 class SellerExistsForMarketException extends Exception { }
 class ActivationFailedException extends Exception { }
+class InvalidEmailException extends Exception { }
+class EmailsDontMatchException extends Exception { }
 
 class Seller extends Model {
 
@@ -33,6 +35,10 @@ class Seller extends Model {
 	 * @throws Exception
 	 */
 	public function registrate($email, $marketId) {
+
+		if (empty(trim($email)) || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+			throw new InvalidEmailException("Missing or Invalid email: " . $email);
+		}
 
 		// Check if email is already registered for this market
 		// Could also check for the hash?

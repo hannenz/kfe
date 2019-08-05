@@ -75,18 +75,33 @@ class SellersController extends Controller {
 
 	public function actionRegistrate() {
 		// var_dump("check"); die();
+		$marketId = $_REQUEST['market_id'];
+		if (!empty($marketId)) {
+			$this->parser->setParserVar('market_id', $marketId);
+		}
 
 		if (!empty($this->postvars['email'])) {
-			$this->parser->SetMultipleParserVars($this->postvars);
-			$this->parser->setMultipleParserVars($this->Market->findById($this->postvars['market_id']));
+			$this->parser->setMultipleParserVars($this->postvars);
+			$this->parser->setParserVar('market_id', $marketId);
+			$this->parser->setMultipleParserVars($this->Market->findById($marketId));
 			$email = $this->postvars['email'];
-			$marketId = $this->postvars['market_id'];
 
 			try {
+
+				if ($this->postvars['email'] !== $this->postvars['email_confirm']) {
+					throw new EmailsDontMatchException();
+				}
+
 				$hash = $this->Seller->registrate($email, $marketId);
 				$this->sendActivationLink($email, $hash);
 				die ("Check your e-mails!");
 				// return $this->changeAction('');
+			}
+			catch (InvalidEmailException $e) {
+				$this->parser->setParserVar('errorInvalidEmail', true);
+			}
+			catch (EmailsDontMatchException $e) {
+				$this->parser->setParserVar('errorEmailsDontMatch', true);
 			}
 			catch (SellerExistsForMarketException $e) {
 				$this->parser->setParserVar('errorSellerExists', true);
@@ -96,8 +111,8 @@ class SellersController extends Controller {
 			}
 		}
 
-		$this->parser->setParserVar('markets', $this->Market->getMarketsWithOpenNumberAssignment());
 
+		$this->parser->setParserVar('markets', $this->Market->getMarketsWithOpenNumberAssignment());
 		$this->content = $this->parser->parseTemplate($this->templatesPath . "registration.tpl");
 	}
 

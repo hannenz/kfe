@@ -13,6 +13,12 @@ function Composer() {
 	var sellerIdInput;
 
 	this.init = function() {
+		if (document.forms.composeform) {
+			self.setup();
+		}
+	}
+
+	this.setup = function() {
 
 		button = document.querySelector('button[type=submit]');
 		inputs = document.querySelectorAll('[name^=amount]');

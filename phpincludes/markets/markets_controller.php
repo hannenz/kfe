@@ -16,9 +16,12 @@ class MarketsController extends Controller {
 	 */
 	protected $Market;
 
+	protected $registrationPageId = 7;
+
 
 	public function init() {
 		$this->Market = new Market();
+		$this->Market->setRegistrationPageId($this->registrationPageId);
 		$this->templatesPath = $this->templatesPath . 'markets/';
 	}
 
