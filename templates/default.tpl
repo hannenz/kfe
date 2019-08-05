@@ -25,16 +25,16 @@
 
 	<section class="main-content">
 		<div class="inner-bound">
-			<div class="callout">
-				<div class="callout__head">
-					Samstag, 16. März 2019<br>
-					9.30 &ndash; 11.30 Uhr
-				</div>
-				<div class="callout__subline">
-					Einlass für Schwangere <br>
-					(+1 Begleitperson) ab 9.00 Uhr
-				</div>
-			</div>
+			<!-- <div class="callout"> -->
+			<!-- 	<div class="callout__head"> -->
+			<!-- 		Samstag, 16. März 2019<br> -->
+			<!-- 		9.30 &#38;ndash; 11.30 Uhr -->
+			<!-- 	</div> -->
+			<!-- 	<div class="callout__subline"> -->
+			<!-- 		Einlass für Schwangere <br> -->
+			<!-- 		(+1 Begleitperson) ab 9.00 Uhr -->
+			<!-- 	</div> -->
+			<!-- </div> -->
 			{LOOP CONTENT(1)}{ENDLOOP CONTENT}
 		</div>
 	</section>
