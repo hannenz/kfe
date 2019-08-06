@@ -1,5 +1,7 @@
 <section>
-	<form id="composeform" action="{PAGEURL}" method="post" accept-charset="utf-8">
+	<form id="composeform" class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8">
+
+		<h2 class="noheadline">Etiketten drucken</h2>
 
 		<input type="hidden" value="composeSheet" name="action" />
 
@@ -28,7 +30,7 @@
 			</div>
 		{ENDIF}
 
-		<fieldset>
+		<fieldset class="stack">
 			<div class="form-field">
 				<label for="marketId">Markt</label>
 				<select name="marketId" id="marketId">
@@ -52,7 +54,7 @@
 			</div>
 		</fieldset>
 
-		<fieldset>
+		<fieldset class="stack columns">
 			<div class="form-field form-field--amount">
 				<input id="amount_50" type="number" min="0" max="50" value="{IF({ISSET:amount_50:VAR})}{VAR:amount_50}{ELSE}3{ENDIF}" name="amount_50" id="amount_50">
 				<label for="amount_50"> &times; 0,50 &euro;</label>
@@ -132,6 +134,13 @@
 				<label for="amount_custom_3"> &times; </label>
 				<input id="value_custom_3" type="text" name="value_custom_3"  value="{IF({ISSET:value_custom_3:VAR})}{VAR:value_custom_3}{ENDIF}" />
 				<label for="value_custom_3">&euro;</label>
+			</div>
+
+			<div class="form-field form-field--amount">
+				<input id="amount_custom_4" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_4:VAR})}{VAR:amount_custom_4}{ELSE}0{ENDIF}" name="amount_custom_4">
+				<label for="amount_custom_4"> &times; </label>
+				<input id="value_custom_4" type="text" name="value_custom_4"  value="{IF({ISSET:value_custom_4:VAR})}{VAR:value_custom_4}{ENDIF}" />
+				<label for="value_custom_4">&euro;</label>
 			</div>
 		</fieldset>
 

@@ -1,0 +1,11 @@
+.main-footer {
+	padding: $vertical-unit $gutter;
+	background-color: $primary-color;
+	color: #fff;
+	text-align: center;
+	@include type-setting(0, 0);
+
+	a {
+		color: #fff;
+	}
+};

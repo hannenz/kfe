@@ -1,18 +1,30 @@
-form {
+.form {
+	background-color: $bg-color-1;
+	padding: $gutter;
+
 	fieldset {
-		padding: 0.25 * $vertical-unit $gutter;
-		border: 1px solid #fff;
+		border: lighten($bg-color, 15%);
 	}
 
 	label {
 		display: block;
 	}
 
+	textarea,
 	input[type=text],
 	input[type=email],
 	input[type=number] {
 		padding: 0.25 * $vertical-unit $gutter;
+		@include type-setting(0);
+		border: 0;
 	}
+
+	select {
+		padding: 0.25 * $vertical-unit $gutter;
+		@include type-setting(0);
+		background-color: #fff;
+	}
+
 }
 
 .form-field {
@@ -21,5 +33,13 @@ form {
 .form-field--amount {
 	label {
 		display: inline-block;
+	}
+}
+
+.columns {
+	columns: 2;
+
+	input {
+		width: 100px;
 	}
 }

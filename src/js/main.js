@@ -32,11 +32,35 @@ function APP () {
 
 		document.body.classList.add('page-has-loaded');
 
+		this.initScrollListener();
 		this.main();
 	};
 
 	this.main = function() {
+	};
 
+	this.initScrollListener = function() {
+		var last_known_scroll_position = 0;
+		var ticking = false;
+
+		function doSomething(scrollPos) {
+			document.body.classList.toggle('page-has-scrolled', (scrollPos > 0));
+			document.body.classList.toggle('page-has-scrolled-100px', (scrollPos > 100));
+		}
+
+		window.addEventListener('scroll', function(e) {
+
+			last_known_scroll_position = window.scrollY;
+
+			if (!ticking) {
+
+				window.requestAnimationFrame(function() {
+					doSomething(last_known_scroll_position);
+					ticking = false;
+				});
+				ticking = true;
+			}
+		});
 	};
 };
 

@@ -5,6 +5,8 @@
 	font-family: "Gaegu";
 	transform: skewY(-4deg);
 	box-shadow: 0 0 30px rgba(30, 30, 30, 0.75);
+	transition: 150ms ease-in-out;
+	transform-origin: top right;
 
 	.site-title {
 		color: #fff;
@@ -15,8 +17,34 @@
 
 	.site-subtitle {
 		color: $bg-color;
-		font-weight: 400;;
+		font-weight: 400;
 		@include type-setting(1, 0);
 	}
+}
 
+.page-has-scrolled .main-header {
+	transform: skewY(0);
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 0.5rem;
+	margin: 0;
+
+	.inner-bound {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.site-title {
+		@include type-setting(0, 0);
+		margin-right: 0.5em;
+		flex: 0 1 auto;
+	}
+
+	.site-subtitle {
+		@include type-setting(0, 0);
+		flex: 0 1 auto;
+	}
 }

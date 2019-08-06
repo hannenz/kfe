@@ -24,9 +24,9 @@
 	Die E-Mail-Adressen stimmen nicht überein
 </div>
 {ENDIF}
-<form action="" method="post" accept-charset="utf-8">
+<form class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8">
 
-	<div class="form-field form-field--select">
+	<div class="form-field form-field--select stack-item">
 		<label for="market_id">Markt</label>
 		<select disabled name="market_id" id="market_id">
 			{LOOP VAR(markets)}
@@ -35,18 +35,18 @@
 		</select>
 	</div>
 
-	<div class="form-field">
+	<div class="form-field stack-item">
 		<label for="email">E-Mail</label>
-		<input name="email" id="email" value="{VAR:email}" />
+		<input type="text" name="email" id="email" value="{VAR:email}" />
 	</div>
 
-	<div class="form-field">
+	<div class="form-field stack-item">
 		<label for="email_confirm">E-Mail wiederholen</label>
-		<input name="email_confirm" id="email_confirm" value="" />
+		<input type="text" name="email_confirm" id="email_confirm" value="" />
 	</div>
 
-	<div class="action-area">
-		<button type="submit">Registrieren</button>
+	<div class="action-area stack-item">
+		<button type="submit" class="button">Registrieren</button>
 	</div>
 	
 </form>

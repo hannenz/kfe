@@ -30,13 +30,17 @@ body {
 	// Sets up font-size and line-height
 	// according to vertical rhythm. 
 	// @see mixins in mixins/_vertical_rhythm.scss
-	@include type-setting(0);
+	font-size: 20px;
 	color: $text-color;
 	// font-family: "ElliotSix", "Daniel Black", Borsok, Androgyne, Amatic, "Open Sans";
-	font-family: "Source Sans";
+	font-family: "Source Sans Pro";
 }
 
 .headline {
 	font-family: "ElliotSix";
 	color: $primary-color;
+}
+
+p, ul {
+	margin-bottom: $vertical-unit;
 }
