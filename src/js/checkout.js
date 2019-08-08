@@ -24,8 +24,40 @@ function Checkout() {
 
 		console.log("Checkout::setup");
 
-		self.setupCameraBarcodeScanner();
+		document.forms.checkout.addEventListener('submit', function(e) {
+			e.preventDefault();
+			return false;
+		});
+
+		var inp = document.querySelector('.checkout-code-input');
+		inp.addEventListener('blur', function(ev) {
+			inp.focus();
+		});
+
+		window.addEventListener('beforeunload', function(event) {
+			console.log("About to close the page");
+			return 'Seite wirklich verlassen?';
+		});
+
+
 		self.setupBarcodeScanner();
+		// self.setupCameraBarcodeScanner();
+		self.camDiv = document.getElementById('cam');
+
+		var chkbx = document.getElementById('js-toggle-camera-scanner');
+		chkbx.addEventListener('change', function(e) {
+
+			if (this.checked) {
+				console.log("Starting camera scanner");
+				// self.camDiv.style.display = 'block';
+				self.setupCameraBarcodeScanner();
+			}
+			else {
+				console.log("Stopping camera scanner");
+				Quagga.stop();
+				// self.camDiv.style.display = 'none';
+			}
+		});
 	};
 
 	this.setupCameraBarcodeScanner = function() {
@@ -49,11 +81,11 @@ function Checkout() {
 			locate : false
 		}, function(err) {
 			if (err) {
-				alert(err);
+				console.log(err);
 				return;
 			}
-			console.log("Quagga successfully initialised, now starting up");
-			Quagga.start();
+			// console.log("Quagga successfully initialised, now starting up");
+			// Quagga.start();
 		});
 
 		Quagga.onDetected(function(result) {
@@ -62,7 +94,6 @@ function Checkout() {
 			self.addToCart(item);
 			
 			// throttle somehow?
-
 		});
 
 		self.main();
@@ -72,10 +103,15 @@ function Checkout() {
 		var codeInput = document.querySelector('.checkout-code-input');
 		codeInput.focus();
 		codeInput.addEventListener('keyup', function(ev) {
-			if (this.value.length == 16) {
+			if (this.value.length >= 16) {
 				var code = this.value;
 				var item = self.getItemFromCode(code);
-				self.addToCart(item);
+				if (item != null) {
+					self.addToCart(item);
+				}
+				else {
+					alert ("Invalid code: " + code);
+				}
 
 				this.value = '';
 				this.focus();
@@ -84,12 +120,32 @@ function Checkout() {
 	};
 
 	this.getItemFromCode = function(code) {
+
+		var marketId = code.substring(0, 8);
+		var sellerId = parseInt(code.substring(8, 11));
+		var value = parseInt(code.substring(11));
+		console.log(marketId,sellerId,value);
+
+		if (!marketId.match(/^\d{4}\d{2}\d{2}$/)) {
+			console.log("Invalid code", code);
+			return null;
+		}
+		if (Number.isNaN(sellerId)) {
+			console.log("Invalid code", code);
+			return null;
+		}
+		if (Number.isNaN(value)) {
+			console.log("Invalid code", code);
+			return null;
+		}
+
 		var item = {
-			marketId: code.substring(0, 8),
-			sellerId: parseInt(code.substring(8, 11)),
-			value: parseInt(code.substring(11)),
+			marketId: marketId,
+			sellerId: sellerId,
+			value: value,
 			ts: Date.now(),
-			checkoutId: this.checkoutId
+			checkoutId: this.checkoutId,
+			code: code
 		}
 		return item;
 	}
@@ -109,6 +165,20 @@ function Checkout() {
 	this.createTableFromCart = function() {
 		var table = document.querySelector('.checkout-table');
 		table.innerHTML = '';
+
+		var row = document.createElement('tr');
+		var th = document.createElement('th');
+		th.innerText = '#';
+		row.appendChild(th);
+		th = document.createElement('th');
+		th.innerText = 'Verkäufer-Nr';
+		row.appendChild(th);
+		th = document.createElement('th');
+		th.innerText = 'Betrag';
+		row.appendChild(th);
+
+		table.appendChild(row);
+
 
 		var total = 0;
 		for (var i = 0; i < self.cart.length; i++) {

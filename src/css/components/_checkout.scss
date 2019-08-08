@@ -1,0 +1,25 @@
+.checkout-table {
+	width: 100%;
+	border-collapse: collapse;
+
+	th,
+	td {
+		text-align: left;
+		padding: 4px;
+		background-color: #fff;
+		border: 1px solid #c0c0c0;
+	}
+}
+
+.checkout {
+	form {
+		input {
+			display: block;
+			width: 400px;
+		}
+	}
+}
+
+.checkout-code-input:not(:focus) {
+	background-color: firebrick;
+}
