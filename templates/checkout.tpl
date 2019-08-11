@@ -19,12 +19,12 @@
 	<script src="/dist/js/vendor/quagga.min.js"></script>
 	{ENDIF}
 </head>
-<body class="checkout">
+<body class="checkout-page">
 
 	<section class="main-content">
-		<div class="inner-bound">
+		<!-- <div class="inner&#45;bound"> -->
 			{LOOP CONTENT(1)}{ENDLOOP CONTENT}
-		</div>
+		<!-- </div> -->
 	</section>
 
 	{INCLUDE:PATHTOWEBROOT.'templates/partials/footer.tpl'}
