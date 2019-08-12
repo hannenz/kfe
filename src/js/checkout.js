@@ -9,7 +9,13 @@
 function Checkout() {
 
 	var self = this;
-	this.cart = [];
+	this.carts = [];
+	this.cart = {
+		timestamp: 0,
+		checkoutId: 0,
+		marketId: 0,
+		items: []
+	};
 	this.checkoutId = 1;
 	this.changeDiv = document.getElementById('checkout-change-value');
 	this.codeInput = document.getElementById('checkout-code-input');
@@ -21,6 +27,7 @@ function Checkout() {
 
 	this.setup = function() {
 
+
 		if (!document.getElementById('cam')) {
 			return;
 		}
@@ -29,13 +36,13 @@ function Checkout() {
 
 		console.log("Checkout::setup");
 
-		window.addEventListener('beforeunload', function(e) {
-			console.log("About to unload the page");
-			var mssg = 'Seite wirklich verlassen?';
-			e.preventDefault();
-			(e || window.event).returnValue =  mssg;
-			return mssg;
-		});
+		// window.addEventListener('beforeunload', function(e) {
+		// 	console.log("About to unload the page");
+		// 	var mssg = 'Seite wirklich verlassen?';
+		// 	e.preventDefault();
+		// 	(e || window.event).returnValue =  mssg;
+		// 	return mssg;
+		// });
 
 		document.forms.checkout.addEventListener('submit', function(e) {
 			e.preventDefault();
@@ -72,12 +79,13 @@ function Checkout() {
 			btn.addEventListener('click', self.onPanelButtonClicked);
 		}
 
+		self.resurrect();
 		self.createTableFromCart();
 	};
 
 	this.onKeyUp = function(ev) {
 		ev.preventDefault();
-		console.log(ev.keyCode);
+		// console.log(ev.keyCode);
 		switch (ev.keyCode) {
 			case 65: // Q
 				self.change(500);
@@ -99,6 +107,12 @@ function Checkout() {
 				break;
 			case 74: // U
 				break;
+			case 999:
+				self.commitCart();
+				self.cancelCart();
+				self.createTableFromCart();
+				self.updateTotalTurnover();
+				break;
 		}
 	};
 
@@ -107,6 +121,24 @@ function Checkout() {
 		switch (action) {
 			case 'change':
 				self.change(this.dataset.value);
+				break;
+
+			case 'cancel':
+				if (self.cart.items.length == 0) {
+					return;
+				}
+
+				if (window.confirm("Sind Sie sicher, dass sie den gesamten Vorgang stornieren möchten?")) {
+					self.cancelCart();
+					self.createTableFromCart();
+				}
+				break;
+
+			case 'commit':
+				self.commitCart();
+				self.cancelCart();
+				self.createTableFromCart();
+				self.updateTotalTurnover();
 				break;
 
 			default:
@@ -125,7 +157,7 @@ function Checkout() {
 	 * @return void
 	 */
 	this.change = function(value) {
-		self.changeDiv.innerText = ((value - (self.getCartTotal())) / 100).toFixed(2);
+		self.changeDiv.innerHTML = ((value - (self.getCartTotal())) / 100).toFixed(2) + ' &euro;';
 	}
 
 	this.setupCameraBarcodeScanner = function() {
@@ -236,27 +268,27 @@ function Checkout() {
 
 	this.cancelItem = function(i) {
 
-		if (self.cart[i]) {
+		if (self.cart.items[i]) {
 
-			item = self.cart[i];
+			item = self.cart.items[i];
 			var mssg = "Sind Sie sicher, diese Position zu stornieren?\n#" + i + "\nVerkäufer-Nr: " + item.sellerId + "\nBetrag: " + (item.value / 100).toFixed(2) + "EUR";
 			console.log(mssg);
 			if (!window.confirm(mssg)) {
 				return;
 			}
 
-			self.cart.splice(i, 1);
+			self.cart.items.splice(i, 1);
 		}
 		self.createTableFromCart();
 		self.codeInput.focus();
+		self.persist();
 	}
 
 
 	this.addToCart = function(item) {
-		self.cart.push(item);
-		console.log(self.cart);
+		self.cart.items.push(item);
 		self.createTableFromCart();
-
+		self.persist();
 		// Play a sound
 	}
 
@@ -286,8 +318,8 @@ function Checkout() {
 
 
 		var total = 0;
-		for (var i = 0; i < self.cart.length; i++) {
-			var item = self.cart[i];
+		for (var i = 0; i < self.cart.items.length; i++) {
+			var item = self.cart.items[i];
 
 			var row = document.createElement('tr');
 			var td1 = document.createElement('td');
@@ -327,16 +359,91 @@ function Checkout() {
 		}
 
 		document.querySelector('.checkout-total').value = (total / 100).toFixed(2) + ' €';
+
+
+		self.changeDiv.innerHTML = '&nbsp;';
+
+		if (self.cart.items.length == 0) {
+			document.querySelector('[data-action=cancel]').setAttribute('disabled', true);
+			document.querySelector('[data-action=commit]').setAttribute('disabled', true);
+		}
+		else {
+			document.querySelector('[data-action=cancel]').removeAttribute('disabled');
+			document.querySelector('[data-action=commit]').removeAttribute('disabled');
+		}
 	}
 
 
 	this.getCartTotal = function() {
 		var total = 0;
-		self.cart.forEach(function(item) {
+		self.cart.items.forEach(function(item) {
 			total += item.value;
 		});
 
 		return total;
+	};
+
+	this.commitCart = function() {
+		if (self.cart.items.length == 0) {
+			return;
+		}
+		console.log("Committing cart");
+		self.carts.push(self.cart);
+		self.updateTotalTurnover();
+		self.persist();
+	};
+
+	this.updateTotalTurnover = function() {
+		var totalTurnover = self.calcTotalTurnover() / 100;
+		document.getElementById('js-total-turnover').innerText = totalTurnover.toFixed(2);
+		document.getElementById('js-total-carts').innerText = self.carts.length;
+	}
+
+	this.cancelCart = function() {
+		console.log("Cancelling cart");
+		self.cart.timestamp = Date.now();
+		self.cart.items = [];
+		self.persist();
+	}
+
+	this.persist = function() {
+		// window.localStorage.setItem('checkoutId', self.checkoutId);
+		// window.localStorage.setItem('marketId', self.marketId);
+		window.localStorage.setItem('cart', JSON.stringify(self.cart));
+		window.localStorage.setItem('carts', JSON.stringify(self.carts));
+	};
+
+	this.resurrect = function() {
+		var checkoutId, marketId, cart;
+
+		// if ((checkoutId = window.localStorage.getItem('checkoutId')) != null) {
+		// 	console.log("resurrecting checkoutId", checkoutId);
+		// 	self.checkoutId = checkoutId;
+		// }
+
+		// if ((marketId = window.localStorage.getItem('marketId')) != null) {
+		// 	self.marketId = marketId;
+		// }
+
+		if ((cart = window.localStorage.getItem('cart')) != null) {
+			self.cart = JSON.parse(cart);
+			self.createTableFromCart();
+		}
+
+		if ((carts = window.localStorage.getItem('carts')) != null) {
+			self.carts = JSON.parse(carts);
+			self.updateTotalTurnover();
+		}
+	};
+
+	this.calcTotalTurnover = function() {
+		var turnover = 0;
+		for (var i = 0; i < self.carts.length; i++) {
+			for (var j = 0; j < self.carts[i].items.length; j++) {
+				turnover += self.carts[i].items[j].value;
+			}
+		}
+		return turnover;
 	};
 };
 

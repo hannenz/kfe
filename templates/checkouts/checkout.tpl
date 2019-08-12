@@ -28,12 +28,15 @@
 			<button class="button" data-action="change" data-value="20000">200,00</button>
 			<button class="button" data-action="change-custom" data-value="">Anderer Betrag</button>
 			<button class="button" data-action="cancel">Storno</button>
-			<button class="button" data-action="submit" type="submit">Fertig</button>
+			<button class="button" data-action="commit" type="submit">Fertig</button>
 			<input name="change-custom" value="" />
 		</div>
 	</div>
 
 	<div class="checkout__footer">
+		<div>Markt: #{VAR:marketId} -- {VAR:market_datetime}</div>
+		<div>Kasse: #{VAR:checkoutId}</div>
+		<div>Gesamtumsatz: <b id="js-total-turnover">0,00</b> &euro; (<span id="js-total-carts">0</span> Vorgänge)</div>
 		<input type="checkbox" id="js-toggle-camera-scanner"><label for="js-toggle-camera-scanner">Scanner an/aus</label>
 		<div id="cam"></div>
 	</div>
