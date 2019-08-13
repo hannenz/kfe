@@ -15,6 +15,7 @@ function Checkout() {
 		timestamp: 0,
 		checkoutId: 0,
 		marketId: 0,
+		submitted: false,
 		items: []
 	};
 
@@ -83,13 +84,16 @@ function Checkout() {
 			btn.addEventListener('click', self.onPanelButtonClicked);
 		}
 
+		// Periodically try to submit carts to server
+		// window.setInterval(self.submitCarts, 5000);
+
 		self.resurrect();
 		self.createTableFromCart();
 	};
 
 	this.onKeyUp = function(ev) {
 		ev.preventDefault();
-		// console.log(ev.keyCode);
+		console.log(ev.keyCode);
 		switch (ev.keyCode) {
 			case 65: // Q
 				self.change(500);
@@ -111,6 +115,11 @@ function Checkout() {
 				break;
 			case 74: // U
 				break;
+			case 61:
+				self.submitCarts();
+				break;
+
+
 			case 999:
 				self.commitCart();
 				self.cancelCart();
@@ -427,6 +436,7 @@ function Checkout() {
 		console.log("Cancelling cart");
 		self.cart.timestamp = Date.now();
 		self.cart.items = [];
+		self.cart.submitted = false;
 		self.persist();
 	}
 
@@ -469,6 +479,37 @@ function Checkout() {
 		}
 		return turnover;
 	};
+
+	this.submitCarts = function() {
+		console.log("submitting carts to server");
+		self.carts.forEach(function(cart, i) {
+			console.log(cart.timestamp);
+
+			if (cart.submitted) {
+				return;
+			}
+
+			var data = new FormData();
+			data.append('action',  'add');
+			data.append('timestamp', cart.timestamp);
+			data.append('marketId', cart.marketId);
+			data.append('checkoutId', cart.checkoutId);
+			data.append('items', JSON.stringify(cart.items));
+
+			var xhr = new XMLHttpRequest();
+			xhr.addEventListener('load', function() {
+				var response = JSON.parse(this.responseText);
+				if (response.success) {
+					cart.submitted = true;
+				}
+			});
+			xhr.addEventListener('error', function() {
+
+			});
+			xhr.open('POST', '/de/9/carts.html');
+			xhr.send(data);
+		});
+	}
 };
 
 // var chk = new Checkout();
