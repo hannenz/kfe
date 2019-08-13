@@ -27,8 +27,6 @@
 		<!-- </div> -->
 	</section>
 
-	{INCLUDE:PATHTOWEBROOT.'templates/partials/footer.tpl'}
-
 	{IF(!{LAYOUTMODE})}
 		<script src="/dist/js/main.min.js"></script>
 	{ENDIF}

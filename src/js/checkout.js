@@ -6,6 +6,7 @@
  * @copyright , 15 Juli, 2019
  * @package kfe
  */
+
 function Checkout() {
 
 	var self = this;
@@ -16,21 +17,24 @@ function Checkout() {
 		marketId: 0,
 		items: []
 	};
+
 	this.checkoutId = 1;
-	this.changeDiv = document.getElementById('checkout-change-value');
+	this.totalInput = document.getElementById('checkout-total');
+	// this.totalInput.addEventListener('input', function(ev) {
+	// 	console.log(this.value);
+	// 	this.value = this.value.replace(/\./, ',');
+	// });
+	this.changeInput = document.getElementById('checkout-change-value');
 	this.codeInput = document.getElementById('checkout-code-input');
 
 	this.init = function() {
-		console.log("Checkout::init");
-		document.addEventListener('DOMContentLoaded', self.setup);
+		// console.log("Checkout::init");
+		// document.addEventListener('DOMContentLoaded', self.setup);
+		self.setup();
+
 	}
 
 	this.setup = function() {
-
-
-		if (!document.getElementById('cam')) {
-			return;
-		}
 
 		document.addEventListener('keyup', self.onKeyUp);
 
@@ -117,10 +121,27 @@ function Checkout() {
 	};
 
 	this.onPanelButtonClicked = function(ev) {
+		ev.preventDefault();
 		var action = this.dataset.action;
+		console.log(action);
 		switch (action) {
 			case 'change':
 				self.change(this.dataset.value);
+				break;
+
+			case 'change-custom':
+				var value = window.prompt("Herausgeben auf ...");
+				value = value.replace(/[^\d]/g, '');
+				self.change(parseInt(value));
+				break;
+
+			case 'cancel-last':
+				if (self.cart.items.length == 0) {
+					return;
+				}
+
+				self.cancelLast();
+				self.createTableFromCart();
 				break;
 
 			case 'cancel':
@@ -147,6 +168,7 @@ function Checkout() {
 		}
 
 		self.codeInput.focus();
+		return false;
 	};
 
 
@@ -157,7 +179,7 @@ function Checkout() {
 	 * @return void
 	 */
 	this.change = function(value) {
-		self.changeDiv.innerHTML = ((value - (self.getCartTotal())) / 100).toFixed(2) + ' &euro;';
+		self.changeInput.value = ((value - (self.getCartTotal())) / 100).toFixed(2) + ' €';
 	}
 
 	this.setupCameraBarcodeScanner = function() {
@@ -208,16 +230,9 @@ function Checkout() {
 			return true;
 		});
 
-		self.codeInput.addEventListener('keyup', function(ev) {
+		self.codeInput.addEventListener('input', function(ev) {
 
-			var cleanval = '';
-			for (var i = 0; i < this.value.length; i++) {
-				if (this.value[i] - '0' >= 0 && this.value[i] -'0' <= 9) {
-					cleanval += this.value[i];
-				}
-			}
-
-			this.value = cleanval;
+			this.value = this.value.replace(/[^\d]/g, ''); 
 
 			if (this.value.length >= 16) {
 				var code = this.value;
@@ -266,12 +281,19 @@ function Checkout() {
 	}
 
 
+	this.cancelLast = function() {
+		var i;
+		if ((i = self.cart.items.length - 1) > 0) {
+			self.cancelItem(i);
+		}
+	};
+
 	this.cancelItem = function(i) {
 
 		if (self.cart.items[i]) {
 
 			item = self.cart.items[i];
-			var mssg = "Sind Sie sicher, diese Position zu stornieren?\n#" + i + "\nVerkäufer-Nr: " + item.sellerId + "\nBetrag: " + (item.value / 100).toFixed(2) + "EUR";
+			var mssg = "Sind Sie sicher, diese Position zu stornieren?\n#" + (i + 1)  + "\nVerkäufer-Nr: " + item.sellerId + "\nBetrag: " + (item.value / 100).toFixed(2) + "EUR";
 			console.log(mssg);
 			if (!window.confirm(mssg)) {
 				return;
@@ -358,10 +380,8 @@ function Checkout() {
 			total += item.value;
 		}
 
-		document.querySelector('.checkout-total').value = (total / 100).toFixed(2) + ' €';
-
-
-		self.changeDiv.innerHTML = '&nbsp;';
+		self.totalInput.value = (total / 100).toFixed(2) + ' €';
+		self.changeInput.value = '-,-- €';
 
 		if (self.cart.items.length == 0) {
 			document.querySelector('[data-action=cancel]').setAttribute('disabled', true);
@@ -388,7 +408,11 @@ function Checkout() {
 			return;
 		}
 		console.log("Committing cart");
-		self.carts.push(self.cart);
+
+		// The cart needs to be cloned before pushed to the stack,
+		// this is a simple method to clone a Javascript object:
+		var clone = JSON.parse(JSON.stringify(self.cart));
+		self.carts.push(clone);
 		self.updateTotalTurnover();
 		self.persist();
 	};
@@ -447,5 +471,5 @@ function Checkout() {
 	};
 };
 
-var chk = new Checkout();
-chk.init();
+// var chk = new Checkout();
+// chk.init();
