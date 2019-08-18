@@ -6,7 +6,7 @@
  */
 
 
-$border-radius: 0px !default;
+$border-radius: 0 !default;
 
 /**
  * Reset button
@@ -48,7 +48,7 @@ $border-radius: 0px !default;
 	&:hover,
 	&:focus {
 		background-color: #fff;
-		color: color-for-bg(#fff, $text-color, $primary-color);
+		color: color-for-bg(#fff, $text-color, var(--primary-color));
 		border-color: currentColor;
 	}
 }

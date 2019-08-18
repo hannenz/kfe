@@ -45,8 +45,7 @@
     "prefix": "./dist/"
   },
   "browserslist": [
-    "last 2 versions",
-	"> 2%"
+    "last 2 versions and not dead and >3% in DE"
   ],
   "stylelint": {
     "extends": "/home/hannenz/.stylelintrc.json"

@@ -1,6 +1,6 @@
 .main-footer {
 	padding: $vertical-unit $gutter;
-	background-color: $primary-color;
+	background-color: var(--primary-color);
 	color: #fff;
 	text-align: center;
 	@include type-setting(0, 0);

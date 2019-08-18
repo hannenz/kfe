@@ -74,43 +74,67 @@ class SellersController extends Controller {
 	}
 
 	public function actionRegistrate() {
-		// var_dump("check"); die();
-		$marketId = $_REQUEST['market_id'];
+		$marketId = (int)$_REQUEST['market_id'];
 		if (!empty($marketId)) {
 			$this->parser->setParserVar('market_id', $marketId);
 		}
 
-		if (!empty($this->postvars['email'])) {
+		if (!empty($this->postvars)) {
 			$this->parser->setMultipleParserVars($this->postvars);
 			$this->parser->setParserVar('market_id', $marketId);
 			$this->parser->setMultipleParserVars($this->Market->findById($marketId));
-			$email = $this->postvars['email'];
+			$email = $this->postvars['seller_email'];
 
 			try {
 
-				if ($this->postvars['email'] !== $this->postvars['email_confirm']) {
-					throw new EmailsDontMatchException();
+				if (!$this->Seller->validate($this->postvars)) {
+					$errors = $this->Seller->getValidationErrors();
+					foreach ($errors as $field => $error) {
+						$this->parser->setParserVar('error_'.$field, true);
+					}
+					throw new \Exception();
 				}
 
+				// if ($this->postvars['seller_email'] !== $this->postvars['seller_email_confirm']) {
+				// 	throw new EmailsDontMatchException();
+				// }
+                //
 				$hash = $this->Seller->registrate($email, $marketId);
 				$this->sendActivationLink($email, $hash);
 				die ("Check your e-mails!");
 				// return $this->changeAction('');
 			}
-			catch (InvalidEmailException $e) {
-				$this->parser->setParserVar('errorInvalidEmail', true);
-			}
-			catch (EmailsDontMatchException $e) {
-				$this->parser->setParserVar('errorEmailsDontMatch', true);
-			}
+			// catch (SellerMissingFirstnameException $e) {
+			// 	$this->parser->setParserVar('errorMissingFirstname', true);
+			// }
+			// catch (SellerMissingLastnameException $e) {
+			// 	$this->parser->setParserVar('errorMissingLastname', true);
+			// }
+			// catch (InvalidEmailException $e) {
+			// 	$this->parser->setParserVar('errorInvalidEmail', true);
+			// }
+			// catch (EmailsDontMatchException $e) {
+			// 	$this->parser->setParserVar('errorEmailsDontMatch', true);
+			// }
 			catch (SellerExistsForMarketException $e) {
 				$this->parser->setParserVar('errorSellerExists', true);
 			}
-			catch (Exception $e) {
+			catch (\Exception $e) {
 				$this->parser->setParserVar('errorDatabaseQuery', true);
 			}
 		}
 
+
+		$_availableNumbers = $this->Seller->getAvailableNumbers($marketId);
+		$availableNumbers = [];
+		foreach ($_availableNumbers as $nr) {
+			$availableNumbers[] = ['nr' => $nr];
+		}
+		$this->parser->setParserVar('availableNumbers', $availableNumbers);
+		if (!isset($_REQUEST['seller_nr'])) {
+			$this->parser->setParserVar('seller_nr', $_availableNumbers[0]);
+		}
+		$this->parser->setParserVar('seller_nr', isset($_REQUEST['seller_nr']) ? $_REQUEST['seller_nr'] : $_availableNumbers[0]);
 
 		$this->parser->setParserVar('markets', $this->Market->getMarketsWithOpenNumberAssignment());
 		$this->content = $this->parser->parseTemplate($this->templatesPath . "registration.tpl");

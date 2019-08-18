@@ -24,17 +24,12 @@
 	{INCLUDE:PATHTOWEBROOT.'templates/partials/header.tpl'}
 
 	<section class="main-content">
-		<div class="inner-bound columns-container">
+		<div class="inner-bound">
 			<div class="main">
 				<div class="stack">
 					{LOOP CONTENT(1)}{ENDLOOP CONTENT}
 				</div>
 			</div>
-			<aside class="sidebar">
-				<div class="stack">
-					{LOOP CONTENT(2)}{ENDLOOP CONTENT}
-				</div>
-			</aside>
 		</div>
 	</section>
 
@@ -46,3 +41,4 @@
 	{LAYOUTMODE_ENDSCRIPT}
 </body>
 </html>
+

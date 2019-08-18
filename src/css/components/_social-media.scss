@@ -1,0 +1,22 @@
+/**
+ * src/css/components/_social-media.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ */
+
+.like-us {
+	display: flex;
+}
+
+.like-us__icon {
+	fill: var(--primary-color);
+	width: 32;
+	height: 32px;
+	vertical-align: middle;
+	flex: 1 0 32px;
+	margin-right: 8px;
+}
+
+.like-us__text {
+}

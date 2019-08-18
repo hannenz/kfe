@@ -22,6 +22,16 @@ class Seller extends Model {
 	public function init() {
 		$this->Mail = new Mail();
 		$this->tableName = 'kfe_sellers';
+		$this->setValidationRules([
+			'seller_firstname' => ['not-empty' => '/^.+$/'],
+			'seller_lastname' => ['not-empty' => '/^.+$/'],
+			'seller_email' => [ 'valid-email' =>  '/^.+@.+\..+$/' ],
+			'seller_email_confirm' => [ 'match' => 'matchEmails' ]
+		]);
+	}
+
+	protected static function matchEmails($email) {
+		return ($email == $_POST['seller_email']);
 	}
 
 
@@ -111,6 +121,22 @@ class Seller extends Model {
 
 		// Re-Read the seller's record and return it
 		return $this->findById($seller['id']);
+	}
+
+	public function getAvailableNumbers($marketId) {
+		$availableNumbers = [];
+		for ($i = 1; $i <= 110; $i++) {
+			$availableNumbers[] = $i;
+		}
+
+		$allocatedNumbers = [];
+		$results = $this->fields(['seller_nr'])->filter([
+			'seller_market_id' => $marketId
+		])->findAll();
+		foreach ($results as $result) {
+			$allocatedNumbers[] = (int)$result['seller_nr'];
+		}
+		return (array_diff($availableNumbers, $allocatedNumbers));
 	}
 }
 ?>

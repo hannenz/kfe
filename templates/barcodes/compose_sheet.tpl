@@ -7,9 +7,9 @@
 
 		<div class="info">
 			Wählen Sie hier, wie viele Etiketten Sie benötigen. Anschliessend erhalten Sie eine PDF Datei zum Ausdrucken.<br>
-			Die Etiketten haben links und rechts 1cm Rand zum Lochen, bitte achten Sie jedoch bem Lochen darauf, nicht den Strichcode zu lochen
-			Der Strichcode beinhaltet Ihre Verkäufer-Nummer, das Datum des Flohmarkts und den Wert (in Cent). Bitte beachten Sie, dass die Etiketten nur für den ausgewählten Flohmarkt gelten.
-			Alte Etiketten von vergangenen FLohmärkten können <b>nicht</b> benutzt werden.
+			<!-- Die Etiketten haben links und rechts 1cm Rand zum Lochen, bitte achten Sie jedoch bem Lochen darauf, nicht den Strichcode zu lochen -->
+			<!-- Der Strichcode beinhaltet Ihre Verkäufer&#45;Nummer, das Datum des Flohmarkts und den Wert (in Cent). Bitte beachten Sie, dass die Etiketten nur für den ausgewählten Flohmarkt gelten. -->
+			<!-- Alte Etiketten von vergangenen FLohmärkten können <b>nicht</b> benutzt werden. -->
 		</div>
 
 		{IF({ISSET:errorIllegalSellerId})}

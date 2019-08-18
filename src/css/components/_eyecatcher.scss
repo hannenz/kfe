@@ -1,0 +1,27 @@
+/**
+ * src/css/components/_eyecatcher.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ */
+.eyecatcher {
+	border-width: 3px;
+	border-style: solid;
+	border-color: var(--primary-color);
+	background-color: #fff;
+	padding: 20px 10px 10px 10px;
+
+	&__label {
+		font-family: ElliotSix;
+		background-color: var(--primary-color);
+		text-transform: uppercase;
+		color: var(--bg-color);
+		text-align: center;
+		padding: 0 1rem;
+		display: inline-block;
+		position: absolute;
+		top: -0.5rem;
+		transform: rotate(-2deg);
+		box-shadow: 5px 5px 4px rgba(100, 100, 100, 0.5);
+	}
+}

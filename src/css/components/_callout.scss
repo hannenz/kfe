@@ -1,13 +1,13 @@
 .callout {
 	&__head {
-		color: $primary-color;
+		color: var(--primary-color);
 		@include type-setting(1);
 		font-weight: bold;
 	}
 
 	&__subline {
 		@include type-setting(0);
-		color: $text-color;
+		color: var(--text-color);
 		font-weight: bold;
 	}
 

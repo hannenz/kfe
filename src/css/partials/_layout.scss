@@ -1,18 +1,48 @@
-.inner-bound {
-	max-width: $inner-bound-width;
-	margin: 0 auto;
-	padding: 0 $gutter;
-}
-
-.main-content {
-}
+/**
+ * src/css/partials/_layout.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ */
 
 body {
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
+
 }
+
+.inner-bound {
+	max-width: $inner-bound-width;
+	margin: 0 auto;
+	padding: 0 $gutter;
+	position: relative;
+	display: block;
+}
+
 
 .main-content {
 	flex: 1 0 auto;
+	margin-top: 3rem;
 }
+
+
+.columns-container {
+	display: flex;
+	flex-wrap: wrap;
+
+	.main, .sidebar {
+		width: 100%;
+	}
+
+	@include for-size(tablet-portrait-up) {
+		.main {
+			width: 75%;
+		}
+
+		.sidebar {
+			width: 25%;
+		}
+	}
+}
+

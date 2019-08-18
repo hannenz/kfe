@@ -1,24 +1,27 @@
 .main-header {
-	background-color: $primary-color;
-	padding: 2rem 0;
-	margin: 1rem 0 3rem 0;
+	background-color: var(--primary-color);
+	padding: 0.5rem 0;
+	margin: 0rem 0 3rem 0;
 	font-family: "Gaegu";
-	transform: skewY(-4deg);
-	box-shadow: 0 0 30px rgba(30, 30, 30, 0.75);
+	transform: skewY(-2deg);
+	box-shadow: 0 8px 10px rgba(30, 30, 30, 0.55);
 	transition: 150ms ease-in-out;
 	transform-origin: top right;
+	z-index: 1;
 
 	.site-title {
 		color: #fff;
 		font-weight: 400;
-		line-height: 1.5;
 		@include type-setting(2, 0);
+		line-height: 1;
 	}
 
 	.site-subtitle {
-		color: $bg-color;
+		color: var(--bg-color);
 		font-weight: 400;
 		@include type-setting(1, 0);
+		line-height: 1;
+		text-align: right;;
 	}
 }
 

@@ -6,16 +6,24 @@
  * Colors *
  **********/
 
-:root {
-	--background-color: #b3dc2f;
-}
-
 $bg-color: #b3dc2f;
 $bg-color-1: darken($bg-color, 7.5%);
 $bg-color-2: darken($bg-color, 15%);
+$bg-color-3: darken($bg-color, 25%);
 $primary-color: #51369b;
 $text-color: #231f20;
+$error-color: #c00000;
 
+:root {
+	--background-color: $bg-color;
+	--bg-color: #{$bg-color};
+	--bg-color-1: #{$bg-color-1};
+	--bg-color-2: #{$bg-color-2};
+	--bg-color-3: #{$bg-color-3};
+	--primary-color: #{$primary-color};
+	--text-color: #{$text-color};
+	--error-color: #{$error-color};
+}
 
 
 /************
@@ -24,7 +32,7 @@ $text-color: #231f20;
 
 $gutter:1rem;
 $header-height:100px;
-$inner-bound-width:42em;
+$inner-bound-width:50rem;
 
 
 

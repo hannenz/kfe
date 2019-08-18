@@ -7,7 +7,7 @@
 .samplebox {
 	width:6 * $vertical-unit;
 	height:6 * $vertical-unit;
-	background-color:$primary-color;
+	background-color:var(--primary-color);
 	position:relative;
 
 	&__spot {

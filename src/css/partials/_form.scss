@@ -1,9 +1,18 @@
 .form {
-	background-color: $bg-color-1;
+	background-color: var(--bg-color-1);
 	padding: $gutter;
 
 	fieldset {
-		border: lighten($bg-color, 15%);
+		border: var(--bg-color-3);
+	}
+
+	.stack-item {
+		display: flex;
+		flex-wrap: wrap;
+
+		> .form-field {
+			margin-right: $gutter;
+		}
 	}
 
 	label {
@@ -14,9 +23,10 @@
 	input[type=text],
 	input[type=email],
 	input[type=number] {
-		padding: 0.25 * $vertical-unit $gutter;
+		padding: 10px 8px;
 		@include type-setting(0);
 		border: 0;
+		color: var(--primary-color);
 	}
 
 	select {
@@ -27,7 +37,53 @@
 
 }
 
-.form-field {
+.form-field--required {
+	label::after {
+		content: '*';
+	}
+}
+
+.form-field--error {
+	outline: 2px solid var(--error-color) !important;
+	label {
+		background-color: var(--error-color);
+		color: #fff;
+	}
+
+	input {
+	}
+}
+
+.form-field--checkbox {
+
+	[type=checkbox] {
+		display: none;
+	}
+
+	label {
+		position: relative;
+		padding-left: 32px;
+		cursor: pointer;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 24px;
+			height: 24px;
+			background-color: #fff;
+			color: var(--primary-color);
+			font-size: bold;
+			font-size: 30px;
+			line-height: 1;
+			text-align: center;;
+		}
+	}
+
+	[type=checkbox]:checked + label::before {
+		content: '✘';
+	}
 }
 
 .form-field--amount {
@@ -39,7 +95,28 @@
 .columns {
 	columns: 2;
 
+	@include for-size (tablet-portrait-up) {
+		columns: 3;
+	}
+
+	@include for-size (tablet-landscape-up) {
+		columns: 4;
+	}
+
 	input {
 		width: 100px;
 	}
 }
+
+// .number-select {
+// 	display: flex;
+// 	flex-wrap: wrap;
+// }
+//
+// .number-select-option {
+// 	width: 6rem;
+//
+// 	> * {
+// 		display: inline !important;
+// 	}
+// }

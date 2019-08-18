@@ -32,7 +32,7 @@ function APP () {
 
 		document.body.classList.add('page-has-loaded');
 
-		this.initScrollListener();
+		// this.initScrollListener();
 		this.main();
 	};
 

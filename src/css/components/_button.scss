@@ -19,7 +19,7 @@
 	@include button-reset;
 	display: inline-block;
 	text-decoration: none;
-	color: $primary-color;
+	color: var(--primary-color);
 	vertical-align: middle;
 	white-space: nowrap;
 	position: relative;
@@ -33,10 +33,10 @@
 		// display: inline-block;
 
 		content: '';
-		border: 7px solid rgba($primary-color, 0);
+		border: 7px solid rgba(var(--primary-color), 0);
 		border-top-width: 5px;
 		border-bottom-width: 5px;
-		border-left-color: rgba($primary-color, 1);
+		border-left-color: rgba(var(--primary-color), 1);
 		position: absolute;
 		left: 0;
 		top: 5px;
@@ -48,8 +48,8 @@
 }
 
 .back::before {
-	border-left-color: rgba($primary-color, 0);
-	border-right-color: rgba($primary-color, 1);
+	border-left-color: rgba(var(--primary-color), 0);
+	border-right-color: rgba(var(--primary-color), 1);
 	left: -6px;
 }
 
@@ -72,7 +72,7 @@
 	vertical-align: middle;
 
 	color: #fff;
-	background-color: $primary-color;
+	background-color: var(--primary-color);
 
 	outline: none;
 	&::-moz-focus-inner {
@@ -86,14 +86,14 @@
 
 	&:hover,
 	&:focus {
-		color: $primary-color;
+		color: var(--primary-color);
 		border-color: currentColor;
 		background-color: #fff;
 	}
 
 	&--secondary {
 		background-color: transparent;
-		color: $primary-color;
+		color: var(--primary-color);
 	}
 
 	&:disabled {

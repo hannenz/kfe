@@ -563,14 +563,14 @@ class Model {
 
 			foreach ((array)$rules as $ruleName => $rule) {
 				if (method_exists (get_class ($this), $rule)) {
-					$result = call_user_func ([__NAMESPACE__ . '\\' . get_class(), $rule], $data[$field]);
+					$result = call_user_func ([ get_class($this), $rule], $data[$fieldName]);
 				}
 				else {
-					$result = preg_match ($rule, $data[$field]);
+					$result = preg_match ($rule, $data[$fieldName]);
 				}
 
 				if (!$result) {
-					$this->validationErrors[$field][] = $ruleName;
+					$this->validationErrors[$fieldName][] = $ruleName;
 				}
 			}	
 		}
