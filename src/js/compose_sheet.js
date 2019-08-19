@@ -10,7 +10,7 @@ function Composer() {
 	var inputs; 
 	var button;
 	var emailInput;
-	var sellerIdInput;
+	var sellerNrInput;
 
 	this.init = function() {
 		if (document.forms.composeform) {
@@ -31,9 +31,9 @@ function Composer() {
 		}
 
 		self.emailInput = document.getElementById('sellerEmail');
-		self.sellerIdInput = document.getElementById('sellerId');
+		self.sellerNrInput = document.getElementById('sellerNr');
 		self.emailInput.addEventListener('keyup', self.validateSeller);
-		self.sellerIdInput.addEventListener('keyup', self.validateSeller);
+		self.sellerNrInput.addEventListener('keyup', self.validateSeller);
 
 		self.validateSeller();
 	};
@@ -68,7 +68,7 @@ function Composer() {
 
 	this.validateSeller = function() {
 		var xhr = new XMLHttpRequest();
-		var url = document.forms.composeform.getAttribute('action') + '?action=validateSeller&sellerId=' + self.sellerIdInput.value + '&email=' + self.emailInput.value;
+		var url = document.forms.composeform.getAttribute('action') + '?action=validateSeller&sellerNr=' + self.sellerNrInput.value + '&email=' + self.emailInput.value;
 		xhr.open('GET', url, true);
 		xhr.onload = function() {
 			if (this.status >= 200 && this.status < 400) {

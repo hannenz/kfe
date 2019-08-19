@@ -19,3 +19,21 @@ body {
 	background-position: 80% 200px;
 }
 
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+td, th, caption {
+	text-align: left;
+	vertical-align: top;;
+}
+
+.registration-info-table {
+	th {
+		width: 200px;
+		font-weight: 400;
+		color: var(--primary-color);
+		vertical-align: bottom;;
+	}
+}

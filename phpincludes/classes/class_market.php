@@ -56,7 +56,7 @@ class Market extends Model {
 	 */
 	public function afterRead($result) {
 		$result['marketNumberAssignmentIsRunning'] = $this->numberAssignmentIsRunning($result);
-		$result['registrationUrl'] = sprintf('%s%s?marketId=%u',
+		$result['registrationUrl'] = sprintf('%s%s?market_id=%u',
 			$this->CmtPage->makePageFilePath($this->registrationPageId),
 			$this->CmtPage->makePageFileName($this->registrationPageId),
 			$result['id']

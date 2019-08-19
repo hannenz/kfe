@@ -41,6 +41,10 @@ body {
 	color: $primary-color;
 }
 
+h1.headline {
+
+}
+
 p, ul {
 	margin-bottom: $vertical-unit;
 }
@@ -64,7 +68,7 @@ p, ul {
 	}
 }
 
-a {
+a:not(.button) {
 	padding: 0 3px;
 	color: $primary-color;
 	text-decoration: none;
@@ -83,4 +87,10 @@ a {
 		color: #fff;
 		background-size: 100% 100%;
 	}
+}
+
+.big-text {
+	font-size: 3rem;
+	line-height: 1;
+	color: #000;
 }

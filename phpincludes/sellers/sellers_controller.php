@@ -11,7 +11,7 @@ use KFE\Market;
 use KFE\SellerExistsForMarketException;
 
 error_reporting(E_ALL & ~E_NOTICE);
-
+setlocale(LC_TIME, 'de_DE.UTF-8');
 
 /**
  * Class checkouts_controller
@@ -73,10 +73,20 @@ class SellersController extends Controller {
 		$this->changeAction('registrate');
 	}
 
+
+	/**
+	 * Handle registration of a seller for a certain market
+	 */
 	public function actionRegistrate() {
+
 		$marketId = (int)$_REQUEST['market_id'];
 		if (!empty($marketId)) {
 			$this->parser->setParserVar('market_id', $marketId);
+			$market = $this->Market->findById($marketId);
+			$this->parser->setMultipleParserVars($market);
+		}
+		else {
+			die ("No market_id!");
 		}
 
 		if (!empty($this->postvars)) {
@@ -88,11 +98,7 @@ class SellersController extends Controller {
 			try {
 
 				if (!$this->Seller->validate($this->postvars)) {
-					$errors = $this->Seller->getValidationErrors();
-					foreach ($errors as $field => $error) {
-						$this->parser->setParserVar('error_'.$field, true);
-					}
-					throw new \Exception();
+					throw new RegistrationValidationException();
 				}
 
 				$hash = $this->Seller->registrate($this->postvars);
@@ -114,6 +120,13 @@ class SellersController extends Controller {
 			}
 			catch (SellerNrAlreadyAllocatedException $e) {
 				$this->parser->setParserVar('errorSellerNrAlreadyAllocated', true);
+			}
+			catch (RegistrationValidationException $e) {
+				$this->parser->setParserVar('hasValidationErrors', true);
+				$errors = $this->Seller->getValidationErrors();
+				foreach ($errors as $field => $error) {
+					$this->parser->setParserVar('error_'.$field, true);
+				}
 			}
 			catch (\Exception $e) {
 				$this->parser->setParserVar('errorDatabaseQuery', true);
@@ -176,29 +189,27 @@ class SellersController extends Controller {
 
 		try {
 			$seller = $this->Seller->activate($hash);
+
+			$this->sendWelcomeMail($seller);
+
+			$redirectUrl = sprintf('%s%s?action=success&seller_email=%s&seller_nr=%u&seller_firstname=%s&seller_lastname=%s',
+				$this->CmtPage->makePageFilePath(14),
+				$this->CmtPage->makePageFileName(14),
+				$seller['seller_email'],
+				$seller['seller_nr'],
+				urlencode($seller['seller_firstname']),
+				urlencode($seller['seller_lastname'])
+			);
+			header("Location: " . $redirectUrl);
+			exit;
 		}
 		catch (ActivationFailedException $e) {
 			$this->parser->setParserVar('errorActivationFailed', true);
-			$this->content = $this->parser->parseTemplate($this->templatesPath . 'activation_failed.tpl');
-			return;
 		}
 		catch (Exception $e) {
 			$this->parser->setParserVar('errorInternal', true);
-			$this->content = $this->parser->parseTemplate($this->templatesPath . 'activation_failed.tpl');
-			return;
 		}
-
-		$this->sendWelcomeMail($seller);
-		$redirectUrl = sprintf('%s%s?action=activationPending&seller_email=%s&seller_nr=%u&seller_firstname=%s&seller_lastname=%s',
-			$this->CmtPage->makePageFilePath(14),
-			$this->CmtPage->makePageFileName(14),
-			$seller['seller_email'],
-			$seller['seller_nr'],
-			urlencode($seller['seller_firstname']),
-			urlencode($seller['seller_lastname'])
-		);
-		header("Location: " . $redirectUrl);
-		exit;
+		$this->content = $this->parser->parseTemplate($this->templatesPath . 'activation_failed.tpl');
 	}
 
 
@@ -214,6 +225,7 @@ class SellersController extends Controller {
 	 * Success screen
 	 */
 	public function actionSuccess() {
+		$this->parser->setMultipleParserVars($_REQUEST);
 		$this->content = $this->parser->parseTemplate($this->templatesPath . 'registration_success.tpl');
 	}
 	
@@ -225,7 +237,6 @@ class SellersController extends Controller {
 	 */
 	public function sendWelcomeMail($seller) {
 
-		echo '<pre>'; var_dump($seller); echo '</pre>'; die();
 		$market = $this->Market->findById($seller['seller_market_id']);
 		$this->parser->setMultipleParserVars(array_merge($seller, $market));
 		$this->parser->setParserVar('sellerId', $seller['id']);

@@ -4,7 +4,9 @@ namespace KFE;
 use KFE\Model;
 use Contentomat\Mail;
 use \Exception;
+use KFE\Market;
 
+class RegistrationValidationException extends Exception { }
 class SellerExistsForMarketException extends Exception { }
 class ActivationFailedException extends Exception { }
 class InvalidEmailException extends Exception { }
@@ -17,11 +19,17 @@ class Seller extends Model {
 	/**
 	 * @var Contentomat\Mail
 	 */
-	public $Mail;
+	protected $Mail;
+
+	/**
+	 * @var \KFE\Market
+	 */
+	protected $Market;
 
 
 	public function init() {
 		$this->Mail = new Mail();
+		$this->Market = new Market();
 		$this->tableName = 'kfe_sellers';
 		$this->setValidationRules([
 			'seller_firstname' => ['not-empty' => '/^.+$/'],
@@ -54,6 +62,9 @@ class Seller extends Model {
 			throw new InvalidEmailException("Missing or Invalid email: " . $email);
 		}
 
+		// Todo: Check if market is existing!
+
+
 		// Check if email is already registered for this market
 		// Could also check for the hash?
 		if ($this->checkSellerExistsForMarket($email, $marketId)) {
@@ -61,8 +72,7 @@ class Seller extends Model {
 		}
 
 		// To be sure: Check if seller_nr is allocated already
-		if (!$this->checkSellerNrIsNotAllocated($data['seller_nr'], $data['market_id'])) {
-			die ("Seller nr is already allocated");
+		if (!$this->checkSellerNrIsNotAllocated($data['seller_nr'], $marketId)) {
 			throw new SellerNrAlreadyAllocatedException();
 		}
 
@@ -118,11 +128,11 @@ class Seller extends Model {
 	 * @return void
 	 */
 	public function activate($hash) {
+
 		// Get the seller for hash
 		$seller = $this->filter([
 			'seller_activation_hash' => $hash,
 			'seller_is_activated' => 0,
-			// 'seller_registration_datetime >= ' . strftime('%F-%T', strtotime('-48 hours'))
 		])->findOne();
 
 		if (empty($seller)) {
@@ -142,7 +152,8 @@ class Seller extends Model {
 		}
 
 		// Re-Read the seller's record and return it
-		return $this->findById($seller['id']);
+		$seller = $this->findById($seller['id']);
+		return $seller;
 	}
 
 	public function getAvailableNumbers($marketId) {

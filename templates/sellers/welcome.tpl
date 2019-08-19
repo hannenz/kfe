@@ -1,6 +1,5 @@
 <h2>Registrierung erfolgreich abgeschlossen!</h2>
-<p>Ihre Verkäufer-Nummer lautet</p>
+<p>Deine Verkäufer-Nummer lautet</p>
 <p class="big-text">{VAR:sellerId}</p>
-<p>Sie erhalten auch noch einmal eine E-Mail an &lt;{VAR:email}&gt; mit allen Informationen</p>
-<p>Bei Fragen, kontaktieren Sie uns unter <a href="mailto:info@kinderflohmarkt-erbach.de">info@kinderflohmarkt-erbach.de</a></p>
-
+<p>Hier stehen noch ein Haufen Infos ... </p>
+<p>Bei Fragen, schreibe uns an <a href="mailto:info@kinderflohmarkt-erbach.de">info@kinderflohmarkt-erbach.de</a></p>

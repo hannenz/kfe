@@ -1,8 +1,9 @@
 Hallo {VAR:firstname} {VAR:lastname},
 
-Vielen Dank für Ihre Registrierung für den Kinderflohmarkt Erbach am {VAR:market_datetime}
-Um die Registrierung abzuschliessen kopieren sie bitte dieseURL in die Adresszeile Ihres Browsers
+Vielen Dank für deine Registrierung für den Kinderflohmarkt Erbach am {DATEFMT:"{VAR:market_datetime}":"%a, %d. %B %Y"}
+
+Besuche den folgenden Link, um die Registrierung abzuschliessen: 
 
 {VAR:activationUrl}
 
-Ihr Kinderflohmart Erbach Team :-)
+Dein Kinderflohmarkt Erbach Team :-)

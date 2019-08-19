@@ -12,9 +12,9 @@
 			<!-- Alte Etiketten von vergangenen FLohmärkten können <b>nicht</b> benutzt werden. -->
 		</div>
 
-		{IF({ISSET:errorIllegalSellerId})}
+		{IF({ISSET:errorIllegalSellerNr})}
 			<div class="message message--error">
-				Ungültige Verkäufer-Nummer: {VAR:sellerId}
+				Ungültige Verkäufer-Nummer: {VAR:sellerNr}
 			</div>
 		{ENDIF}
 
@@ -41,8 +41,8 @@
 			</div>
 
 			<div>
-				<label for="sellerId">Verkäufer-Nummer</label>
-				<input id="sellerId" type="text" value="{VAR:sellerId}" name="sellerId" />
+				<label for="sellerNr">Verkäufer-Nummer</label>
+				<input id="sellerNr" type="text" value="{VAR:sellerNr}" name="sellerNr" />
 			</div>
 
 			<div class="form-field">

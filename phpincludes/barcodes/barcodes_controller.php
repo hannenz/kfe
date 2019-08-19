@@ -129,11 +129,11 @@ class BarcodesController extends Controller {
 		$this->isAjax = true;
 		$this->isJson = true;
 
-		$sellerId = $_REQUEST['sellerId'];
+		$sellerNr = (int)$_REQUEST['sellerNr'];
 		$email = $_REQUEST['email'];
 
 		$seller = $this->Seller->filter([
-			'id' => $sellerId,
+			'seller_nr' => $sellerNr,
 			'seller_email' => $email
 		])->findOne();
 

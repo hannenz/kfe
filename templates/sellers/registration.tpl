@@ -1,10 +1,10 @@
 {IF({ISSET:errorSellerExists})}
 <div class="message message--error">
 	Die E-Mail-Adresse &lt;{VAR:seller_email}&gt; wurde bereits für den Markt am
-	{VAR:market_datetime} registriert. Vielleicht haben Sie die Registrierung
+	{VAR:market_datetime} registriert. Vielleicht hast du die Registrierung
 	noch nicht abgeschlossen? Wir haben einen Aktivierungs-Link an
-	&lt;{VAR:seller_email}&gt; gesendet. Wenn Sie keine E-Mail erhalten haben oder
-	denken, dass hier ein Fehler vorliegt, kontaktieren Sie uns bitte unter
+	&lt;{VAR:seller_email}&gt; gesendet. Wenn du keine E-Mail erhalten hast oder
+	denkst, dass hier ein Fehler vorliegt, kontaktiere uns bitte unter
 	&lt;info@kinderflohmarkt-erbach.de&gt;
 </div>
 {ENDIF}
@@ -21,7 +21,7 @@
 {ENDIF}
 {IF({ISSET:errorEmailsDontMatch})}
 <div class="message message--error">
-	Die E-Mail-Adressen stimmen nicht überein
+	Die eingegebenen E-Mail-Adressen stimmen nicht überein
 </div>
 {ENDIF}
 {IF({ISSET:errorSellerNrAlreadyAllocated})}
@@ -43,14 +43,11 @@
 
 <form class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8" novalidate>
 
+	<p>Registrierung als Verkäufer für den Erbacher Kinderflohmarkt am {DATEFMT:"{VAR:market_datetime}":"%a, %d. %B %Y"}</p>
+
 	<div class="stack-item">
 		<div class="form-field form-field--select">
-			<label for="market_id">Ich registriere mich als Verkäufer für den Erbacher Kinderflohmarkt am</label>
-			<select not-disabled name="market_id" id="market_id">
-				{LOOP VAR(markets)}
-					<option value="{VAR:id}" {IF("{VAR:market_id}" == "{VAR:id}")}selected{ENDIF}>{DATEFMT:"{VAR:market_datetime}":"%d.%m.%Y"}</option>
-				{ENDLOOP VAR}
-			</select>
+			<input type="hidden" value="{VAR:market_id}" name="market_id" />
 		</div>
 	</div>
 
