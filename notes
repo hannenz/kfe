@@ -16,10 +16,10 @@ Registrierung: Vor- und Nachname, Telefonnummer (optional für Rückfragen)
 Verkäufer-Nr. wirklichj nur für einen Markt oder kann man sie behalten?
 Welche nummern sind für MA reserviert bzw. wie viele sind nötig?
 
-Wegen Hosting: Tel.Nr/Kontakt von Jens(?) noch einmal 
+Wegen Hosting: Tel.Nr/Kontakt von Carsten noch einmal 
 1 Paket bei one.com buchen?
 
-Etiketten: Beträge in 50 ct schritten erlauben
+Etiketten: Beträge in 50ct Schritten erlauben
 
 Verkäufer: CSV Export oder PDF Druck mit extra Spalten
 
@@ -30,4 +30,5 @@ Auswertungsbogen pro Verkäufer
 Verkäufernummer, Datum, Anzahl Positionen + Liste der Positionen, Auszahlungs-Summe abzgl. 20% (Abzug nur bei regulären Verkäufern, nicht Mitarbeiter))
 
 
+Brauchen wir einen Cronjob, der alle nicht-aktivierten Verkäufer nach x Std./Tagen löscht, damit die  Nummern wieder frei werden?
 

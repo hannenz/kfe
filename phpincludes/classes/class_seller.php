@@ -9,6 +9,7 @@ class SellerExistsForMarketException extends Exception { }
 class ActivationFailedException extends Exception { }
 class InvalidEmailException extends Exception { }
 class EmailsDontMatchException extends Exception { }
+class SellerNrAlreadyAllocatedException { }
 
 class Seller extends Model {
 
@@ -26,7 +27,8 @@ class Seller extends Model {
 			'seller_firstname' => ['not-empty' => '/^.+$/'],
 			'seller_lastname' => ['not-empty' => '/^.+$/'],
 			'seller_email' => [ 'valid-email' =>  '/^.+@.+\..+$/' ],
-			'seller_email_confirm' => [ 'match' => 'matchEmails' ]
+			'seller_email_confirm' => [ 'match' => 'matchEmails' ],
+			'agree' => ['agree' => '/^agreed$/']
 		]);
 	}
 
@@ -44,8 +46,10 @@ class Seller extends Model {
 	 * @throws SellerExistsForMarketException
 	 * @throws Exception
 	 */
-	public function registrate($email, $marketId) {
+	public function registrate($data) {
 
+		$email = $data['seller_email'];
+		$marketId = $data['market_id'];
 		if (empty(trim($email)) || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
 			throw new InvalidEmailException("Missing or Invalid email: " . $email);
 		}
@@ -56,12 +60,21 @@ class Seller extends Model {
 			throw new SellerExistsForMarketException("E-Mail already registered for market");
 		}
 
+		// To be sure: Check if seller_nr is allocated already
+		if (!$this->checkSellerNrIsNotAllocated($data['seller_nr'], $data['market_id'])) {
+			die ("Seller nr is already allocated");
+			throw new SellerNrAlreadyAllocatedException();
+		}
+
 		$hash = hash('sha256', sprintf('%s%04u', $email, $marketId));
 
 		$query = sprintf("INSERT INTO %s SET %s",
 			$this->tableName,
 			$this->db->makeSetQuery([
 				'seller_email' => $email,
+				'seller_firstname' => $data['seller_firstname'],
+				'seller_lastname' => $data['seller_lastname'],
+				'seller_nr' => $data['seller_nr'],
 				'seller_activation_hash' => $hash,
 				'seller_is_activated' => 0,
 				'seller_market_id' => $marketId,
@@ -84,6 +97,15 @@ class Seller extends Model {
 		])->findAll();
 
 		return (!empty($sellers));
+	}
+
+	public function checkSellerNrIsNotAllocated($sellerNr, $marketId) {
+		$result = $this->filter([
+			'seller_nr' => $sellerNr,
+			'seller_market_id' => $marketId
+		])->findAll();
+
+		return (empty($result));
 	}
 
 	/**

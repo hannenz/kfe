@@ -95,29 +95,25 @@ class SellersController extends Controller {
 					throw new \Exception();
 				}
 
-				// if ($this->postvars['seller_email'] !== $this->postvars['seller_email_confirm']) {
-				// 	throw new EmailsDontMatchException();
-				// }
-                //
-				$hash = $this->Seller->registrate($email, $marketId);
+				$hash = $this->Seller->registrate($this->postvars);
 				$this->sendActivationLink($email, $hash);
-				die ("Check your e-mails!");
-				// return $this->changeAction('');
+
+				$redirectUrl = sprintf('%s%s?action=activationPending&seller_email=%s&seller_nr=%u&seller_firstname=%s&seller_lastname=%s',
+					$this->CmtPage->makePageFilePath(13),
+					$this->CmtPage->makePageFileName(13),
+					$email,
+					$this->postvars['seller_nr'],
+					urlencode($this->postvars['seller_firstname']),
+					urlencode($this->postvars['seller_lastname'])
+				);
+				header("Location: " . $redirectUrl);
+				exit;
 			}
-			// catch (SellerMissingFirstnameException $e) {
-			// 	$this->parser->setParserVar('errorMissingFirstname', true);
-			// }
-			// catch (SellerMissingLastnameException $e) {
-			// 	$this->parser->setParserVar('errorMissingLastname', true);
-			// }
-			// catch (InvalidEmailException $e) {
-			// 	$this->parser->setParserVar('errorInvalidEmail', true);
-			// }
-			// catch (EmailsDontMatchException $e) {
-			// 	$this->parser->setParserVar('errorEmailsDontMatch', true);
-			// }
 			catch (SellerExistsForMarketException $e) {
 				$this->parser->setParserVar('errorSellerExists', true);
+			}
+			catch (SellerNrAlreadyAllocatedException $e) {
+				$this->parser->setParserVar('errorSellerNrAlreadyAllocated', true);
 			}
 			catch (\Exception $e) {
 				$this->parser->setParserVar('errorDatabaseQuery', true);
@@ -174,7 +170,8 @@ class SellersController extends Controller {
 	public function actionActivate() {
 		$hash = $this->getvars['hash'];
 		if (empty($hash)) {
-
+			// TODO: Handle this case!
+			die ("No hash!");
 		}
 
 		try {
@@ -182,14 +179,44 @@ class SellersController extends Controller {
 		}
 		catch (ActivationFailedException $e) {
 			$this->parser->setParserVar('errorActivationFailed', true);
+			$this->content = $this->parser->parseTemplate($this->templatesPath . 'activation_failed.tpl');
+			return;
 		}
 		catch (Exception $e) {
 			$this->parser->setParserVar('errorInternal', true);
+			$this->content = $this->parser->parseTemplate($this->templatesPath . 'activation_failed.tpl');
+			return;
 		}
 
 		$this->sendWelcomeMail($seller);
+		$redirectUrl = sprintf('%s%s?action=activationPending&seller_email=%s&seller_nr=%u&seller_firstname=%s&seller_lastname=%s',
+			$this->CmtPage->makePageFilePath(14),
+			$this->CmtPage->makePageFileName(14),
+			$seller['seller_email'],
+			$seller['seller_nr'],
+			urlencode($seller['seller_firstname']),
+			urlencode($seller['seller_lastname'])
+		);
+		header("Location: " . $redirectUrl);
+		exit;
 	}
 
+
+	/**
+	 * Activation screen
+	 */
+	public function actionActivationPending() {
+		$this->parser->setMultipleParserVars($_REQUEST);
+		$this->content = $this->parser->parseTemplate($this->templatesPath . 'activation_pending.tpl');
+	}
+	
+	/**
+	 * Success screen
+	 */
+	public function actionSuccess() {
+		$this->content = $this->parser->parseTemplate($this->templatesPath . 'registration_success.tpl');
+	}
+	
 	/**
 	 * After successful activation, send a welcome mail
 	 * with the seller's "number" (id)
@@ -198,6 +225,7 @@ class SellersController extends Controller {
 	 */
 	public function sendWelcomeMail($seller) {
 
+		echo '<pre>'; var_dump($seller); echo '</pre>'; die();
 		$market = $this->Market->findById($seller['seller_market_id']);
 		$this->parser->setMultipleParserVars(array_merge($seller, $market));
 		$this->parser->setParserVar('sellerId', $seller['id']);
