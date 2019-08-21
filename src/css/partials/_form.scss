@@ -1,3 +1,9 @@
+/**
+ * src/css/partials/_form.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ */
 .form {
 	background-color: var(--bg-color-1);
 	padding: $gutter;
@@ -17,6 +23,10 @@
 
 	label {
 		display: block;
+		color: $bg-color-4;
+		background-color: #fff;
+		width: 100%;
+		padding-left: 8px;
 	}
 
 	textarea,
@@ -27,6 +37,8 @@
 		@include type-setting(0);
 		border: 0;
 		color: var(--primary-color);
+		display: block;
+		width: 100%;
 	}
 
 	select {
@@ -35,6 +47,16 @@
 		background-color: #fff;
 	}
 
+}
+
+.form-field__info {
+	color: $bg-color-4;
+	font-size: 15px;
+	padding: 4px 0;
+}
+
+.form-field--input {
+	max-width: 20rem;
 }
 
 .form-field--required {
@@ -87,26 +109,59 @@
 }
 
 .form-field--amount {
-	label {
-		display: inline-block;
-	}
-}
+	display: flex;
+	align-items: center;
+	background-color: #fff;
 
-.columns {
-	columns: 2;
-
-	@include for-size (tablet-portrait-up) {
-		columns: 3;
-	}
-
-	@include for-size (tablet-landscape-up) {
-		columns: 4;
+	input, label {
+		flex: 0 1 50%;
+		max-width: 50%;
 	}
 
 	input {
-		width: 100px;
+		text-align: center;
+	}
+
+	label {
+		font-weight: bold;
+		color: $bg-color-3;
 	}
 }
+
+.form-field--custom-amount {
+	input, label {
+		max-width: calc(100% / 3);
+	}
+	input::placeholder {
+		font-size: 14px;
+	}
+}
+
+.amounts {
+	display: grid;
+	grid: auto-flow / repeat(4, 1fr);
+	grid-gap: 2px;
+
+	.form-field--amount {
+		margin: 0;
+	}
+}
+
+// .columns {
+// 	columns: 2;
+//
+// 	@include for-size (tablet-portrait-up) {
+// 		columns: 3;
+// 	}
+//
+// 	@include for-size (tablet-landscape-up) {
+// 		columns: 4;
+// 	}
+//
+// 	input {
+// 		width: 100px;
+// 	}
+// }
 
 // .number-select {
 // 	display: flex;
@@ -120,3 +175,10 @@
 // 		display: inline !important;
 // 	}
 // }
+
+
+input:invalid {
+	background-color: lighten($error-color, 50%);
+	outline: 0 !important;
+	border: 0 !important;
+}

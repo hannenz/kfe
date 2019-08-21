@@ -31,7 +31,7 @@
 		{ENDIF}
 
 		<fieldset class="stack">
-			<div class="form-field">
+			<div class="form-field form-field--select">
 				<label for="marketId">Markt</label>
 				<select name="marketId" id="marketId">
 					{LOOP VAR(markets)}
@@ -40,21 +40,24 @@
 				</select>
 			</div>
 
-			<div>
+			<div class="form-field form-field--input">
 				<label for="sellerNr">Verkäufer-Nummer</label>
-				<input id="sellerNr" type="text" value="{VAR:sellerNr}" name="sellerNr" />
+				<input id="sellerNr" type="text" value="{VAR:sellerNr}" name="sellerNr" autofocus pattern="[0-9]{1,3}" />
+				<div class="form-field__info">
+					<a href="{PAGEURL:999}">Verkäufer-Nr vergessen</a>
+				</div>
 			</div>
 
-			<div class="form-field">
+			<div class="form-field form-field--input">
 				<label for="sellerEmail">E-Mail-Adresse</label>
 				<input id="sellerEmail" type="email" value="{VAR:sellerEmail}" name="sellerEmail" />
-				<div class="info">
+				<div class="form-field__info">
 					Geben Sie zum Abgleich die E-Mail Adresse ein, mit der Sie sich zur Nummernvergabe registriert haben.
 				</div>
 			</div>
 		</fieldset>
 
-		<fieldset class="stack columns">
+		<fieldset class="stack columns amounts">
 			<div class="form-field form-field--amount">
 				<input id="amount_50" type="number" min="0" max="50" value="{IF({ISSET:amount_50:VAR})}{VAR:amount_50}{ELSE}3{ENDIF}" name="amount_50" id="amount_50">
 				<label for="amount_50"> &times; 0,50 &euro;</label>
@@ -115,31 +118,31 @@
 				<label for="amount_1000"> &times; 10,00 &euro;</label>
 			</div>
 
-			<div class="form-field form-field--amount">
+			<div class="form-field form-field--amount form-field--custom-amount">
 				<input id="amount_custom_1" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_1:VAR})}{VAR:amount_custom_1}{ELSE}0{ENDIF}" name="amount_custom_1">
 				<label for="amount_custom_1"> &times; </label>
-				<input id="value_custom_1" type="text" name="value_custom_1" value="{IF({ISSET:value_custom_1:VAR})}{VAR:value_custom_1}{ENDIF}" />
+				<input id="value_custom_1" type="text" name="value_custom_1" value="{IF({ISSET:value_custom_1:VAR})}{VAR:value_custom_1}{ENDIF}" placeholder="Betrag" />
 				<label for="value_custom_1">&euro;</label>
 			</div>
 
-			<div class="form-field form-field--amount">
+			<div class="form-field form-field--amount form-field--custom-amount">
 				<input id="amount_custom_2" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_2:VAR})}{VAR:amount_custom_2}{ELSE}0{ENDIF}" name="amount_custom_2">
 				<label for="amount_custom_2"> &times; </label>
-				<input id="value_custom_2" type="text" name="value_custom_2" value="{IF({ISSET:value_custom_2:VAR})}{VAR:value_custom_2}{ENDIF}"  />
+				<input id="value_custom_2" type="text" name="value_custom_2" value="{IF({ISSET:value_custom_2:VAR})}{VAR:value_custom_2}{ENDIF}" placeholder="Betrag" />
 				<label for="value_custom_2">&euro;</label>
 			</div>
 
-			<div class="form-field form-field--amount">
+			<div class="form-field form-field--amount form-field--custom-amount">
 				<input id="amount_custom_3" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_3:VAR})}{VAR:amount_custom_3}{ELSE}0{ENDIF}" name="amount_custom_3">
 				<label for="amount_custom_3"> &times; </label>
-				<input id="value_custom_3" type="text" name="value_custom_3"  value="{IF({ISSET:value_custom_3:VAR})}{VAR:value_custom_3}{ENDIF}" />
+				<input id="value_custom_3" type="text" name="value_custom_3"  value="{IF({ISSET:value_custom_3:VAR})}{VAR:value_custom_3}{ENDIF}" placeholder="Betrag" />
 				<label for="value_custom_3">&euro;</label>
 			</div>
 
-			<div class="form-field form-field--amount">
+			<div class="form-field form-field--amount form-field--custom-amount">
 				<input id="amount_custom_4" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_4:VAR})}{VAR:amount_custom_4}{ELSE}0{ENDIF}" name="amount_custom_4">
 				<label for="amount_custom_4"> &times; </label>
-				<input id="value_custom_4" type="text" name="value_custom_4"  value="{IF({ISSET:value_custom_4:VAR})}{VAR:value_custom_4}{ENDIF}" />
+				<input id="value_custom_4" type="text" name="value_custom_4"  value="{IF({ISSET:value_custom_4:VAR})}{VAR:value_custom_4}{ENDIF}" placeholder="Betrag" />
 				<label for="value_custom_4">&euro;</label>
 			</div>
 		</fieldset>

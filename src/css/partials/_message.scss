@@ -3,5 +3,11 @@
 	&--error {
 		background-color: #c00000;
 		color: #fff;
+
+		a {
+			background-color: #fff;
+			color: $error-color;
+			white-space: nowrap;
+		}
 	}
 }

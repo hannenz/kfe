@@ -1,11 +1,11 @@
 {IF({ISSET:errorSellerExists})}
 <div class="message message--error">
 	Die E-Mail-Adresse &lt;{VAR:seller_email}&gt; wurde bereits für den Markt am
-	{VAR:market_datetime} registriert. Vielleicht hast du die Registrierung
+	{DATEFMT:"{VAR:market_datetime}":"%d.%m.%Y"} registriert. Vielleicht hast du die Registrierung
 	noch nicht abgeschlossen? Wir haben einen Aktivierungs-Link an
 	&lt;{VAR:seller_email}&gt; gesendet. Wenn du keine E-Mail erhalten hast oder
 	denkst, dass hier ein Fehler vorliegt, kontaktiere uns bitte unter
-	&lt;info@kinderflohmarkt-erbach.de&gt;
+	<a href="mailto:info@kinderflohmarkt-erbach.de">&lt;info@kinderflohmarkt-erbach.de&gt;</a>
 </div>
 {ENDIF}
 {IF({ISSET:errorUnknown})}
