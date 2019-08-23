@@ -57,10 +57,11 @@ class CartsController extends Controller {
 
 		try {
 			$data = [
-				'cart_timestamp' => $_REQUEST['timestamp'],
-				'cart_market_id' => $_REQUEST['marketId'],
-				'checkout_id' => $_REQUEST['checkoutId'],
-				'items' => $_REQUEST['items']
+				'cart_timestamp' => (int)$_REQUEST['timestamp'],
+				'cart_market_id' => (int)$_REQUEST['marketId'],
+				'cart_checkout_id' => (int)$_REQUEST['checkoutId'],
+				'cart_total' => (float)$_REQUEST['total'],
+				'cart_items' => $_REQUEST['items']
 			];
 			$cartId = $this->Cart->add($data);
 		}

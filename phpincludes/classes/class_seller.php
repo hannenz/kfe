@@ -40,6 +40,18 @@ class Seller extends Model {
 		]);
 	}
 
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 */
+	public function findBySellerNr($param)
+	{
+		return null;
+	}
+	
+
 	protected static function matchEmails($email) {
 		return ($email == $_POST['seller_email']);
 	}

@@ -7,10 +7,18 @@
 
 .like-us {
 	display: flex;
+	align-items: center;
+	background-color: var(--primary-color);
+	color: #fff;
+	padding: 10px;
+
+	.like-us__text > a {
+		color: currentColor;
+	}
 }
 
 .like-us__icon {
-	fill: var(--primary-color);
+	fill: currentColor;
 	width: 32;
 	height: 32px;
 	vertical-align: middle;
@@ -18,5 +26,3 @@
 	margin-right: 8px;
 }
 
-.like-us__text {
-}

@@ -14,8 +14,6 @@
 
 	{LAYOUTMODE_STARTSCRIPT}
 	{IF (!{LAYOUTMODE})}
-	<script type="text/javascript" src="/js/vendor/modernizr/modernizr.custom.js"></script>
-	<script src="/js/vendor/jquery/jquery-3.1.0.min.js"></script>
 	<script src="/dist/js/vendor/quagga.min.js"></script>
 	{ENDIF}
 </head>

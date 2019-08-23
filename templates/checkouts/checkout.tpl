@@ -1,4 +1,6 @@
 <form class="checkout" id="checkout">
+	<input type="hidden" value="{VAR:marketId}" name="marketId" id="marketId" />
+	<input type="hidden" value="{VAR:checkoutId}" name="checkoutId" id="checkoutId" />
 
 	<div class="checkout__cart">
 

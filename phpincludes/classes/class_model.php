@@ -354,6 +354,18 @@ class Model {
 		return $this->filter(compact('id'))->findOne();
 	}
 
+
+	/**
+	 * Find by a field's value
+	 *
+	 * @param string 	field name
+	 * @param mixed 	value to find
+	 * @return Array
+	 */
+	public function findBy($field, $value) {
+		return $this->filter([$field => $value])->findOne();
+	}
+
 	/**
 	 * Retrieve a certain field's value from a record
 	 *

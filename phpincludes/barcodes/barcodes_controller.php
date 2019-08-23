@@ -57,13 +57,13 @@ class BarcodesController extends Controller {
 	public function actionComposeSheet() {
 
 		if (!empty($this->postvars)) {
-			$sellerId = (int)$this->postvars['sellerId'];
+			$sellerNr = (int)$this->postvars['sellerNr'];
 			$marketId = (int)$this->postvars['marketId'];
 
 			$errors = [];
 
 			try {
-				$seller = $this->Seller->findById($sellerId);
+				$seller = $this->Seller->findBy('seller_nr', $sellerNr);
 				if (empty($seller)) {
 					$errors[] = 'errorIllegalSellerId';
 					throw new Exception();

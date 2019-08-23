@@ -10,32 +10,60 @@
 function Checkout() {
 
 	var self = this;
+
+	this.marketId = document.getElementById('marketId').value;
+	this.checkoutId = document.getElementById('checkoutId').value;
+
 	this.carts = [];
 	this.cart = {
-		timestamp: 0,
-		checkoutId: 0,
-		marketId: 0,
+		timestamp: Date.now(),
+		checkoutId: this.checkoutId,
+		marketId: this.marketId,
 		submitted: false,
 		items: []
 	};
 
-	this.checkoutId = 1;
+	console.log(self.cart);
+
 	this.totalInput = document.getElementById('checkout-total');
-	// this.totalInput.addEventListener('input', function(ev) {
-	// 	console.log(this.value);
-	// 	this.value = this.value.replace(/\./, ',');
-	// });
 	this.changeInput = document.getElementById('checkout-change-value');
 	this.codeInput = document.getElementById('checkout-code-input');
+
+
 
 	this.init = function() {
 		// console.log("Checkout::init");
 		// document.addEventListener('DOMContentLoaded', self.setup);
 		self.setup();
-
 	}
 
+
+
+
 	this.setup = function() {
+
+		// If camera is available, setup camera barcode scanner
+		navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia); 
+		navigator.getMedia({video: true}, function() {
+			console.log("We have a camera, so go ahead!");
+			this.cameraBarcodeScanner = new CameraBarcodeScanner();
+			this.cameraBarcodeScanner.setup(document.getElementById('cam'),  function(result) {
+				var item = self.getItemFromCode(result.codeResult.code);
+				self.addToCart(item);
+			});
+		}, function() {
+			console.log("No camera available, never mind …");
+		});	
+
+
+		window.addEventListener('online', function() {
+			document.body.classList.add('is-online');
+			self.submitCarts();
+		});
+		window.addEventListener('offline', function() {
+			document.body.classList.remove('is-online');
+		});
+		document.body.classList.toggle('is-online', window.onLine);
 
 		document.addEventListener('keyup', self.onKeyUp);
 
@@ -59,7 +87,6 @@ function Checkout() {
 		});
 
 		self.setupBarcodeScanner();
-		// self.setupCameraBarcodeScanner();
 		self.camDiv = document.getElementById('cam');
 
 		var chkbx = document.getElementById('js-toggle-camera-scanner');
@@ -68,11 +95,11 @@ function Checkout() {
 			if (this.checked) {
 				console.log("Starting camera scanner");
 				// self.camDiv.style.display = 'block';
-				self.setupCameraBarcodeScanner();
+				self.cameraBarcodeScanner.turnOn();
 			}
 			else {
 				console.log("Stopping camera scanner");
-				Quagga.stop();
+				self.cameraBarcodeScanner.turnOff();
 				// self.camDiv.style.display = 'none';
 			}
 		});
@@ -93,7 +120,6 @@ function Checkout() {
 
 	this.onKeyUp = function(ev) {
 		ev.preventDefault();
-		console.log(ev.keyCode);
 		switch (ev.keyCode) {
 			case 65: // Q
 				self.change(500);
@@ -117,6 +143,9 @@ function Checkout() {
 				break;
 			case 61:
 				self.submitCarts();
+				break;
+			case 85:
+				self.showCarts();
 				break;
 
 
@@ -191,43 +220,6 @@ function Checkout() {
 		self.changeInput.value = ((value - (self.getCartTotal())) / 100).toFixed(2) + ' €';
 	}
 
-	this.setupCameraBarcodeScanner = function() {
-
-		Quagga.init({
-			inputStream: {
-				name: "Live",
-				type: "LiveStream",
-				target: document.getElementById('cam'),
-				constraints: {
-					width: 640,
-					height: 480,
-					facingMode: "environment"
-				},
-				singleChannel: false
-			},
-			decoder: {
-				readers: ["code_128_reader"]
-			},
-			numOfWorkers: navigator.hardwareConcurrency,
-			locate : false
-		}, function(err) {
-			if (err) {
-				console.log(err);
-				return;
-			}
-			// console.log("Quagga successfully initialised, now starting up");
-			// Quagga.start();
-		});
-
-		Quagga.onDetected(function(result) {
-			var item = self.getItemFromCode(result.codeResult.code);
-			self.addToCart(item);
-			
-			// throttle somehow?
-		});
-
-		self.main();
-	}
 
 	this.setupBarcodeScanner = function() {
 		self.codeInput.focus();
@@ -323,10 +315,6 @@ function Checkout() {
 		// Play a sound
 	}
 
-	this.main = function() {
-		console.log("main");
-	}
-
 	this.createTableFromCart = function() {
 		var table = document.getElementById('js-cart');
 		table.innerHTML = '';
@@ -412,19 +400,35 @@ function Checkout() {
 		return total;
 	};
 
+	
+	/**
+	 * Committing a cart means finishing it and add it to the cue / list of
+	 * carts. If we are online the cart is also submitted to the server
+	 */
 	this.commitCart = function() {
+		console.log("Committing cart");
+
 		if (self.cart.items.length == 0) {
+			console.log("Cart is empty, aborting commit");
 			return;
 		}
-		console.log("Committing cart");
+
 
 		// The cart needs to be cloned before pushed to the stack,
 		// this is a simple method to clone a Javascript object:
 		var clone = JSON.parse(JSON.stringify(self.cart));
 		self.carts.push(clone);
+
+		if (navigator.onLine) {
+			console.log("ONLINE: Submitting");
+			self.submitCart(clone);
+		}
+
 		self.updateTotalTurnover();
 		self.persist();
 	};
+
+
 
 	this.updateTotalTurnover = function() {
 		var totalTurnover = self.calcTotalTurnover() / 100;
@@ -432,14 +436,28 @@ function Checkout() {
 		document.getElementById('js-total-carts').innerText = self.carts.length;
 	}
 
+
+
+	/**
+	 * This will delete the current cart and reset, e.g.
+	 * preapre for a new one
+	 */
 	this.cancelCart = function() {
 		console.log("Cancelling cart");
 		self.cart.timestamp = Date.now();
+		self.cart.marketId = self.marketId;
+		self.cart.checkoutId = self.checkoutId;
 		self.cart.items = [];
 		self.cart.submitted = false;
+
 		self.persist();
 	}
 
+
+
+	/**
+	 * Save the current cart and cart cue to localStorage
+	 */
 	this.persist = function() {
 		// window.localStorage.setItem('checkoutId', self.checkoutId);
 		// window.localStorage.setItem('marketId', self.marketId);
@@ -447,6 +465,11 @@ function Checkout() {
 		window.localStorage.setItem('carts', JSON.stringify(self.carts));
 	};
 
+
+
+	/**
+	 * Restore current cart and cart cue from localStorage
+	 */
 	this.resurrect = function() {
 		var checkoutId, marketId, cart;
 
@@ -480,34 +503,59 @@ function Checkout() {
 		return turnover;
 	};
 
+
 	this.submitCarts = function() {
-		console.log("submitting carts to server");
 		self.carts.forEach(function(cart, i) {
-			console.log(cart.timestamp);
+			self.submitCart(cart);
+		});
+	};
 
-			if (cart.submitted) {
-				return;
+
+	/**
+	 * Submit a cart to the server
+	 *
+	 * @param Array 	The carts data
+	 * @return void
+	 */
+	this.submitCart = function(cart) {
+		if (cart.submitted) {
+			console.log("Cart has been submitted yet, aborting");
+			return;
+		}
+		
+		console.log("submitting cart: ", cart);
+
+		var data = new FormData();
+		data.append('action',  'add');
+		data.append('timestamp', cart.timestamp);
+		data.append('marketId', cart.marketId);
+		data.append('checkoutId', cart.checkoutId);
+		data.append('items', JSON.stringify(cart.items));
+		data.append('total', self.getCartTotal());
+
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener('load', function() {
+			var response = JSON.parse(this.responseText);
+			if (response.success) {
+				cart.submitted = true;
 			}
+		});
+		xhr.addEventListener('error', function() {
 
-			var data = new FormData();
-			data.append('action',  'add');
-			data.append('timestamp', cart.timestamp);
-			data.append('marketId', cart.marketId);
-			data.append('checkoutId', cart.checkoutId);
-			data.append('items', JSON.stringify(cart.items));
+		});
+		xhr.open('POST', '/de/9/carts.html');
+		xhr.send(data);
+	};
 
-			var xhr = new XMLHttpRequest();
-			xhr.addEventListener('load', function() {
-				var response = JSON.parse(this.responseText);
-				if (response.success) {
-					cart.submitted = true;
-				}
-			});
-			xhr.addEventListener('error', function() {
 
-			});
-			xhr.open('POST', '/de/9/carts.html');
-			xhr.send(data);
+	this.showCarts = function() {
+		console.log("Showiong carts");
+		var containerEl = document.createElement('ul');
+
+		self.carts.forEach(function(cart) {
+			console.log(cart.timestamp);
+			var itemEl = document.createElement('li');
+
 		});
 	}
 };

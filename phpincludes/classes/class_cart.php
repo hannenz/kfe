@@ -38,8 +38,9 @@ class Cart extends Model {
 	 *
 	 * @return void
 	 */
-	public function afterRead($result) {
-		return $result;
+	public function afterRead($cart) {
+		$cart['items'] = json_decode($cart['cart_items'], true);
+		return $cart;
 	}
 }
 ?>
