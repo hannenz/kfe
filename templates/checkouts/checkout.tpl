@@ -46,6 +46,7 @@
 			<div>Gesamtumsatz: <b id="js-total-turnover">0,00</b> &euro; (<span id="js-total-carts">0</span> Vorgänge)</div>
 			<input type="checkbox" id="js-toggle-camera-scanner"><label for="js-toggle-camera-scanner">Scanner an/aus</label>
 			<div id="cam"></div>
+			<div class="statusbar__message" id="statusbar-message">MSSG</div>
 		</div>
 	</div>
 </form>

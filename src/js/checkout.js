@@ -34,6 +34,7 @@ function Checkout() {
 	this.init = function() {
 		// console.log("Checkout::init");
 		// document.addEventListener('DOMContentLoaded', self.setup);
+		self.statusMessage("Ready.");
 		self.setup();
 	}
 
@@ -83,7 +84,9 @@ function Checkout() {
 		});
 
 		self.codeInput.addEventListener('blur', function(ev) {
-			self.codeInput.focus();
+			setTimeout(function() {
+				self.codeInput.focus();
+			}, 10);
 		});
 
 		self.setupBarcodeScanner();
@@ -120,6 +123,7 @@ function Checkout() {
 
 	this.onKeyUp = function(ev) {
 		ev.preventDefault();
+		ev.stopPropagation();
 		switch (ev.keyCode) {
 			case 65: // Q
 				self.change(500);
@@ -235,7 +239,7 @@ function Checkout() {
 
 			this.value = this.value.replace(/[^\d]/g, ''); 
 
-			if (this.value.length >= 16) {
+			if (this.value.length >= 24) {
 				var code = this.value;
 				var item = self.getItemFromCode(code);
 				if (item != null) {
@@ -253,15 +257,25 @@ function Checkout() {
 
 	this.getItemFromCode = function(code) {
 
-		var marketId = code.substring(0, 8);
-		var sellerId = parseInt(code.substring(8, 11));
-		var value = parseInt(code.substring(11));
+		var marketId = parseInt(code.substring(0, 4));
+		var marketDate = code.substring(4, 12);
+		var sellerId = parseInt(code.substring(12, 16));
+		var sellerNr = parseInt(code.substring(16, 19));
+		var value = parseInt(code.substring(19));
 
-		if (!marketId.match(/^\d{4}\d{2}\d{2}$/)) {
+		if (Number.isNaN(marketId)) {
+			console.log("Invalid code", code);
+			return null;
+		}
+		if (!marketDate.match(/^\d{4}\d{2}\d{2}$/)) {
 			console.log("Invalid code", code);
 			return null;
 		}
 		if (Number.isNaN(sellerId)) {
+			console.log("Invalid code", code);
+			return null;
+		}
+		if (Number.isNaN(sellerNr)) {
 			console.log("Invalid code", code);
 			return null;
 		}
@@ -273,6 +287,7 @@ function Checkout() {
 		var item = {
 			marketId: marketId,
 			sellerId: sellerId,
+			sellerNr: sellerNr,
 			value: value,
 			ts: Date.now(),
 			checkoutId: this.checkoutId,
@@ -324,10 +339,17 @@ function Checkout() {
 		th.innerText = '#';
 		row.appendChild(th);
 		th = document.createElement('th');
+		th.innerText = 'Code';
+		row.appendChild(th);
+		th = document.createElement('th');
+		th.innerText = 'Verkäufer-ID';
+		row.appendChild(th);
+		th = document.createElement('th');
 		th.innerText = 'Verkäufer-Nr';
 		row.appendChild(th);
 		th = document.createElement('th');
 		th.innerText = 'Betrag';
+		th.classList.add('currency');
 		row.appendChild(th);
 		th = document.createElement('th');
 		th.innerText = '';
@@ -341,21 +363,36 @@ function Checkout() {
 			var item = self.cart.items[i];
 
 			var row = document.createElement('tr');
-			var td1 = document.createElement('td');
-			td1.innerText = (i + 1);
-			row.appendChild(td1);
-			var td2 = document.createElement('td');
-			td2.innerText = item.sellerId;
-			row.appendChild(td2);
+			var td = document.createElement('td');
+			td.innerText = (i + 1);
+			row.appendChild(td);
+			td = document.createElement('td');
+			td.innerText = item.code;
+			row.appendChild(td);
+			td = document.createElement('td');
+			td.innerText = item.sellerId;
+			row.appendChild(td);
+			td = document.createElement('td');
+			var sellerNrTxt = item.sellerNr;
+			if (item.sellerNr < 10) {
+				sellerNrTxt = '00' + item.sellerNr;
+			}
+			else if (item.sellerNr < 100) {
+				sellerNrTxt = '0' + item.sellerNr;
+			}
+			td.innerText = sellerNrTxt;
+			row.appendChild(td);
 
-			var td3 = document.createElement('td');
-			td3.innerText = (item.value / 100).toFixed(2);
-			row.appendChild(td3);
+			td = document.createElement('td');
+			td.innerText = (item.value / 100).toFixed(2) + ' €';
+			td.classList.add('currency');
+			row.appendChild(td);
 
-			var td4 = document.createElement('td');
+			td = document.createElement('td');
+			td.classList.add('action');
 			var btn = document.createElement('button');
-			td4.appendChild(btn);
-			row.appendChild(td4);
+			td.appendChild(btn);
+			row.appendChild(td);
 
 			btn.innerHTML = 'Stornieren';
 			btn.addEventListener('click', function(ev) {
@@ -417,11 +454,14 @@ function Checkout() {
 		// The cart needs to be cloned before pushed to the stack,
 		// this is a simple method to clone a Javascript object:
 		var clone = JSON.parse(JSON.stringify(self.cart));
-		self.carts.push(clone);
 
 		if (navigator.onLine) {
-			console.log("ONLINE: Submitting");
+			self.statusMessage("Bon wird übermittelt");
 			self.submitCart(clone);
+		}
+		else {
+			self.statusMessage("Offline: Bon wird zur späteren Übermittlung gespeichert");
+			self.carts.push(clone);
 		}
 
 		self.updateTotalTurnover();
@@ -538,9 +578,24 @@ function Checkout() {
 			var response = JSON.parse(this.responseText);
 			if (response.success) {
 				cart.submitted = true;
+				console.log(response.cartId);
+				self.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId + ' <a href="/de/4/Checkout.html?action=cancel&id=' + response.cartId + '&marketId=' + self.marketId + '&checkoutId=' + self.checkoutId +'">Stornieren?</a>', 'success');
+
+				// Try to find this cart in the cue and if found, remove it
+				// self.carts.forEach(function(cueCart, i) {
+				for (var i = 0; i < self.carts.length; i++) {
+					if (parseInt(self.carts[i].timestamp) == parseInt(response.cartTimestamp)) {
+						console.log("Found cart in cue, un-cueing it!", i);
+						self.carts.splice(i, 1);
+						self.persist();
+						break;
+					}
+				}
 			}
+			
 		});
 		xhr.addEventListener('error', function() {
+			self.statusMessage('Übermittlung gescheitert!', 'error');
 
 		});
 		xhr.open('POST', '/de/9/carts.html');
@@ -557,8 +612,15 @@ function Checkout() {
 			var itemEl = document.createElement('li');
 
 		});
-	}
-};
+	};
 
-// var chk = new Checkout();
-// chk.init();
+
+	this.statusMessage = function(mssg, type) {
+		if (!type) {
+			type = 'info';
+		}
+		var el = document.getElementById('statusbar-message');
+		el.innerHTML = mssg;
+		el.classList.add(type);
+	};
+};

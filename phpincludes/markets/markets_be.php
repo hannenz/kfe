@@ -16,8 +16,19 @@ $autoLoader->addNamespace('KFE', PATHTOWEBROOT . 'phpincludes/classes');
 
 class MarketBackendController extends ApplicationController {
 
+
+
+	/**
+	 * Abzug für Spende in Prozent
+	 *
+	 * @var float;
+	 */
+	protected $discount = 20.0;
+
+
+
 	public function init() {
-		setlocale(LC_ALL, 'de_DE.UTF-8');
+		// setlocale(LC_ALL, 'de_DE.UTF-8');
 		$this->Market = new Market();
 		$this->Seller = new Seller();
 		$this->Cart = new Cart();
@@ -41,22 +52,34 @@ class MarketBackendController extends ApplicationController {
 
 			$sellers[$n]['items'] = [];
 			$sellers[$n]['total'] = 0;
+			$sellers[$n]['itemsCount'] = 0;
 
 			// Get all carts from the seller's market 
 			$carts = $this->Cart->filter(['cart_market_id' => $this->marketId])->findAll();
 			foreach ($carts as $cart) {
 				foreach ($cart['items'] as &$item) {
 					if ($item['sellerId'] == $seller['id']) {
-						$item['valueFmt'] = sprintf('%.2f', $item['value'] / 100);
+
+						$vf = (float)$item['value'] / 100;
+
+						$item['valueEuro'] = $vf;
+						$item['valueFmt'] = sprintf('%.2f', $vf);
 						$item['datetime'] = strftime('%d.%m.%Y %H:%M:%S', (int)$item['ts']);
+
 						array_push($sellers[$n]['items'], $item);
-						$sellers[$n]['total'] += (int)$item['value'];
+						$sellers[$n]['total'] += $vf;
+						$sellers[$n]['itemsCount']++;
 					}
 				}
+
+				$sellers[$n]['discountValue'] = $sellers[$n]['total'] * ($this->discount / 100);
+				$sellers[$n]['totalNet'] = $sellers[$n]['total'] * ((100 - $this->discount) / 100);
+
 			}
 		}
 
 		$this->myParser = new \Contentomat\Parser();
+		$this->myParser->setParserVar('discount', $this->discount);
 		$this->myParser->setParserVar('sellers', $sellers);
 		$this->content = $this->myParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/evaluation.tpl');
 	}

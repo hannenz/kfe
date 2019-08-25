@@ -58,10 +58,13 @@ class CartsController extends Controller {
 		try {
 			$data = [
 				'cart_timestamp' => (int)$_REQUEST['timestamp'],
+				'cart_datetime' => strftime('%F %T', (int)$_REQUEST['timestamp'] / 1000),
+				'cart_submitted_datetime' => strftime('%F %T', time()),
 				'cart_market_id' => (int)$_REQUEST['marketId'],
 				'cart_checkout_id' => (int)$_REQUEST['checkoutId'],
 				'cart_total' => (float)$_REQUEST['total'],
-				'cart_items' => $_REQUEST['items']
+				'cart_items' => $_REQUEST['items'],
+				'cart_items_count' => count((array)json_decode($_REQUEST['items'], true))
 			];
 			$cartId = $this->Cart->add($data);
 		}
@@ -72,10 +75,14 @@ class CartsController extends Controller {
 
 		$this->content = [
 			'success' => $success,
-			'cartId' => $cartId
+			'cartId' => $cartId,
+			// We return the original cart's timestamp so that we can identify
+			// this cart client side (remove it from carts cue)
+			'cartTimestamp' => $data['cart_timestamp']
 		];
 		die (json_encode($this->content));
 	}
+
 }
 
 $al = new PsrAutoloader();

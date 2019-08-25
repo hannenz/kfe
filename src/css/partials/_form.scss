@@ -42,11 +42,19 @@
 	}
 
 	select {
-		padding: 0.25 * $vertical-unit $gutter;
 		@include type-setting(0);
 		background-color: #fff;
-	}
+		appearance: none;
+		padding: 10px 8px;
+		width: 100%;
+		border: none;
 
+		background-image: url("/dist/img/select_bg");
+		background-repeat: no-repeat;
+		background-position: calc(100% - 10px) center;
+		background-size: 40px;
+		padding-right: 60px;
+	}
 }
 
 .form-field__info {
@@ -55,7 +63,8 @@
 	padding: 4px 0;
 }
 
-.form-field--input {
+.form-field--input,
+.form-field--select {
 	max-width: 20rem;
 }
 

@@ -39,9 +39,11 @@ function Composer() {
 	};
 	
 	this.update = function() {
+		var labelsPerPage = 12;
 		var total = self.calcTotal();
-		var pages = parseInt(total / 24);
-		if (total % 24 > 0) {
+		console.log('total', total);
+		var pages = parseInt(total / labelsPerPage);
+		if (total % labelsPerPage > 0) {
 			pages++;
 		}
 

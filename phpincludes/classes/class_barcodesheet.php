@@ -3,8 +3,8 @@ namespace KFE;
 
 use \TCPDF;
 
-// error_reporting(E_ALL);
-// ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+ ini_set('display_errors', true);
 
 require_once(PATHTOWEBROOT . "phpincludes/vendor/laurentbrieu/tcpdf/src/TCPDF/TCPDF.php");
 
@@ -30,9 +30,11 @@ class BarcodeSheet {
 	 * @var Array
 	 */
 	protected $options = [
-		'barcode_width' => 60,
-		'barcode_height' => 30,
-		'gutter' => 0
+		'label_width' => 90,
+		'label_height' => 44,
+		'gutter' => 0,
+		'marginX' => 13.5,
+		'marginY' => 13.5
 	];
 
 	/**
@@ -41,17 +43,17 @@ class BarcodeSheet {
 	protected $barcodeStyle = [
 		'position' => '',
 		'align' => 'C',
-		'stretch' => false,
-		'fitwidth' => true,
+		'stretch' => true,
+		'fitwidth' => false,
 		'cellfitalign' => '',
-		'border' => true,
-		'hpadding' => 10,
-		'vpadding' => 7,
+		'border' => false,
+		'hpadding' => 0,
+		'vpadding' => 0,
 		'fgcolor' => array(0,0,0),
 		'bgcolor' => false, //array(255,255,255),
 		'text' => true,
 		'font' => 'helvetica',
-		'fontsize' => 8,
+		'fontsize' => 6,
 		'stretchtext' => 4
 	];
 
@@ -65,13 +67,16 @@ class BarcodeSheet {
 		$this->marketData = $marketData;
 		$this->sellerData = $sellerData;
 
-		$this->pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+		$this->pdf = new TCPDF('L', 'mm', 'A4', true, 'UTF-8', false, false);
 		$this->pdf->SetCreator(PDF_CREATOR);
 		$this->pdf->SetAuthor('Johannes Braun');
-		$this->pdf->SetTitle('Kinderflohmarkt Erbach - Barcodes Sheet');
+		$this->pdf->SetTitle('Kinderflohmarkt Erbach - Etiketten-Bogen');
 
 		// set auto page breaks
-		$this->pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$this->pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
+
+		$this->pdf->setPrintHeader(false);
+		$this->pdf->setPrintFooter(false);
 	}
 
 
@@ -83,35 +88,89 @@ class BarcodeSheet {
 	 */
 	public function create($data, $filename = '') {
 		if (empty($filename)) {
-			$filename = sprintf('barcodes-%s.pdf', strftime('%F-%H'));
+			$filename = sprintf('Etiketten-%s.pdf', strftime('%F-%H'));
 		}
 		// $this->pdf->AddPage();
 
 		setlocale(LC_ALL, 'de_DE.UTF-8');
 
+
 		$n = 0;
 		foreach ($data as $value => $amount) {
 			for ($i = 0; $i < $amount; $i++) {
-				if ($n % 24 == 0) {
+				if ($n % 12 == 0) {
 					$this->pdf->AddPage();
 					$n = 0;
 				}
 
-				$y = (int)($n / 3);
-				$x = $n % 3; 
+				// Calc X/Y offset for next label
+				$row = ((int)($n / 3));
+				$col = ($n % 3); 
 
-				$y *= $this->options['barcode_height'] + $this->options['gutter'];
-				$x *= $this->options['barcode_width'] + $this->options['gutter'];
+				$offy = $this->options['marginY'] + ($row * $this->options['label_height']) + $this->options['gutter'];
+				$offx = $this->options['marginX'] + ($col * $this->options['label_width']) + $this->options['gutter'];
 
-				$code = sprintf('%s%03u%05u',
+
+				/*********
+				*  Box  *
+				*********/
+				// $this->pdf->writeHTMLCell(72, 12, $xoff + 16, $offy + 2, '<span>Gr&ouml;&szlig;e</span>', 1, 0, false, false, 'L', false); 
+				$this->pdf->imageSVG(PATHTOWEBROOT . 'dist/img/label_template.svg', $offx, $offy, $this->options['label_width'], $this->options['label_height'], '', '', '', 0, false);
+				$this->pdf->setFontSize(8);
+				$this->pdf->SetXY($offx + 16, $offy + 3);
+				$this->pdf->Cell(16, 18, "Größe", 0, 0, 'L', false, '', 0, false, 'T', 'T');
+				$this->pdf->SetXY($offx + 32 , $offy + 3);
+				$this->pdf->Cell(16, 18, "Bezeichnung", 0, 0, 'L', false, '', 0, false, 'T', 'T');
+
+
+				/*************
+				*  BarCode  *
+				*************/
+				$code = sprintf('%04u%s%04u%03u%05u',
+					$this->marketData['id'],
 					strftime('%Y%m%d', strtotime($this->marketData['market_datetime'])),
 					$this->sellerData['id'],
+					$this->sellerData['seller_nr'],
 					$value
 				);
-				$this->pdf->write1DBarcode($code, 'C128', 15 + $x, 15 + $y, $this->options['barcode_width'], $this->options['barcode_height'], 0.5, $this->barcodeStyle);
-				$this->pdf->writeHTMLCell($this->options['barcode_width'], 10, 15 + $x, 15 + $y + 1, sprintf("%03u", $this->sellerData['id']), 0, 0, false, true, 'C');
-				$this->pdf->writeHTMLCell($this->options['barcode_width'], 10, 15 + $x, 15 + $y + $this->options['barcode_height'] - 7, sprintf("<b>%.2f &euro;</b>", $value / 100), 0, 0, false, true, 'C');
+				$x = $offx + 16;
+				$y = $offy + 22;
+				$this->pdf->write1DBarcode($code, 'C128', $x, $y, 72, 14, 0.5, $this->barcodeStyle);
 
+
+				/*****************
+				*  Seller Number *
+				*****************/
+				$text = sprintf("Verk.-Nr: %03u", $this->sellerData['seller_nr']);
+				$this->pdf->SetXY($offx + 15, $offy + 38);
+				$this->pdf->Cell(30, 6, $text, 0, 0, 'L', false, '', 0, false, 'T', 'T');
+
+
+				/***********
+				*  Value  *
+				***********/
+				$html = sprintf("<b>%.2f &euro;<b>", $value / 100);
+				$x = $offx + 60;
+				$y = $offy + 37;
+				$this->pdf->setFontSize(12);
+				$this->pdf->writeHTMLCell(30, 10, $x, $y, $html, 0, 0, false, true, 'R');
+
+
+				// // Write SellerNr
+				// $x = $offx + 20;
+				// $y = $offy + $this->options['label_height'] - 5;
+				// $w = $this->options['label_width'] / 2;
+				// $html = sprintf("Verk.-Nr: %03u", $this->sellerData['seller_nr']);
+				// $this->pdf->writeHTMLCell($w, 10, $x, $y, $html, 0, 0, false, true, 'L');
+                //
+
+				// // Write value
+				// $x = $offx + 20 + $this->options['label_width'] / 2;
+				// $y = $offy + $this->options['label_height'] - 5 + 15;
+				// $w = $this->options['label_width'] / 2;
+				// $html = sprintf("<b>%.2f &euro;<b>", $value / 100);
+				// $this->pdf->writeHTMLCell($w, 10, $x, $y, $html, 0, 0, false, true, 'R');
+                //
 				$n++;
 			}
 		}

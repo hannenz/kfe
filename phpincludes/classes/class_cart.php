@@ -31,6 +31,18 @@ class Cart extends Model {
 		return $this->db->lastInsertedId();
 	}
 	
+	public function delete($id) {
+		try {
+			$query = sprintf("DELETE FROM %s WHERE id=%u", $this->tableName, (int)$id);
+			if ($this->db->query($query) !== 0) {
+				throw new Exception("Query failed: " . $Query);
+			}
+		}
+		catch (Exception $e) {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * Callback to prepare data for output

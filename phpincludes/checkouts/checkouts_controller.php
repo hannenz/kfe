@@ -5,6 +5,7 @@ use KFE\Market;
 use Contentomat\Contentomat;
 use Contentomat\Controller;
 use Contentomat\PsrAutoloader;
+use KFE\Cart;
 
 use \Exception;
 
@@ -21,8 +22,13 @@ class CheckoutsController extends Controller {
 	/**
 	 * @var \KFE\Market
 	 */
-
 	protected $Market;
+
+
+	/**
+	 * @var \KFE\Cart
+	 */
+	protected $Cart;
 
 
 	/**
@@ -33,6 +39,7 @@ class CheckoutsController extends Controller {
 	 */
 	public function init() {
 		$this->Market = new Market();
+		$this->Cart = new Cart();
 		$this->templatesPath = PATHTOWEBROOT . "templates/checkouts/";
 	}
 	
@@ -67,6 +74,29 @@ class CheckoutsController extends Controller {
 			die ($e->getMessage());
 		}
 	}
+
+
+
+	/**
+	 * Cancel a Cart
+	 */
+	public function actionCancel() {
+		// $this->isAjax = true;
+		// $this->isJson = true;
+		$cartId = $_REQUEST['id'];
+		$success = $this->Cart->delete($cartId);
+
+		if ($success) {
+			$this->changeAction('default');
+		}
+
+		// $this->content = [
+		// 	'success' => $success,
+		// 	'cartId' => $cartId
+		// ];
+		// die (json_encode($this->content));
+	}
+
 }
 
 $al = new PsrAutoloader();

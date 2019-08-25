@@ -1,5 +1,5 @@
-Etiketten: Format ok?
-Muss drauf, was es ist (handschriftlich) ?
+
+[✓] Etiketten: Format ok? Muss drauf, was es ist (handschriftlich) ?
 	- 2 Felder: Größe, Artikelbezeichnung
 
 
@@ -8,18 +8,15 @@ Registrierung pro Markt mit E-Mail-Adresse?
 
 fester Nummernsatz 1 - 110
 Mitarbeiternummern 300 - 399 (sollen ganzjährig Etiketten drucken können)
-Wunschnummer eingeben
+[✓] Wunschnummer eingeben
 
-Registrierung: Vor- und Nachname, Telefonnummer (optional für Rückfragen)
+[✓] Registrierung: Vor- und Nachname, Telefonnummer (optional für Rückfragen)
 
-
-Verkäufer-Nr. wirklichj nur für einen Markt oder kann man sie behalten?
-Welche nummern sind für MA reserviert bzw. wie viele sind nötig?
 
 Wegen Hosting: Tel.Nr/Kontakt von Carsten noch einmal 
 1 Paket bei one.com buchen?
 
-Etiketten: Beträge in 50ct Schritten erlauben
+[✓] Etiketten: Beträge in 50ct Schritten erlauben
 
 Verkäufer: CSV Export oder PDF Druck mit extra Spalten
 
