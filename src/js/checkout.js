@@ -23,8 +23,6 @@ function Checkout() {
 		items: []
 	};
 
-	console.log(self.cart);
-
 	this.totalInput = document.getElementById('checkout-total');
 	this.changeInput = document.getElementById('checkout-change-value');
 	this.codeInput = document.getElementById('checkout-code-input');
@@ -32,9 +30,7 @@ function Checkout() {
 
 
 	this.init = function() {
-		// console.log("Checkout::init");
-		// document.addEventListener('DOMContentLoaded', self.setup);
-		self.statusMessage("Ready.");
+		self.statusMessage("Bereit.");
 		self.setup();
 	}
 
@@ -44,7 +40,7 @@ function Checkout() {
 	this.setup = function() {
 
 		// If camera is available, setup camera barcode scanner
-		navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia); 
+		navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 		navigator.getMedia({video: true}, function() {
 			console.log("We have a camera, so go ahead!");
 			this.cameraBarcodeScanner = new CameraBarcodeScanner();
@@ -54,7 +50,7 @@ function Checkout() {
 			});
 		}, function() {
 			console.log("No camera available, never mind …");
-		});	
+		});
 
 
 		window.addEventListener('online', function() {
@@ -562,7 +558,7 @@ function Checkout() {
 			console.log("Cart has been submitted yet, aborting");
 			return;
 		}
-		
+
 		console.log("submitting cart: ", cart);
 
 		var data = new FormData();
@@ -592,7 +588,7 @@ function Checkout() {
 					}
 				}
 			}
-			
+
 		});
 		xhr.addEventListener('error', function() {
 			self.statusMessage('Übermittlung gescheitert!', 'error');

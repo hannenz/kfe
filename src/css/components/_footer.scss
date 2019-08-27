@@ -4,8 +4,15 @@
 	color: #fff;
 	text-align: center;
 	@include type-setting(0, 0);
+	font-size: 16px;
+
+	ul {
+		list-style-type: none;
+		text-align: left;;
+	}
 
 	a {
 		color: #fff;
+		text-decoration: none;
 	}
 };

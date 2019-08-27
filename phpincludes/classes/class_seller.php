@@ -1,10 +1,10 @@
 <?php
 namespace KFE;
 
-use KFE\Model;
+use Contentomat\Model;
 use Contentomat\Mail;
-use \Exception;
 use KFE\Market;
+use \Exception;
 
 class RegistrationValidationException extends Exception { }
 class SellerExistsForMarketException extends Exception { }
@@ -50,7 +50,7 @@ class Seller extends Model {
 	{
 		return null;
 	}
-	
+
 
 	protected static function matchEmails($email) {
 		return ($email == $_POST['seller_email']);
@@ -90,24 +90,17 @@ class Seller extends Model {
 
 		$hash = hash('sha256', sprintf('%s%04u', $email, $marketId));
 
-		$query = sprintf("INSERT INTO %s SET %s",
-			$this->tableName,
-			$this->db->makeSetQuery([
-				'seller_email' => $email,
-				'seller_firstname' => $data['seller_firstname'],
-				'seller_lastname' => $data['seller_lastname'],
-				'seller_nr' => $data['seller_nr'],
-				'seller_activation_hash' => $hash,
-				'seller_is_activated' => 0,
-				'seller_market_id' => $marketId,
-				'seller_registration_date' => strftime('%F-%T')
-			])
-		);
-
-		if ($this->db->query($query) !== 0) {
-			throw new Exception("Query failed: " . $query);
-		}
-
+		// We let exceptions fall throuhgh to controller to handle it there
+		$this->save([
+			'seller_email' => $email,
+			'seller_firstname' => $data['seller_firstname'],
+			'seller_lastname' => $data['seller_lastname'],
+			'seller_nr' => $data['seller_nr'],
+			'seller_activation_hash' => $hash,
+			'seller_is_activated' => 0,
+			'seller_market_id' => $marketId,
+			'seller_registration_date' => strftime('%F-%T')
+		]);
 		return $hash;
 	}
 
@@ -151,17 +144,12 @@ class Seller extends Model {
 			throw new ActivationFailedException();
 		}
 
-		$query = sprintf("UPDATE %s SET %s WHERE id=%u",
-			$this->tableName,
-			$this->db->makeSetQuery([
-				'seller_is_activated' => 1,
-				'seller_activation_datetime' => strftime('%F-%T')
-			]),
-			$seller['id']
-		);
-		if ($this->db->query($query) !== 0) {
-			throw new Exception("Query failed: " .$query);
-		}
+		$this->save([
+			'id' => $seller['id'],
+			'seller_hash' => '-DEVALUATED-',
+			'seller_is_activated' => 1,
+			'seller_activation_datetime' => strftime('%F-%T')
+		]);
 
 		// Re-Read the seller's record and return it
 		$seller = $this->findById($seller['id']);
@@ -175,9 +163,14 @@ class Seller extends Model {
 		}
 
 		$allocatedNumbers = [];
-		$results = $this->fields(['seller_nr'])->filter([
+		$results = $this
+		->fields([
+			'seller_nr'
+		])
+		->filter([
 			'seller_market_id' => $marketId
-		])->findAll();
+		])
+		->findAll();
 		foreach ($results as $result) {
 			$allocatedNumbers[] = (int)$result['seller_nr'];
 		}
