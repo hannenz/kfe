@@ -126,24 +126,27 @@ class BarcodesController extends Controller {
 	 */
 	public function actionValidateSeller() {
 
+		error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
+
+		$success = false;
+
 		$this->isAjax = true;
 		$this->isJson = true;
 
 		$sellerNr = (int)$_REQUEST['sellerNr'];
 		$email = $_REQUEST['email'];
 
-		$seller = $this->Seller->filter([
-			'seller_nr' => $sellerNr,
-			'seller_email' => $email
-		])->findOne();
+		if (!empty($sellerNr) && !empty($email)) {
+			$seller = $this->Seller->filter([
+				'seller_nr' => $sellerNr,
+				'seller_email' => $email
+			])->findOne();
 
-		$this->content = [
-			'success' => !empty($seller)
-		];
+			$success = !empty($seller);
+		}
 
-		die (json_encode($this->content));
+		$this->content = compact('success');
 	}
-	
 }
 
 $al = new PsrAutoloader();
