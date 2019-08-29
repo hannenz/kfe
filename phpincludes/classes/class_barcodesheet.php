@@ -156,6 +156,17 @@ class BarcodeSheet {
 				$this->pdf->writeHTMLCell(30, 10, $x, $y, $html, 0, 0, false, true, 'R');
 
 
+				/**
+				 * Label "Kinderflohmarkt Erbach"
+				 */
+				$this->pdf->StartTransform();
+				$this->pdf->Rotate(-270, $offx, $offy);
+				$this->pdf->Translate(-1 * $this->options['label_height'] + 2.5, 2.5);
+				$this->pdf->writeHTMLCell($this->options['label_height'], 15, $offx, $offy, "<div style=\"color:#b4b5b2\"><b>Kinderflohmarkt</b><br>Erbach</div>", 0, 0, false, true, 'L');
+				$this->pdf->StopTransform();
+
+
+
 				// // Write SellerNr
 				// $x = $offx + 20;
 				// $y = $offy + $this->options['label_height'] - 5;
