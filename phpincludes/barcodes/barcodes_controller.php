@@ -63,7 +63,7 @@ class BarcodesController extends Controller {
 			$errors = [];
 
 			try {
-				$seller = $this->Seller->findBy('seller_nr', $sellerNr);
+				$seller = $this->Seller->filter([ 'seller_nr' => $sellerNr ])->findOne();
 				if (empty($seller)) {
 					$errors[] = 'errorIllegalSellerId';
 					throw new Exception();
@@ -149,9 +149,9 @@ class BarcodesController extends Controller {
 	}
 }
 
-$al = new PsrAutoloader();
-$al->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");
-$al->addNamespace('KFE', PATHTOWEBROOT . "phpincludes/classes");
+$autoLoader = new PsrAutoloader();
+$autoLoader->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");
+$autoLoader->addNamespace('KFE', PATHTOWEBROOT . "phpincludes/classes");
 
 $ctl = new BarcodesController();
 $content = $ctl->work();
