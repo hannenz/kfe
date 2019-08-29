@@ -1,7 +1,7 @@
 <?php
 namespace KFE;
 
-use KFE\Model;
+use Contentomat\Model;
 use Contentomat\CmtPage;
 
 class Market extends Model {
