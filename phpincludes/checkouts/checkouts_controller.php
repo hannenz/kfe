@@ -3,7 +3,7 @@ namespace KFE;
 
 use KFE\Market;
 use Contentomat\Contentomat;
-use Contentomat\Controller;
+use Contentomat\ApplicationController;
 use Contentomat\PsrAutoloader;
 use KFE\Cart;
 
@@ -14,10 +14,24 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 /**
  * Class checkouts_controller
+ *
+ * Checkout for markets
+ *
  * @author Johannes Braun <johannes.braun@hannenz.de>
  * @package kfe
  */
-class CheckoutsController extends Controller {
+class CheckoutsController extends ApplicationController {
+
+
+	/**
+	 * @var Integer
+	 */
+	protected $marketId;
+
+	/**
+	 * @var Integer
+	 */
+	protected $checkoutId;
 
 	/**
 	 * @var \KFE\Market
@@ -40,7 +54,11 @@ class CheckoutsController extends Controller {
 	public function init() {
 		$this->Market = new Market();
 		$this->Cart = new Cart();
-		$this->templatesPath = PATHTOWEBROOT . "templates/checkouts/";
+
+		$this->marketId = (int)$_REQUEST['marketId'];
+		$this->checkoutId = (int)$_REQUEST['checkoutId'];
+
+		$this->parser->setDefaultTemplateBasePath(PATHTOWEBROOT . "templates/checkouts/");
 	}
 	
 	/**
@@ -49,30 +67,44 @@ class CheckoutsController extends Controller {
 	 * @return void
 	 */
 	public function actionDefault() {
-		try {
-			$marketId = $_REQUEST['marketId'];
-			if (empty($marketId) || (int)$marketId <= 0) {
-				throw new Exception("No marketId or invalid marketId");
-			}
 
-			$market = $this->Market->findById($marketId);
-			if (empty($market)) {
-				throw new Exception("No data found for market #{$marketId}");
-			}
+		if (!empty($this->marketId) && !empty($this->checkoutId)) {
 
-			$checkoutId = $_REQUEST['checkoutId'];
-			if (empty($checkoutId) || (int)$checkoutId <=0) {
-				throw new Exception("Invalid checkout id");
-			}
+			try {
+				if ($this->checkoutId <= 0) {
+					throw new Exception("Invalid checkoutd");
+				}
 
-			$this->parser->setParserVar('marketId', $marketId);
-			$this->parser->setParserVar('checkoutId', $checkoutId);
-			$this->parser->setMultipleParserVars($market);
-			$this->content = $this->parser->parseTemplate($this->templatesPath . "checkout.tpl");
+				if ($this->marketId <= 0) {
+					throw new Exception("No marketId or invalid marketId");
+				}
+
+				$market = $this->Market->findById($this->marketId);
+				if (empty($market)) {
+					throw new Exception("No data found for market #{$this->marketId}");
+				}
+
+				$this->parser->setMultipleParserVars($market);
+				$this->parser->setMultipleParserVars([
+					'marketId' => $this->marketId,
+					'checkoutId' => $this->checkoutId,
+					'applicationId' => $this->applicationID,
+					'user_name' => $this->user->getUserName(),
+					'user_alias' => $this->user->getUserAlias()
+				]);
+
+				$this->content = $this->parser->parseTemplate($this->templatesPath . "checkout_standalone.tpl");
+				return;
+			}
+			catch(Exception $e) {
+				die ($e->getMessage());
+				$this->parser->setParserVar('error', $e->getMessage());
+			}
 		}
-		catch(Exception $e) {
-			die ($e->getMessage());
-		}
+
+		$markets = $this->Market->findAll();
+		$this->parser->setParserVar('markets', $markets);
+		$this->content = $this->parser->parseTemplate($this->templatesPath . "default.tpl");
 	}
 
 

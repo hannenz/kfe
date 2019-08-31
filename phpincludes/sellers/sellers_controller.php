@@ -98,6 +98,7 @@ class SellersController extends Controller {
 			try {
 
 				if (!$this->Seller->validate($this->postvars)) {
+					echo '<pre>'; var_dump($this->Seller->getValidationErrors()); echo '</pre>'; die();
 					throw new RegistrationValidationException();
 				}
 
@@ -258,6 +259,28 @@ class SellersController extends Controller {
 		$this->parser->parseTemplate($this->templatesPath . 'welcome.tpl');
 	}
 	
+
+	public function actionValidateField() {
+		$this->isJson = true;
+		$this->isAjax = true;
+
+		$data = $this->postvars;
+		$success = $this->Seller->validateFormField($data['fieldName'], $data[$data['fieldName']], $data);
+		$this->content = [
+			'success' => $success,
+			'validationErrors' => $this->Seller->getValidationErrors()
+		];
+	}
+
+
+	public function actionUpdateAvailableSellerNrs() {
+		$this->isJson = true;
+		$this->isAjax = true;
+
+		$marketId = $this->getvars['marketId'];
+		$this->content = $this->Seller->getAvailableNumbers($marketId);
+	}
+
 }
 
 $al = new PsrAutoloader();

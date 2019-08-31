@@ -41,9 +41,10 @@
 {ENDIF}
 
 
-<form class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8" novalidate>
+<form id="registration" name="registration" class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8" novalidate>
 
 	<p>Registrierung als Verkäufer für den Erbacher Kinderflohmarkt am {DATEFMT:"{VAR:market_datetime}":"%a, %d. %B %Y"}</p>
+	<p><em><b>Hinweis: </b>Die mit einem <b>*</b> gekennzeichneten Felder müssen ausgefüllt werden</em></p>
 
 	<div class="stack-item">
 		<div class="form-field form-field--select">
@@ -109,5 +110,63 @@
 			<button type="submit" class="button">Registrieren</button>
 		</div>
 	</div>
-	
 </form>
+
+<script charset="utf-8">
+	document.addEventListener('DOMContentLoaded', function() {
+		
+		var fields = document.querySelectorAll('input[name^=seller_]');
+		fields.forEach(function(field) {
+
+			field.addEventListener('blur', function() {
+				var data = new FormData(document.forms.registration);
+				data.append('fieldName', this.getAttribute('name'));
+				// data.append('fieldValue', this.value);
+				data.append('action', 'validateField');
+
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', '{PAGEURL}');
+				xhr.onload = function() {
+					if (this.status >= 200 && this.status < 400) {
+						var data = JSON.parse(this.response);
+						field.parentNode.classList.add('ssv');
+						field.parentNode.classList.toggle('ssv-valid', data.success);
+					}
+				}
+				xhr.send(data);
+			});
+		});
+
+		setInterval(updateAvailableSellerNrs, 10000);
+
+		var selectEl = document.querySelector('[name=seller_nr]');
+		var marketId = parseInt(document.querySelector('[name=market_id]').value);
+
+		function updateAvailableSellerNrs() {
+			
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', '{PAGEURL}?action=updateAvailableSellerNrs&marketId=' + marketId);
+			xhr.onload = function() {
+				if (this.status >= 200 && this.status < 400) {
+					var data = JSON.parse(this.response);
+					var numbers = Object.keys(data).map(function(key) { return data[key]; });
+
+					// var selectedNr = select.querySelector('[selected]').value;
+					selectEl.innerHTML = '';
+					for (var i = 0; i < numbers.length; i++) {
+						nr = numbers[i];
+						var optionEl = document.createElement('option');
+						optionEl.setAttribute('value', nr);
+						optionEl.innerText = nr;
+						// if (nr == selectedNr) {
+						// 	option.selected = true;
+						// }
+						selectEl.appendChild(optionEl);
+					}
+				}
+			}
+			xhr.send();
+		}
+
+	});
+</script>

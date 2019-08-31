@@ -1,7 +1,9 @@
 <?php
+/**
+ * Backend controller to be included in the seller's table (`kfe_sellers`)
+ * to create a sumsheet for each seller in the detail view
+ */
 namespace KFE;
-
-error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 
 use \Contentomat\PsrAutoloader;
 use \Contentomat\ApplicationController;
@@ -12,18 +14,40 @@ $autoLoader = new PsrAutoloader();
 $autoLoader->addNamespace('Contentomat', INCLUDEPATHTOADMIN . 'classes');
 $autoLoader->addNamespace('KFE', PATHTOWEBROOT . 'phpincludes/classes');
 
+
+
 class SellerBackendController extends ApplicationController {
+
+
+	/**
+	 * @var Array
+	 */
+	private $seller = null;
+
 
 	public function init() {
 		$this->Seller = new Seller();
 		$this->Cart = new Cart();
-		$this->sellerId = array_shift($this->getvars['id']);
+
+		if (!empty($this->getvars['id'])) {
+			$sellerId = array_shift($this->getvars['id']);
+			$this->seller = $this->Seller->findById($sellerId);
+		}
 	}
 
-	public function actionDefault() {
-		$seller = $this->Seller->findById($this->sellerId);
 
-		echo '<pre>'; var_dump($seller); echo '</pre>'; 
+	/**
+	 * Creates a sumsheet for a seller, e.g. sum up all sold items by this
+	 * seller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function actionDefault() {
+
+		if (empty($this->seller)) {
+			return;
+		}
 
 		$sellerItems = [];
 
@@ -32,13 +56,11 @@ class SellerBackendController extends ApplicationController {
 		foreach ($carts as $cart) {
 			$items = (array)json_decode($cart['cart_items'], true);
 			foreach ($items as $item) {
-				if ($item['sellerId'] == $this->sellerId) {
+				if ($item['sellerNr'] == $this->seller['seller_nr']) {
 					$sellerItems[] = $item;
 				}
 			}
 		}
-
-		echo '<pre>'; var_dump($sellerItems); echo '</pre>'; die();
 	}
 }
 

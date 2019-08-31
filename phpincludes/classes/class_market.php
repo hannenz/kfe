@@ -9,6 +9,11 @@ class Market extends Model {
 	/**
 	 * @var int
 	 */
+	protected $detailPageId;
+
+	/**
+	 * @var int
+	 */
 	protected $registrationPageId;
 
 	/**
@@ -61,6 +66,12 @@ class Market extends Model {
 			$this->CmtPage->makePageFileName($this->registrationPageId),
 			$result['id']
 		);
+		$result['detailUrl'] = sprintf('%s%s:%u.html',
+			$this->CmtPage->makePageFilePath($this->detailPageId),
+			strftime('%Y-%m-%s', strtotime($result['market_datetime'])),
+			$result['id']
+		);
+
 		return $result;
 	}
 
@@ -100,6 +111,26 @@ class Market extends Model {
 	 */
 	public function setRegistrationPageId($registrationPageId) {
 	    $this->registrationPageId = $registrationPageId;
+	}
+
+	/**
+	 * Getter for detailPageId
+	 *
+	 * @return string
+	 */
+	public function getDetailPageId() {
+	    return $this->detailPageId;
+	}
+	
+	/**
+	 * Setter for detailPageId
+	 *
+	 * @param string $detailPageId
+	 * @return class_market
+	 */
+	public function setDetailPageId($detailPageId) {
+	    $this->detailPageId = $detailPageId;
+	    return $this;
 	}
 }
 ?>

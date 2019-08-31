@@ -36,7 +36,9 @@ class Seller extends Model {
 			'seller_lastname' => ['not-empty' => '/^.+$/'],
 			'seller_email' => [ 'valid-email' =>  '/^.+@.+\..+$/' ],
 			'seller_email_confirm' => [ 'match' => 'matchEmails' ],
-			'agree' => ['agree' => '/^agreed$/']
+			'agree' => ['agree' => '/^agreed$/'],
+			'seller_nr' => ['seller-nr-is-unique' => 'sellerNrIsUnique'],
+			'seller_ee' => '/foo/'
 		]);
 	}
 
@@ -52,10 +54,33 @@ class Seller extends Model {
 	}
 
 
-	protected static function matchEmails($email) {
-		return ($email == $_POST['seller_email']);
+	/**
+	 * Validate that both entered email adresses match
+	 *
+	 * @access public
+	 * @param String 		E-Mail address to validate
+	 * @param Array 		The remaining request data
+	 * @return boolean
+	 */
+	protected function matchEmails($email, $data) {
+		return ($email == $data['seller_email']);
 	}
 
+
+	/**
+	 * Validation rule callback:
+	 * Verify that the desired seller nr is not taken yet (is unique)
+	 * at the given market
+	 *
+	 * @param int 		sellerNr to validate
+	 * @param Array 	The (remaining) request's data
+	 */
+	protected function sellerNrIsUnique($sellerNr, $data) {
+		return (empty($this->filter([
+			'market_id' => $data['market_id'],
+			'seller_nr' => $sellerNr
+		])));
+	}
 
 	/**
 	 * Registrate a seller for a certain market
@@ -156,6 +181,14 @@ class Seller extends Model {
 		return $seller;
 	}
 
+
+	/**
+	 * Get avaliable seller numbers for a given market
+	 *
+	 * @access public
+	 * @param Integer  		The market's id to check
+	 * @return Array 		An array of available numbers
+	 */
 	public function getAvailableNumbers($marketId) {
 		$availableNumbers = [];
 		for ($i = 1; $i <= 110; $i++) {
