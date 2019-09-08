@@ -76,9 +76,9 @@ class Market extends Model {
 	}
 
 	/**
-	 * undocumented function
+	 * Check if a market's number assignment is running at the moment
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function numberAssignmentIsRunning($market) {
 

@@ -102,6 +102,7 @@ class BarcodesController extends Controller {
 					$errors[] = 'errorIllegalMarketId';
 					throw new Exception();
 				}
+
 				$this->BarcodeSheet = new BarcodeSheet($market, $seller);
 				$this->BarcodeSheet->create($data);
 				return;
