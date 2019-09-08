@@ -1,3 +1,54 @@
+$sp-gutter: 20px;
+.secondary-footer {
+
+	padding-top: $vertical-unit;
+	padding-bottom: $vertical-unit;
+	background-color: #404040;
+	color: #808080;
+
+	.sponsors {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		margin-left: -0.5 * $sp-gutter;
+		margin-right: -0.5 * $sp-gutter;
+		margin-top: -0.5 * $sp-gutter;
+		margin-bottom: -0.5 * $sp-gutter;
+	}
+
+	.sponsor {
+		width: 100%;
+		max-width: calc((100% / 1) - (1 * #{$sp-gutter}));
+		margin-left: 0.5 * $sp-gutter;
+		margin-right: 0.5 * $sp-gutter;
+		padding: 0.5 * $sp-gutter 0;
+
+		img, svg {
+			width: 100%;
+			height: auto;
+			display: block;
+		}
+	}
+
+	@include for-size(tablet-portrait-up) {
+		.sponsor {
+			max-width: calc((100% / 2) - #{$sp-gutter});
+		}
+	}
+
+	@include for-size(tablet-landscape-up) {
+		.sponsor {
+			max-width: calc((100% / 3) - (1 * #{$sp-gutter}));
+		}
+	}
+
+	@include for-size(tablet-desktop-up) {
+		.sponsor {
+			max-width: calc((100% / 4) - (1 * #{$sp-gutter}));
+		}
+	}
+}
+
 .main-footer {
 	padding: $vertical-unit $gutter;
 	background-color: var(--primary-color);
@@ -15,4 +66,4 @@
 		color: #fff;
 		text-decoration: none;
 	}
-};
+}

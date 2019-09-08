@@ -1,3 +1,44 @@
+<aside class="secondary-footer">
+	<div class="inner-bound stack">
+
+		<h2 class="subheadline">Mit freundlicher Unterstützung von</h2>
+
+		<div>
+			<div class="sponsors">
+				<a class="sponsor" href="" title="">
+					<svg class="sponsor__image" width="300" height="200" viewBox="0 0 300 200">
+						<rect x="0" y="0" height="200" width="300" fill="#808080" />
+					</svg>
+				</a>
+				<a class="sponsor" href="" title="">
+					<svg class="sponsor__image" width="300" height="200" viewBox="0 0 300 200">
+						<rect x="0" y="0" height="200" width="300" fill="#808080" />
+					</svg>
+				</a>
+				<a class="sponsor" href="" title="">
+					<svg class="sponsor__image" width="300" height="200" viewBox="0 0 300 200">
+						<rect x="0" y="0" height="200" width="300" fill="#808080" />
+					</svg>
+				</a>
+				<a class="sponsor" href="" title="">
+					<svg class="sponsor__image" width="300" height="200" viewBox="0 0 300 200">
+						<rect x="0" y="0" height="200" width="300" fill="#808080" />
+					</svg>
+				</a>
+				<a class="sponsor" href="" title="">
+					<svg class="sponsor__image" width="300" height="200" viewBox="0 0 300 200">
+						<rect x="0" y="0" height="200" width="300" fill="#808080" />
+					</svg>
+				</a>
+				<a class="sponsor" href="" title="">
+					<svg class="sponsor__image" width="300" height="200" viewBox="0 0 300 200">
+						<rect x="0" y="0" height="200" width="300" fill="#808080" />
+					</svg>
+				</a>
+			</div>
+		</div>
+	</div>
+</aside>
 <footer class="main-footer">
 	<div class="inner-bound">
 		<ul>

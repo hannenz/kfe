@@ -46,3 +46,7 @@ body {
 	}
 }
 
+.stack > * + * {
+	margin-top: $vertical-unit;
+}
+
