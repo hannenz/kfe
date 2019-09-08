@@ -1,11 +1,19 @@
-Registrierung erfolgreich abgeschlossen!
+Vielen Dank für die Teilnahme an unserem
+Kinderflohmarkt Erbach
 
-Deine Verkäufer-Nummer lautet
+Hiermit bestätigen wir Ihnen die Verkäufer-Nummer
 
-{PRINTF:"{VAR:sellerId}":"%03u"}
+*******
+* {PRINTF:"{VAR:sellerId}":"%03u"} *
+*******
 
-Hier stehen noch ein Haufen Infos bla bla
+Bitte beachten Sie für die Auszeichnung Ihrer Ware unsere Checkliste unter https://www.kinderflohmarkt-erbach.de/checkliste
 
-Etiketten ganz einfach online erstellen und selber drucken: https://www.kinderflohmarkt-erbach.de/{PAGEURL:6}
+Abgabe   am {DATEFMT:"{VAR:market_submission_begin}":"%d.%B.%Y"} von {DATEFMT:"{VAR:market_submission_begin}":"%H:%M"} bis {DATEFMT:"{VAR:market_submission_end}":"%H:%M"} Uhr
+Abholung am {DATEFMT:"{VAR:market_pickup_begin}":"%d.%B.%Y"}     von {DATEFMT:"{VAR:market_pickup_begin}":"%H:%M"}     bis {DATEFMT:"{VAR:market_pickup_end}":"%H:%M"} Uhr
 
-Bei Fragen, kontaktiere uns unter <info@kinderflohmarkt-erbach.de>
+Wir wünschen Ihnen viel Freude und Erfolg beim Verkauf!
+Für weitere Rückfragen stehen wir gerne unter <info@kinderflohmarkt-erbach.de> oder Tel. 07305 / 93 99 97 3 zur Verfügung.
+
+Mit freundlichen Grüßen
+Das Erbacher Kinderflohmarkt Team
