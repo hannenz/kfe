@@ -9,6 +9,7 @@ use Contentomat\CmtPage;
 use KFE\Seller;
 use KFE\Market;
 use KFE\SellerExistsForMarketException;
+use \Exception;
 
 error_reporting(E_ALL & ~E_NOTICE);
 setlocale(LC_TIME, 'de_DE.UTF-8');
@@ -51,6 +52,11 @@ class SellersController extends Controller {
 
 
 	/**
+	 * @var boolean
+	 */
+	public $isAjaxRequest;
+
+	/**
 	 * Init
 	 *
 	 * @access public
@@ -62,6 +68,8 @@ class SellersController extends Controller {
 		$this->Mail = new Mail();
 		$this->CmtPage = new CmtPage();
 		$this->templatesPath = PATHTOWEBROOT . "templates/sellers/";
+
+		$this->isAjaxRequest = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 	}
 	
 	/**
@@ -79,26 +87,24 @@ class SellersController extends Controller {
 	 */
 	public function actionRegistrate() {
 
-		$marketId = (int)$_REQUEST['market_id'];
-		if (!empty($marketId)) {
+		try {
+			$marketId = (int)$_REQUEST['market_id'];
+			if (empty($marketId)) {
+				throw new Exception("No market_id!");
+			}
+
 			$this->parser->setParserVar('market_id', $marketId);
 			$market = $this->Market->findById($marketId);
 			$this->parser->setMultipleParserVars($market);
-		}
-		else {
-			die ("No market_id!");
-		}
 
-		if (!empty($this->postvars)) {
-			$this->parser->setMultipleParserVars($this->postvars);
-			$this->parser->setParserVar('market_id', $marketId);
-			$this->parser->setMultipleParserVars($this->Market->findById($marketId));
-			$email = $this->postvars['seller_email'];
+			if (!empty($this->postvars)) {
+				$this->parser->setMultipleParserVars($this->postvars);
+				$this->parser->setParserVar('market_id', $marketId);
+				$this->parser->setMultipleParserVars($this->Market->findById($marketId));
+				$email = $this->postvars['seller_email'];
 
-			try {
-
+				die("Validating");
 				if (!$this->Seller->validate($this->postvars)) {
-					echo '<pre>'; var_dump($this->Seller->getValidationErrors()); echo '</pre>'; die();
 					throw new RegistrationValidationException();
 				}
 
@@ -116,22 +122,22 @@ class SellersController extends Controller {
 				header("Location: " . $redirectUrl);
 				exit;
 			}
-			catch (SellerExistsForMarketException $e) {
-				$this->parser->setParserVar('errorSellerExists', true);
+		}
+		catch (SellerExistsForMarketException $e) {
+			$this->parser->setParserVar('errorSellerExists', true);
+		}
+		catch (SellerNrAlreadyAllocatedException $e) {
+			$this->parser->setParserVar('errorSellerNrAlreadyAllocated', true);
+		}
+		catch (RegistrationValidationException $e) {
+			$this->parser->setParserVar('hasValidationErrors', true);
+			$errors = $this->Seller->getValidationErrors();
+			foreach ($errors as $field => $error) {
+				$this->parser->setParserVar('error_'.$field, true);
 			}
-			catch (SellerNrAlreadyAllocatedException $e) {
-				$this->parser->setParserVar('errorSellerNrAlreadyAllocated', true);
-			}
-			catch (RegistrationValidationException $e) {
-				$this->parser->setParserVar('hasValidationErrors', true);
-				$errors = $this->Seller->getValidationErrors();
-				foreach ($errors as $field => $error) {
-					$this->parser->setParserVar('error_'.$field, true);
-				}
-			}
-			catch (\Exception $e) {
-				$this->parser->setParserVar('errorDatabaseQuery', true);
-			}
+		}
+		catch (\Exception $e) {
+			$this->parser->setParserVar('errorDatabaseQuery', true);
 		}
 
 

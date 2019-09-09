@@ -101,7 +101,8 @@
 	<div class="stack-item">
 		<div class="form-field form-field--checkbox {IF({ISSET:error_agree})}form-field--error{ENDIF}">
 			<input type="checkbox" name="agree" value="agreed" id="agree" {IF("{VAR:agree}" == "agreed")}checked{ENDIF} />
-			<label for="agree">Ich habe die <a href="{PAGEURL:11}" target="_blank">Datenschutzbestimmungen</a> gelesen und erkläre mich einverstanden
+			<label for="agree">Ich habe die <a href="{PAGEURL:11}" target="_blank">Datenschutzbestimmungen</a> gelesen und erkläre mich einverstanden</label>
+			
 		</div>
 	</div>
 
@@ -112,61 +113,3 @@
 	</div>
 </form>
 
-<script charset="utf-8">
-	document.addEventListener('DOMContentLoaded', function() {
-		
-		var fields = document.querySelectorAll('input[name^=seller_]');
-		fields.forEach(function(field) {
-
-			field.addEventListener('blur', function() {
-				var data = new FormData(document.forms.registration);
-				data.append('fieldName', this.getAttribute('name'));
-				// data.append('fieldValue', this.value);
-				data.append('action', 'validateField');
-
-				var xhr = new XMLHttpRequest();
-				xhr.open('POST', '{PAGEURL}');
-				xhr.onload = function() {
-					if (this.status >= 200 && this.status < 400) {
-						var data = JSON.parse(this.response);
-						field.parentNode.classList.add('ssv');
-						field.parentNode.classList.toggle('ssv-valid', data.success);
-					}
-				}
-				xhr.send(data);
-			});
-		});
-
-		setInterval(updateAvailableSellerNrs, 10000);
-
-		var selectEl = document.querySelector('[name=seller_nr]');
-		var marketId = parseInt(document.querySelector('[name=market_id]').value);
-
-		function updateAvailableSellerNrs() {
-			
-			var xhr = new XMLHttpRequest();
-			xhr.open('GET', '{PAGEURL}?action=updateAvailableSellerNrs&marketId=' + marketId);
-			xhr.onload = function() {
-				if (this.status >= 200 && this.status < 400) {
-					var data = JSON.parse(this.response);
-					var numbers = Object.keys(data).map(function(key) { return data[key]; });
-
-					// var selectedNr = select.querySelector('[selected]').value;
-					selectEl.innerHTML = '';
-					for (var i = 0; i < numbers.length; i++) {
-						nr = numbers[i];
-						var optionEl = document.createElement('option');
-						optionEl.setAttribute('value', nr);
-						optionEl.innerText = nr;
-						// if (nr == selectedNr) {
-						// 	option.selected = true;
-						// }
-						selectEl.appendChild(optionEl);
-					}
-				}
-			}
-			xhr.send();
-		}
-
-	});
-</script>

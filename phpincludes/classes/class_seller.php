@@ -37,8 +37,7 @@ class Seller extends Model {
 			'seller_email' => [ 'valid-email' =>  '/^.+@.+\..+$/' ],
 			'seller_email_confirm' => [ 'match' => 'matchEmails' ],
 			'agree' => ['agree' => '/^agreed$/'],
-			'seller_nr' => ['seller-nr-is-unique' => 'sellerNrIsUnique'],
-			'seller_ee' => '/foo/'
+			// 'seller_nr' => ['seller-nr-is-unique' => 'sellerNrIsUnique']
 		]);
 	}
 
@@ -63,7 +62,10 @@ class Seller extends Model {
 	 * @return boolean
 	 */
 	protected function matchEmails($email, $data) {
-		return ($email == $data['seller_email']);
+		return (
+			filter_var($email, FILTER_VALIDATE_EMAIL) && 
+			($email == $data['seller_email'])
+		);
 	}
 
 

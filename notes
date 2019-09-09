@@ -5,9 +5,15 @@
 
 ## Registrierung / Nummernvergabe
 
+[ ] Registrierungsformular: Verk.-Nr wird bei AJAX-Validierung zurückgesetzt
+[ ] Aktivierungs-Mail: Name wird noch 
+[ ] Welcome-Screen: Telefon falsch.
+[ ] Bestätigungs-Mail (Welcome): Link zu Etiketten-Druck
+
 
 ## Etiketten-Druck
 
+[ ] Eingabe von Verkäufer-Nr. mit führenden Nullen erzeugt Fehler
 
 ## Kasse
 

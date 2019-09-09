@@ -15,8 +15,8 @@
 </p>
 
 <p>
-	<b>Abgabe   am {DATEFMT:"{VAR:market_submission_begin}":"%d.%B.%Y"} von {DATEFMT:"{VAR:market_submission_begin}":"%H:%M"} bis {DATEFMT:"{VAR:market_submission_end}":"%H:%M"} Uhr</b><br>
-	<b>Abholung am {DATEFMT:"{VAR:market_pickup_begin}":"%d.%B.%Y"}     von {DATEFMT:"{VAR:market_pickup_begin}":"%H:%M"}     bis {DATEFMT:"{VAR:market_pickup_end}":"%H:%M"} Uhr</b><br>
+	<b>Abgabe   am {DATEFMT:"{VAR:market_submission_begin}":"%d.%B %Y"} von {DATEFMT:"{VAR:market_submission_begin}":"%H:%M"} bis {DATEFMT:"{VAR:market_submission_end}":"%H:%M"} Uhr</b><br>
+	<b>Abholung am {DATEFMT:"{VAR:market_pickup_begin}":"%d.%B %Y"}     von {DATEFMT:"{VAR:market_pickup_begin}":"%H:%M"}     bis {DATEFMT:"{VAR:market_pickup_end}":"%H:%M"} Uhr</b><br>
 </p>
 
 <p>
