@@ -1,4 +1,4 @@
-<p>Hallo {VAR:firstname} {VAR:lastname},</p>
+<p>Hallo {VAR:seller_firstname} {VAR:seller_lastname},</p>
 
 <p>Vielen Dank für deine Registrierung für den Kinderflohmarkt Erbach am {DATEFMT:"{VAR:market_datetime}":"%a, %d. %B %Y"}</p>
 

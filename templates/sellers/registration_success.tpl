@@ -22,7 +22,7 @@
 		</tr>
 		<tr>
 			<th>Telefon</th>
-			<td>Etiketten erstellen und drucken</td>
+			<td>{VAR:seller_phone}</td>
 		</tr>
 	</tbody>
 	

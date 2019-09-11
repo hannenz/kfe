@@ -103,7 +103,6 @@ class SellersController extends Controller {
 				$this->parser->setMultipleParserVars($this->Market->findById($marketId));
 				$email = $this->postvars['seller_email'];
 
-				die("Validating");
 				if (!$this->Seller->validate($this->postvars)) {
 					throw new RegistrationValidationException();
 				}

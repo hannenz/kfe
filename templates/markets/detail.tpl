@@ -1,6 +1,14 @@
 <section class="market market--detail">
 
-	<h1 class="market__title">{VAR:market_datetime} {VAR:market_location}</h1>
+	<div class="callout">
+		<div class="callout__head">
+			{DATEFMT:"{VAR:market_datetime}":"%a, %d. %B %Y<br>%H:%M Uhr"}
+		</div>
+		<div class="callout__subline">
+			{VAR:market_location}	
+		</div>
+	</div>
+
 	
 	<div class="market__description">
 		{VAR:market_description}
