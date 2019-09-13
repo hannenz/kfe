@@ -39,6 +39,9 @@
 	Du musst unsere Datenschutzbestimmungen akzeptieren, damit wir Deine Registrierung aufnehmen dürfen.
 </div>
 {ENDIF}
+{IF({ISSET:error_other})}
+<div class="message message--error">{VAR:errorMessage}</div>
+{ENDIF}
 
 
 <form id="registration" name="registration" class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8" novalidate>

@@ -7,7 +7,7 @@
 	Hiermit bestätigen wir Ihnen die Verkäufer-Nummer
 </p>
 <p class="big-text">
-	{PRINTF:"{VAR:sellerId}":"%03u"}
+	{PRINTF:"{VAR:sellerNr}":"%03u"}
 </p>
 
 <p>

@@ -1,6 +1,8 @@
 <?php
 namespace Contentomat;
 
+use Contentomat\Session;
+
 /**
  * This Parser can be extended by own (project-specific) macros etc.
  */
@@ -13,10 +15,6 @@ class AppParser extends Parser {
 
 	protected $globals;
 
-
-	public function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Some convenience methods to be included in Parser maybe..
@@ -222,5 +220,18 @@ class AppParser extends Parser {
 
 		return $replaceData;
 	}
-}
 
+
+	protected function macro_FLASHMESSAGE($value, $params) {
+
+		$flashMessage = $this->session->getSessionVar('flashMessage');
+		$this->session->deleteSessionVar('flashMessage');
+		$this->session->saveSessionVars();
+
+		if (!empty($flashMessage)) {
+			$replaceData = $flashMessage;
+		}
+		return $replaceData;
+	}
+}
+?>

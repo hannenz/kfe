@@ -3,7 +3,6 @@ namespace KFE;
 
 use Contentomat\Model;
 use Contentomat\Mail;
-use KFE\Market;
 use \Exception;
 
 class RegistrationValidationException extends Exception { }
@@ -11,7 +10,8 @@ class SellerExistsForMarketException extends Exception { }
 class ActivationFailedException extends Exception { }
 class InvalidEmailException extends Exception { }
 class EmailsDontMatchException extends Exception { }
-class SellerNrAlreadyAllocatedException { }
+class SellerNrAlreadyAllocatedException extends Exception{ }
+class RegistrationNotPossibleException extends Exception { }
 
 class Seller extends Model {
 
@@ -21,15 +21,10 @@ class Seller extends Model {
 	 */
 	protected $Mail;
 
-	/**
-	 * @var \KFE\Market
-	 */
-	protected $Market;
 
 
 	public function init() {
 		$this->Mail = new Mail();
-		$this->Market = new Market();
 		$this->tableName = 'kfe_sellers';
 		$this->setValidationRules([
 			'seller_firstname' => ['not-empty' => '/^.+$/'],
@@ -43,13 +38,13 @@ class Seller extends Model {
 
 
 	/**
-	 * undocumented function
+	 * Get a seller by its seller nr
 	 *
-	 * @return void
+	 * @param int
+	 * @return Array
 	 */
-	public function findBySellerNr($param)
-	{
-		return null;
+	public function findBySellerNr($sellerNr) {
+		return $this->filter(['seller_nr' => $sellerNr])->findOne();
 	}
 
 
@@ -185,31 +180,15 @@ class Seller extends Model {
 
 
 	/**
-	 * Get avaliable seller numbers for a given market
-	 *
-	 * @access public
-	 * @param Integer  		The market's id to check
-	 * @return Array 		An array of available numbers
-	 */
-	public function getAvailableNumbers($marketId) {
-		$availableNumbers = [];
-		for ($i = 1; $i <= 110; $i++) {
-			$availableNumbers[] = $i;
-		}
+	 * Check whether a seller is an employee
+	 * Employees have seller numbers 300 - 399 by convention
 
-		$allocatedNumbers = [];
-		$results = $this
-		->fields([
-			'seller_nr'
-		])
-		->filter([
-			'seller_market_id' => $marketId
-		])
-		->findAll();
-		foreach ($results as $result) {
-			$allocatedNumbers[] = (int)$result['seller_nr'];
-		}
-		return (array_diff($availableNumbers, $allocatedNumbers));
+	 * @access public
+	 * @param Integer 		The seller's seller nr to check
+	 * @return boolean
+	 */
+	public function isEmployee($sellerNr) {
+		return ($sellerNr >= 300 && $sellerNr < 400);
 	}
 }
 ?>

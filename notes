@@ -5,15 +5,15 @@
 
 ## Registrierung / Nummernvergabe
 
-[ ] Registrierungsformular: Verk.-Nr wird bei AJAX-Validierung zurückgesetzt
+[✓] Registrierungsformular: Verk.-Nr wird bei AJAX-Validierung zurückgesetzt
 [ ] Aktivierungs-Mail: Name wird noch 
-[ ] Welcome-Screen: Telefon falsch.
+[✓] Welcome-Screen: Telefon falsch.
 [ ] Bestätigungs-Mail (Welcome): Link zu Etiketten-Druck
 
 
 ## Etiketten-Druck
 
-[ ] Eingabe von Verkäufer-Nr. mit führenden Nullen erzeugt Fehler
+[?] Eingabe von Verkäufer-Nr. mit führenden Nullen erzeugt Fehler [jobr@2019-09-13: nicht reproduzierbar]
 
 ## Kasse
 
@@ -28,26 +28,23 @@
 [✓] Etiketten: Format ok? Muss drauf, was es ist (handschriftlich) ?
 	- 2 Felder: Größe, Artikelbezeichnung
 
-
-Registrierung pro Markt mit E-Mail-Adresse?
-	- nicht pro Markt
-
-fester Nummernsatz 1 - 110
-Mitarbeiternummern 300 - 399 (sollen ganzjährig Etiketten drucken können)
+[✓] Zugang zu Nummernvergabe für Admin um Stammkunden anzulegen
+[✓] Stammkunden + Mitarbeiter: ganzjähriger Zugriff auf Etiketten
+[✓] Mitarbeiter als 300-400 und Etiketten-Druck ist mit Nummer und E-Mail möglich
+[✓] Etikett-Druck ist immer erreichbar aber eben ohne gültige Nr/Email kann man halt nix drucken
+[✓] Wenn alle Nummern vergeben sind, prominente Meldung auf der Website
+[✓] fester Nummernsatz 1 - 110
+[✓] Mitarbeiternummern 300 - 399 (sollen ganzjährig Etiketten drucken können)
 [✓] Wunschnummer eingeben
-
 [✓] Registrierung: Vor- und Nachname, Telefonnummer (optional für Rückfragen)
 
-
-Wegen Hosting: Tel.Nr/Kontakt von Carsten noch einmal 
-1 Paket bei one.com buchen?
-
+[✓] Wegen Hosting: Tel.Nr/Kontakt von Carsten noch einmal 
+[✓] Paket bei one.com buchen?
 [✓] Etiketten: Beträge in 50ct Schritten erlauben
 
 Verkäufer: CSV Export oder PDF Druck mit extra Spalten
 
-
-Sponsorenlogos auf Website
+[✓] Sponsorenlogos auf Website
 
 Auswertungsbogen pro Verkäufer
 Verkäufernummer, Datum, Anzahl Positionen + Liste der Positionen, Auszahlungs-Summe abzgl. 20% (Abzug nur bei regulären Verkäufern, nicht Mitarbeiter))

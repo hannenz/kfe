@@ -14,7 +14,7 @@
 
 	{LAYOUTMODE_STARTSCRIPT}
 	{IF (!{LAYOUTMODE})}
-	<script src="/dist/js/vendor/quagga.min.js"></script>
+	<!-- <script src="/dist/js/vendor/quagga.min.js"></script> -->
 	{ENDIF}
 </head>
 <body>
@@ -24,6 +24,9 @@
 	<section class="main-content">
 		<div class="inner-bound columns-container">
 			<div class="main">
+				<div class="stack">
+					{FLASHMESSAGE}
+				</div>
 				<div class="stack">
 					{LOOP CONTENT(1)}{ENDLOOP CONTENT}
 				</div>

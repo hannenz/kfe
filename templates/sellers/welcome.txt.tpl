@@ -4,7 +4,7 @@ Kinderflohmarkt Erbach
 Hiermit bestätigen wir Ihnen die Verkäufer-Nummer
 
 *******
-* {PRINTF:"{VAR:sellerId}":"%03u"} *
+* {PRINTF:"{VAR:sellerNr}":"%03u"} *
 *******
 
 Bitte beachten Sie für die Auszeichnung Ihrer Ware unsere Checkliste unter https://www.kinderflohmarkt-erbach.de/checkliste

@@ -134,16 +134,18 @@ class BarcodesController extends Controller {
 		$this->isAjax = true;
 		$this->isJson = true;
 
-		$sellerNr = (int)$_REQUEST['sellerNr'];
 		$email = $_REQUEST['email'];
+		$sellerNr = (int)$_REQUEST['sellerNr'];
+		$marketId = (int)$_REQUEST['marketId'];
 
 		if (!empty($sellerNr) && !empty($email)) {
 			$seller = $this->Seller->filter([
+				'seller_market_id' => $marketId,
 				'seller_nr' => $sellerNr,
 				'seller_email' => $email
 			])->findOne();
 
-			$success = !empty($seller);
+			$success = !empty($seller) || $this->Seller->isEmployee($sellerNr);
 		}
 
 		$this->content = compact('success');

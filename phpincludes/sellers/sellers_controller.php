@@ -1,6 +1,8 @@
 <?php
 namespace KFE;
 
+die ("SellersController");
+
 use Contentomat\Contentomat;
 use Contentomat\Controller;
 use Contentomat\PsrAutoloader;
@@ -63,10 +65,12 @@ class SellersController extends Controller {
 	 * @return void
 	 */
 	public function init() {
+		$this->Cmt = Contentomat::getContentomat();
 		$this->Seller = new Seller();
 		$this->Market = new Market();
 		$this->Mail = new Mail();
 		$this->CmtPage = new CmtPage();
+		$this->Session= $this->Cmt->getSession();
 		$this->templatesPath = PATHTOWEBROOT . "templates/sellers/";
 
 		$this->isAjaxRequest = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
@@ -90,11 +94,17 @@ class SellersController extends Controller {
 		try {
 			$marketId = (int)$_REQUEST['market_id'];
 			if (empty($marketId)) {
-				throw new Exception("No market_id!");
+				$this->Session->setSessionVar('flashMessage', 'No market Id');
+				$this->Session->saveSessionVars();
+				header('Location: /');
+				die();
 			}
 
 			$this->parser->setParserVar('market_id', $marketId);
 			$market = $this->Market->findById($marketId);
+			if (!$this->Market->numberAssignmentIsRunning($market) && !$this->Session->checkIsLoggedIn()) {
+				throw new RegistrationNotPossibleException();
+			}
 			$this->parser->setMultipleParserVars($market);
 
 			if (!empty($this->postvars)) {
@@ -135,12 +145,17 @@ class SellersController extends Controller {
 				$this->parser->setParserVar('error_'.$field, true);
 			}
 		}
+		catch (RegistrationNotPossibleException $e) {
+			die ("Market is closed");
+
+		}
 		catch (\Exception $e) {
-			$this->parser->setParserVar('errorDatabaseQuery', true);
+			$this->parser->setParserVar('error_other', true);
+			$this->parser->setParserVar('errorMessage', $e->getMessage());
 		}
 
 
-		$_availableNumbers = $this->Seller->getAvailableNumbers($marketId);
+		$_availableNumbers = $this->Market->getAvailableNumbers($marketId);
 		$availableNumbers = [];
 		foreach ($_availableNumbers as $nr) {
 			$availableNumbers[] = ['nr' => $nr];
@@ -283,7 +298,7 @@ class SellersController extends Controller {
 		$this->isAjax = true;
 
 		$marketId = $this->getvars['marketId'];
-		$this->content = $this->Seller->getAvailableNumbers($marketId);
+		$this->content = $this->Market->getAvailableNumbers($marketId);
 	}
 
 }

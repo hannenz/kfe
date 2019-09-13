@@ -22,6 +22,8 @@
 		<div class="market__number-assignment">
 			<a href="{VAR:registrationUrl}">Nummernvergabe</a>
 		</div>
+	{ELSE}
+		<div class="">Die Nummernvergabe für diesen Markt ist geschlossen</div>
 	{ENDIF}
 
 	<div class="market_media">

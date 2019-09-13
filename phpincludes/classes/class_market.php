@@ -1,6 +1,7 @@
 <?php
 namespace KFE;
 
+use KFE\Seller;
 use Contentomat\Model;
 use Contentomat\CmtPage;
 
@@ -21,10 +22,16 @@ class Market extends Model {
 	 */
 	protected $CmtPage;
 
+	/**
+	 * @var KFE\Seller
+	 */
+	protected $Seller;
+
 
 	public function init() {
 		$this->tableName = 'kfe_markets';
 		$this->CmtPage = new CmtPage();
+		$this->Seller = new Seller();
 	}
 
 	public function getMarketsWithOpenNumberAssignment() {
@@ -54,6 +61,35 @@ class Market extends Model {
 		return $markets;
 	}
 
+
+	/**
+	 * Get avaliable seller numbers for a given market
+	 *
+	 * @access public
+	 * @param Integer  		The market's id to check
+	 * @return Array 		An array of available numbers
+	 */
+	public function getAvailableNumbers($marketId) {
+		$availableNumbers = [];
+		for ($i = 1; $i <= 110; $i++) {
+			$availableNumbers[] = $i;
+		}
+
+		$allocatedNumbers = [];
+		$results = $this->Seller
+		->fields([
+			'seller_nr'
+		])
+		->filter([
+			'seller_market_id' => $marketId
+		])
+		->findAll();
+		foreach ($results as $result) {
+			$allocatedNumbers[] = (int)$result['seller_nr'];
+		}
+		return (array_diff($availableNumbers, $allocatedNumbers));
+	}
+
 	/**
 	 * undocumented function
 	 *
@@ -61,6 +97,7 @@ class Market extends Model {
 	 */
 	public function afterRead($result) {
 		$result['marketNumberAssignmentIsRunning'] = $this->numberAssignmentIsRunning($result);
+		$result['numbersLeft'] = count($this->getAvailableNumbers($result['id']));
 		$result['registrationUrl'] = sprintf('%s%s?market_id=%u',
 			$this->CmtPage->makePageFilePath($this->registrationPageId),
 			$this->CmtPage->makePageFileName($this->registrationPageId),
