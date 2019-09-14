@@ -1,30 +1,10 @@
-
-## Website:
-
-
-
-## Registrierung / Nummernvergabe
+[ ] Backup-Script auf Server
 
 [✓] Registrierungsformular: Verk.-Nr wird bei AJAX-Validierung zurückgesetzt
 [ ] Aktivierungs-Mail: Name wird noch 
 [✓] Welcome-Screen: Telefon falsch.
 [ ] Bestätigungs-Mail (Welcome): Link zu Etiketten-Druck
-
-
-## Etiketten-Druck
-
 [?] Eingabe von Verkäufer-Nr. mit führenden Nullen erzeugt Fehler [jobr@2019-09-13: nicht reproduzierbar]
-
-## Kasse
-
-
-## Auswertung
-
-
-## Backend
-
-
-
 [✓] Etiketten: Format ok? Muss drauf, was es ist (handschriftlich) ?
 	- 2 Felder: Größe, Artikelbezeichnung
 
