@@ -33,8 +33,9 @@
 			</div>
 			<div class="form--field">
 				<p>
-					Noch keine Verkäufernummer? <a href="{PAGEURL:7}?market_id={VAR:market_id}">Jetzt registrieren</a><br>
-					Verkäufernummer vergessen? <a href="">Hier klicken</a>
+					<!-- TODO: Reg.-Link nur wenn Markt laufende Nummernvergabe hat -->
+					<!-- Noch keine Verkäufernummer? <a href="{PAGEURL:7}?market_id={VAR:market_id}">Jetzt registrieren</a><br> -->
+					<!-- Verkäufernummer vergessen? <a href="">Hier klicken</a> -->
 				</p>
 			</div>
 	</form>

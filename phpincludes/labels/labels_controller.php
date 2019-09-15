@@ -1,13 +1,10 @@
 <?php
 namespace KFE;
 
-error_reporting(E_ALL & ~E_NOTICE);
-
-use Contentomat\Logger;
 use Contentomat\Contentomat;
 use Contentomat\Controller;
 use Contentomat\PsrAutoloader;
-use KFE\BarcodeSheet;
+use KFE\LabelSheet;
 use KFE\Market;
 use KFE\Seller;
 use \Exception;
@@ -17,12 +14,12 @@ use \Exception;
  * @author Johannes Braun <johannes.braun@hannenz.de>
  * @package kfe
  */
-class BarcodesController extends Controller {
+class LabelsController extends Controller {
 
 	/**
-	 * @var \KFE\BarcodeSheet
+	 * @var \KFE\LabelSheet;
 	 */
-	protected $BarcodeSheet;
+	protected $LabelSheet;
 
 	/**
 	 * @var \KFE\Market
@@ -41,7 +38,7 @@ class BarcodesController extends Controller {
 	 * @return void
 	 */
 	public function init() {
-		$this->templatesPath = PATHTOWEBROOT . "templates/barcodes/";
+		$this->templatesPath = PATHTOWEBROOT . "templates/labels/";
 		$this->Market = new Market();
 		$this->Seller = new Seller();
 	}
@@ -103,8 +100,8 @@ class BarcodesController extends Controller {
 					}
 				}
 
-				$this->BarcodeSheet = new BarcodeSheet($market, $seller);
-				$this->BarcodeSheet->create($data);
+				$this->LabelSheet = new LabelSheet($market, $seller);
+				$this->LabelSheet->create($data);
 				return;
 			}
 			catch (Exception $e) {
@@ -121,7 +118,7 @@ class BarcodesController extends Controller {
 	}
 
 	/**
-	 * undocumented function
+	 * Deprecated ?
 	 *
 	 * @return void
 	 */
@@ -156,6 +153,6 @@ $autoLoader = new PsrAutoloader();
 $autoLoader->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");
 $autoLoader->addNamespace('KFE', PATHTOWEBROOT . "phpincludes/classes");
 
-$ctl = new BarcodesController();
+$ctl = new LabelsController();
 $content = $ctl->work();
 ?>
