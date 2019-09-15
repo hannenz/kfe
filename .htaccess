@@ -42,6 +42,9 @@ RewriteRule ^([^/]*)\/([0-9]+)\/([^/]*),([0-9]{1,3}),([0-9]{1,2})?\.html$ index.
 # MLog: shortcut
 #RewriteRule ^([^/^.]*)$ index.php?pid=10&lang=de&shortcut=$1&%{QUERY_STRING}&cmtRequestURL=%{REQUEST_URI}
 
+RewriteRule ^checkliste/?$ /de/10/infos.html [R=301,NC,L]
+RewriteRule ^verkaufsnummern/?$ /de/2/Start.html [R=301,NC,L]
+
 #### content-o-mat: end ####
 
 # don't list *.inc, *.tpl (Templates) and .htaccess files
