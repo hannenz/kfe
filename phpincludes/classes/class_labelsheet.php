@@ -24,9 +24,9 @@ class LabelSheetPdf extends TCPDF {
 	 */
 	public function Header() {
 		$this->SetFont('helvetica', 'b', 7);
-		$this->SetXY(0, 5);
+		$this->SetXY(0, 4);
 		$this->SetTextColor(200, 50, 50);
-		$this->MultiCell(0, 20, "Ausdruck auf dickem Papier (mind. 160g/m2).\nEtiketten sind nur gültig für die darauf gedruckte Verkäufer-Nummer", 0, 'C', false, 1);
+		$this->MultiCell(0, 20, "In Originalgröße auf dickerem Papier (160g/m2) drucken (z. Bsp. Tonpapier) oder mit Karton verstärken\nEtiketten sind nur gültig für die darauf gedruckte Verkäufer-Nummer\nhttps://www.kinderflohmarkt-erbach.de", 0, 'C', false, 1);
 	}
 	/**
 	 * Header with infos
@@ -36,7 +36,8 @@ class LabelSheetPdf extends TCPDF {
 	public function Footer() {
 		$this->SetFont('helvetica', 'b', 7);
 		$this->SetTextColor(200, 50, 50);
-		$this->SetXY(0, -15);	$this->MultiCell(0, 20, "Ausdruck auf dickem Papier (mind. 160g/m2).\nEtiketten sind nur gültig für die darauf gedruckte Verkäufer-Nummer", 0, 'C', false, 1);
+		$this->SetXY(0, -15);
+		$this->MultiCell(0, 20, "In Originalgröße auf dickerem Papier (160g/m2) drucken (z. Bsp. Tonpapier) oder mit Karton verstärken\nEtiketten sind nur gültig für die darauf gedruckte Verkäufer-Nummer\nhttps://www.kinderflohmarkt-erbach.de", 0, 'C', false, 1);
 	}
 }
 
