@@ -30,32 +30,36 @@
 			</div>
 		{ENDIF}
 
-		<fieldset class="stack">
-			<div class="form-field form-field--select">
-				<label for="marketId">Markt</label>
-				<select name="marketId" id="marketId">
-					{LOOP VAR(markets)}
-					<option value="{VAR:id}" {IF("{VAR:id}" == "{VAR:marketId}")}selected{ENDIF}>{DATEFMT:"{VAR:market_datetime}":"%d.%m.%Y"}: {VAR:market_location}</option>
-					{ENDLOOP VAR}
-				</select>
-			</div>
+		<input type="hidden" name="marketId" value="{SESSIONVAR:seller_market_id}" />
+		<input type="hidden" name="sellerNr" value="{SESSIONVAR:seller_nr}" />
+		<input type="hidden" name="sellerEmail" value="{SESSIONVAR:seller_email}" />
 
-			<div class="form-field form-field--input">
-				<label for="sellerNr">Verkäufer-Nummer</label>
-				<input id="sellerNr" type="text" value="{VAR:sellerNr}" name="sellerNr" autofocus pattern="[0-9]{1,3}" />
-				<div class="form-field__info">
-					<a href="{PAGEURL:999}">Verkäufer-Nr vergessen</a>
-				</div>
-			</div>
-
-			<div class="form-field form-field--input">
-				<label for="sellerEmail">E-Mail-Adresse</label>
-				<input id="sellerEmail" type="email" value="{VAR:sellerEmail}" name="sellerEmail" />
-				<div class="form-field__info">
-					Geben Sie zum Abgleich die E-Mail Adresse ein, mit der Sie sich zur Nummernvergabe registriert haben.
-				</div>
-			</div>
-		</fieldset>
+		<!-- <fieldset class="stack"> -->
+		<!-- 	<div class="form&#45;field form&#45;field&#45;&#45;select"> -->
+		<!-- 		<label for="marketId">Markt</label> -->
+		<!-- 		<select name="marketId" id="marketId"> -->
+		<!-- 			{LOOP VAR(markets)} -->
+		<!-- 			<option value="{VAR:id}" {IF("{VAR:id}" == "{VAR:marketId}")}selected{ENDIF}>{DATEFMT:"{VAR:market_datetime}":"%d.%m.%Y"}: {VAR:market_location}</option> -->
+		<!-- 			{ENDLOOP VAR} -->
+		<!-- 		</select> -->
+		<!-- 	</div> -->
+        <!--  -->
+		<!-- 	<div class="form&#45;field form&#45;field&#45;&#45;input"> -->
+		<!-- 		<label for="sellerNr">Verkäufer&#45;Nummer</label> -->
+		<!-- 		<input id="sellerNr" type="text" value="{VAR:sellerNr}" name="sellerNr" autofocus pattern="[0&#45;9]{1,3}" /> -->
+		<!-- 		<div class="form&#45;field__info"> -->
+		<!-- 			<a href="{PAGEURL:999}">Verkäufer&#45;Nr vergessen</a> -->
+		<!-- 		</div> -->
+		<!-- 	</div> -->
+        <!--  -->
+		<!-- 	<div class="form&#45;field form&#45;field&#45;&#45;input"> -->
+		<!-- 		<label for="sellerEmail">E&#45;Mail&#45;Adresse</label> -->
+		<!-- 		<input id="sellerEmail" type="email" value="{VAR:sellerEmail}" name="sellerEmail" /> -->
+		<!-- 		<div class="form&#45;field__info"> -->
+		<!-- 			Geben Sie zum Abgleich die E&#45;Mail Adresse ein, mit der Sie sich zur Nummernvergabe registriert haben. -->
+		<!-- 		</div> -->
+		<!-- 	</div> -->
+		<!-- </fieldset> -->
 
 		<fieldset class="stack columns amounts">
 			<div class="form-field form-field--amount">

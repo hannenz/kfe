@@ -36,6 +36,7 @@ class AppParser extends Parser {
 
 	public function parseDefault() {
 
+			echo '<pre>'; var_dump("check"); echo '</pre>'; die();
 		try {
 			if (!preg_match('/^action(\w+)$/', debug_backtrace()[1]['function'], $match)) {
 				throw new \Exception('Unknown action. Cannot determine default template.');
@@ -44,6 +45,7 @@ class AppParser extends Parser {
 				throw new \Exception('Unknown action. Cannot determine default template.');
 			}
 			$actionName = strtolower($match[1]);
+			echo '<pre>'; var_dump($actionName); echo '</pre>'; die();
 			$templatePath = rtrim($this->templatesPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $actionName . '.tpl';
 			if (!file_exists($templatePath) || !is_readable($templatePath)) {
 				throw new \Exception(sprintf('No default template found for action "%s". Be sure to create the template file %s', $actionName, $templatePath));

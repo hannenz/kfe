@@ -3,6 +3,7 @@ namespace KFE;
 
 use Contentomat\Model;
 use Contentomat\Mail;
+use Contentomat\Contentomat;
 use \Exception;
 
 class RegistrationValidationException extends Exception { }
@@ -24,10 +25,23 @@ class Seller extends Model {
 	 */
 	protected $Mail;
 
+	/**
+	 * @var Contentomat\Contentomat
+	 */
+	protected $Cmt;
+
+	/**
+	 *
+	 * @var Contentomat\Session
+	 */
+	protected $Session;
+
 
 
 	public function init() {
 		$this->Mail = new Mail();
+		$this->Cmt = Contentomat::getContentomat();
+		$this->Session = $this->Cmt->getSession();
 		$this->tableName = 'kfe_sellers';
 		$this->setValidationRules([
 			'seller_firstname' => ['not-empty' => '/^.+$/'],
@@ -197,5 +211,70 @@ class Seller extends Model {
 	public function isEmployee($sellerNr) {
 		return ($sellerNr >= 300 && $sellerNr < 400);
 	}
+
+
+
+	/**
+	 * Authenticate a seller for a given market
+	 *
+	 * @return boolean
+	 */
+	public function authenticate($sellerNr, $sellerEmail, $marketId) {
+
+		// First we check if the seller_nr / email combination is valid
+		$result = $this->filter([
+			'seller_nr' => $sellerNr,
+			'seller_email' => $sellerEmail
+		])->findOne();
+		if (empty($result)) {
+			return false;
+		}
+
+		// seller_market_id == 0 means: Is valid for ALL markets (employees)
+		if ($result['seller_market_id'] == 0) {
+			return true;
+		}
+
+		// Else check that the seller is valid for the given market
+		return ($result['seller_market_id'] == $marketId);
+	}
+
+
+
+	public function login($seller) {
+
+		$this->Session->setSessionVar('cmt_visitorloggedin', true);
+		$this->Session->setMultipleSessionVars([
+			'seller_nr' => $seller['seller_nr'],
+			'seller_firstname' => $seller['seller_firstname'],
+			'seller_lastname' => $seller['seller_lastname'],
+			'seller_email' => $seller['seller_email'],
+			'seller_market_id' => $seller['seller_market_id']
+		]);
+		$this->Session->saveSessionVars();
+
+	}
+
+	public function logout() {
+		$this->Session->deleteSessionVar('cmt_visitorloggedin');
+		$this->Session->deleteSessionVar('seller_nr');
+		$this->Session->deleteSessionVar('seller_firstname');
+		$this->Session->deleteSessionVar('seller_lastname');
+		$this->Session->deleteSessionVar('seller_email');
+		$this->Session->deleteSessionVar('seller_market_id');
+
+		$this->Session->saveSessionVars();
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 */
+	public function isLoggedIn() {
+		return !empty($this->Session->getSessionVar('cmt_visitorloggedin'));
+	}
+	
+	
 }
 ?>

@@ -35,9 +35,8 @@ class Market extends Model {
 	}
 
 	public function getMarketsWithOpenNumberAssignment() {
-		$markets = $this->filter([
-		])->findAll();
-
+		$query = sprintf("SELECT * FROM %s WHERE market_number_assignment_is_closed = 0 AND market_number_assignment_begin < NOW() AND market_number_assignment_end > NOW()", $this->tableName);
+		$markets = $this->query($query);
 		return $markets;
 	}
 
@@ -60,6 +59,18 @@ class Market extends Model {
 
 		return $markets;
 	}
+
+
+	/**
+	 * Get the next upcoming market
+	 *
+	 * @return Array
+	 */
+	public function getNextUpcoming() {
+		$markets = $this->getUpcoming(1);
+		return array_shift($markets);
+	}
+	
 
 
 	/**

@@ -30,6 +30,7 @@
 <footer class="main-footer">
 	<div class="inner-bound">
 		<ul>
+			<li><a href="{PAGEURL:6}">Etiketten drucken</li>
 			<li><a href="{PAGEURL:12}">Impressum</a></li>
 			<li><a href="{PAGEURL:11}">Datenschutz</a></li>
 		</ul>

@@ -1,6 +1,14 @@
+/**
+ * src/css/components/_footer.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ */
 $sp-gutter: 20px;
+
 .secondary-footer {
 
+	margin-top: 3 * $vertical-unit;
 	padding-top: $vertical-unit;
 	padding-bottom: $vertical-unit;
 	background-color: #fff;
