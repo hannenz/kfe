@@ -1,8 +1,6 @@
 <?php
 namespace KFE;
 
-die ("SellersController");
-
 use Contentomat\Contentomat;
 use Contentomat\Controller;
 use Contentomat\PsrAutoloader;

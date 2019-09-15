@@ -12,6 +12,9 @@ class InvalidEmailException extends Exception { }
 class EmailsDontMatchException extends Exception { }
 class SellerNrAlreadyAllocatedException extends Exception{ }
 class RegistrationNotPossibleException extends Exception { }
+class NumberAssignmetNotRunningException extends Exception { } 
+
+
 
 class Seller extends Model {
 
@@ -96,7 +99,11 @@ class Seller extends Model {
 			throw new InvalidEmailException("Missing or Invalid email: " . $email);
 		}
 
-		// Todo: Check if market is existing!
+		// Todo: Check if market is existing and is open for number assignment
+		$market = $this->Market->findById($marketId);
+		if (empty($market) || !$this->Market->numberAssignmentIsRunning($market)) {
+			throw new NumberAssignmetNotRunningException();
+		}
 
 
 		// Check if email is already registered for this market

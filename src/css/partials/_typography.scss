@@ -21,6 +21,25 @@
  * @include font-face('FontName', '../fonts/FontName-Italic', normal, italic, $file-types: woff2);
  */
 
+@font-face {
+	font-family: 'Gaegu';
+	font-style: normal;
+	font-weight: 400;
+	src: url('../fonts/gaegu-regular-webfont.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Gaegu';
+	font-style: normal;
+	font-weight: 600;
+	src: url('../fonts/gaegu-bold-webfont.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Gaegu';
+	font-style: normal;
+	font-weight: 200;
+	src: url('../fonts/gaegu-light-webfont.woff2') format('woff2');
+}
+
 
 html {
 	@include fluid-type(font-size, $tablet-portrait-breakpoint, $desktop-breakpoint, 11px, 22px);
@@ -28,7 +47,7 @@ html {
 
 body {
 	// Sets up font-size and line-height
-	// according to vertical rhythm. 
+	// according to vertical rhythm.
 	// @see mixins in mixins/_vertical_rhythm.scss
 	font-size: 20px;
 	color: var(--text-color);
@@ -37,8 +56,9 @@ body {
 }
 
 .headline {
-	font-family: "ElliotSix";
+	font-family: "Gaegu";
 	color: currentColor;
+
 }
 
 h1.headline {

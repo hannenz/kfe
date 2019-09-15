@@ -23,6 +23,7 @@
 			<a href="{VAR:registrationUrl}">Nummernvergabe</a>
 		</div>
 	{ELSE}
+		
 		<div class="">Die Nummernvergabe für diesen Markt ist geschlossen</div>
 	{ENDIF}
 
