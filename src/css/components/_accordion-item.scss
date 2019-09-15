@@ -1,0 +1,17 @@
+/**
+ * src/css/partials/_accordion-item.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ * @version 2019-09-15
+ */
+.accordion-item {
+	&__header {
+		cursor: pointer;
+		font-weight: 500;
+	}
+
+	&__body {
+		padding: 0.5 * $vertical-unit 0;
+	}
+}
