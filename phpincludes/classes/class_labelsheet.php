@@ -1,4 +1,11 @@
 <?php
+/**
+ * phpincludes/classes/class_labelsheet.php
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ * @version 2019-09-15
+ */
 namespace KFE;
 
 use \TCPDF;
@@ -8,7 +15,37 @@ ini_set('display_errors', true);
 
 require_once(PATHTOWEBROOT . "phpincludes/vendor/laurentbrieu/tcpdf/src/TCPDF/TCPDF.php");
 
+class LabelSheetPdf extends TCPDF {
 
+	/**
+	 * Header with infos
+	 *
+	 * @return void
+	 */
+	public function Header() {
+		$this->SetFont('helvetica', 'b', 7);
+		$this->SetXY(0, 5);
+		$this->SetTextColor(200, 50, 50);
+		$this->MultiCell(0, 20, "Ausdruck auf dickem Papier (mind. 160g/m2).\nEtiketten sind nur gültig für die darauf gedruckte Verkäufer-Nummer", 0, 'C', false, 1);
+	}
+	/**
+	 * Header with infos
+	 *
+	 * @return void
+	 */
+	public function Footer() {
+		$this->SetFont('helvetica', 'b', 7);
+		$this->SetTextColor(200, 50, 50);
+		$this->SetXY(0, -15);	$this->MultiCell(0, 20, "Ausdruck auf dickem Papier (mind. 160g/m2).\nEtiketten sind nur gültig für die darauf gedruckte Verkäufer-Nummer", 0, 'C', false, 1);
+	}
+}
+
+
+/**
+ * @class LabelSheet
+ *
+ * Create a sheet of labels
+ */
 class LabelSheet {
 
 	/**
@@ -36,6 +73,8 @@ class LabelSheet {
 		'marginX' => 13.5,
 		'marginY' => 13.5
 	];
+
+	
 
 	/**
 	 * @var Array
@@ -67,7 +106,7 @@ class LabelSheet {
 		$this->marketData = $marketData;
 		$this->sellerData = $sellerData;
 
-		$this->pdf = new TCPDF('L', 'mm', 'A4', true, 'UTF-8', false, false);
+		$this->pdf = new LabelSheetPdf('P', 'mm', 'A4', true, 'UTF-8', false, false);
 		$this->pdf->SetCreator(PDF_CREATOR);
 		$this->pdf->SetAuthor('Johannes Braun');
 		$this->pdf->SetTitle('Kinderflohmarkt Erbach - Etiketten-Bogen');
@@ -75,9 +114,10 @@ class LabelSheet {
 		// set auto page breaks
 		$this->pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
 
-		$this->pdf->setPrintHeader(false);
-		$this->pdf->setPrintFooter(false);
+		$this->pdf->setPrintHeader(true);
+		$this->pdf->setPrintFooter(true);
 	}
+
 
 
 	/**
@@ -104,8 +144,8 @@ class LabelSheet {
 				}
 
 				// Calc X/Y offset for next label
-				$row = ((int)($n / 3));
-				$col = ($n % 3); 
+				$row = ((int)($n / 2));
+				$col = ($n % 2); 
 
 				$offy = $this->options['marginY'] + ($row * $this->options['label_height']) + $this->options['gutter'];
 				$offx = $this->options['marginX'] + ($col * $this->options['label_width']) + $this->options['gutter'];
@@ -141,7 +181,7 @@ class LabelSheet {
 				/*****************
 				*  Seller Number *
 				*****************/
-				$text = sprintf("Verk.-Nr: %03u", $this->sellerData['seller_nr']);
+				$text = sprintf("Verkäufer-Nummer: %03u", $this->sellerData['seller_nr']);
 				$this->pdf->SetXY($offx + 15, $offy + 38);
 				$this->pdf->Cell(30, 6, $text, 0, 0, 'L', false, '', 0, false, 'T', 'T');
 
