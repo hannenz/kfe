@@ -29,11 +29,12 @@
 </table>
 
 <h2 class="headline">Wie geht es jetzt weiter?</h2>
-<p>Dolor minim pariatur nulla, eu commodo quis dolor sunt Ut veniam ea magna pariatur do amet amet culpa qui incididunt aute veniam voluptate qui ex consequat commodo cupidatat sit fugiat.</p>
-<p><a class="button" href="{PAGEURL:10}">Alle Infos</a> <a class="button" href="{PAGEURL:6}">Etiketten erstellen und druchen</a></p>
+
+<p>Mit deiner registrierten Verkäufernummer und deiner E-Mail Adresse kannst du Etiketten für deine Ware erstellen und ausdrucken. Du kannst dir bis zum Flohmarkt beliebig oft und so viele Etiketten drucken wie du brauchst.</p>
+
+<p><a class="button" href="{PAGEURL:10}">Allgemeine Infos</a> <a class="button" href="{PAGEURL:6}">Etiketten erstellen und drucken</a></p>
 
 
 <p>
 	<b>Wir freuen uns auf dich!</b><br>
-	Kinderflohmarkt Erbach Team
 </p>

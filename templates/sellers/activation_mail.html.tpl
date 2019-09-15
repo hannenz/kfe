@@ -8,4 +8,4 @@
 	<a href="{VAR:activationUrl}">{VAR:activationUrl}</a>
 </p>
 
-<p>Dein Kinderflohmarkt Erbach Team :-)</p>
+<p>Dein Erbacher Kinderflohmarkt-Team </p>

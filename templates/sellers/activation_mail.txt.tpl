@@ -6,4 +6,4 @@ Besuche den folgenden Link, um die Registrierung abzuschliessen:
 
 {VAR:activationUrl}
 
-Dein Kinderflohmarkt Erbach Team :-)
+Dein Ebacher Kinderflohmarkt-Team 

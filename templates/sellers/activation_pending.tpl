@@ -11,5 +11,5 @@
 </p>
 
 <p>Wir freuen uns schon auf dich!<br>
-	<b>Dein Kinderflohmarkt Erbach Team</b>
+	<b>Dein Erbacher Kinderflohmarkt-Team</b>
 </p>
