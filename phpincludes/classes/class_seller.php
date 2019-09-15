@@ -217,7 +217,11 @@ class Seller extends Model {
 	/**
 	 * Authenticate a seller for a given market
 	 *
-	 * @return boolean
+	 * @param int 			The seller nr
+	 * @param string 		Seller email
+	 * @param int 			Market ID for which the seller is regiostrated (0 =
+	 * 						valid for all markets (employee)
+	 * @return boolean 	
 	 */
 	public function authenticate($sellerNr, $sellerEmail, $marketId) {
 

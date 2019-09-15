@@ -56,6 +56,8 @@ class SellersController extends Controller {
 	 */
 	public $isAjaxRequest;
 
+
+
 	/**
 	 * Init
 	 *
@@ -73,6 +75,26 @@ class SellersController extends Controller {
 
 		$this->isAjaxRequest = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 	}
+
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 */
+	public function initActions($action = '') {
+		parent::initActions($action);
+		switch ($this->pageId) {
+			case 17:
+				$this->action = !empty($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
+				break;
+			default:
+				$this->action = 'default';
+				break;
+		}
+	}
+	
+
 	
 	/**
 	 * Default action
@@ -299,6 +321,64 @@ class SellersController extends Controller {
 		$this->content = $this->Market->getAvailableNumbers($marketId);
 	}
 
+
+
+	/**
+	 * login
+	 */
+	public function actionlogin() {
+
+		try {
+
+			$market = $this->Market->getNextUpcoming();
+			if (empty($market)) {
+				throw new Exception('errorNoMarkets');
+			}
+
+			if (!empty($this->postvars)) {
+
+				$seller = $this->Seller->findBySellerNr($this->postvars['seller_nr']);
+				if (empty($seller)) {
+					throw new Exception('errorLoginFailed');
+				}
+
+
+				if (!$this->Seller->authenticate($seller['seller_nr'], $this->postvars['seller_email'], $market['id'])) {
+					throw new Exception('errorLoginFailed');
+				}
+
+				$this->Seller->login($seller);
+
+				$redirectUrl = sprintf('%s%s',
+					$this->CmtPage->makePageFilepath(6),
+					$this->CmtPage->makePageFilename(6)
+				);
+				header('Location: ' . $redirectUrl);
+				exit(0);
+			}
+		}
+		catch (Exception $e) {
+			$this->parser->setMultipleParserVars([
+				'error' => true,
+				'errorCode' => $e->getMessage()
+			]);
+		}
+
+		$this->parser->setParservar('market_id', $market['id']);
+		$this->parser->setMultipleParserVars($market);
+		$this->parser->setMultipleParserVars($this->postvars);
+		$this->content = $this->parser->parseTemplate($this->templatesPath . 'login.tpl');
+	}
+
+	/**
+	 * logout
+	 *
+	 * @return void
+	 */
+	public function actionlogout() {
+		$this->Seller->logout();
+		return $this->changeAction('login');
+	}
 }
 
 $al = new PsrAutoloader();

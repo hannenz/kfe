@@ -7,7 +7,6 @@ use Contentomat\Logger;
 use Contentomat\Contentomat;
 use Contentomat\Controller;
 use Contentomat\PsrAutoloader;
-use Contentomat\CmtPage;
 use KFE\BarcodeSheet;
 use KFE\Market;
 use KFE\Seller;
@@ -36,11 +35,6 @@ class BarcodesController extends Controller {
 	protected $Seller;
 
 	/**
-	 * @var Contentomat\CmtPage
-	 */
-	protected $CmtPage;
-
-	/**
 	 * Init
 	 *
 	 * @access public
@@ -50,100 +44,16 @@ class BarcodesController extends Controller {
 		$this->templatesPath = PATHTOWEBROOT . "templates/barcodes/";
 		$this->Market = new Market();
 		$this->Seller = new Seller();
-		$this->CmtPage = new CmtPage();
-		// $session = Contentomat::getContentomat()->getSession();
-		// echo '<pre>'; var_dump($session->getAllSessionVars()); echo '</pre>'; 
 	}
 
-	/**
-	 * initActions
-	 *
-	 * @return void
-	 */
-	public function initActions($action = '') {
-		parent::initActions($action);
-		switch ($this->pageId) {
-			case 17:
-				$this->action = !empty($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
-				break;
-			case 6:
-				$this->action = 'composeSheet';
-				break;
-			default:
-				$this->action = 'default';
-				break;
-		}
-	}
-	
-	
 	/**
 	 * Default action
 	 *
 	 * @return void
 	 */
 	public function actionDefault() {
-		// $this->changeAction('composeSheet');
+		$this->changeAction('composeSheet');
 	}
-
-
-	/**
-	 * Login
-	 */
-	public function actionLogin() {
-
-		try {
-
-			$market = $this->Market->getNextUpcoming();
-			if (empty($market)) {
-				throw new Exception('errorNoMarkets');
-			}
-
-			if (!empty($this->postvars)) {
-
-				$seller = $this->Seller->findBySellerNr($this->postvars['seller_nr']);
-				if (empty($seller)) {
-					throw new Exception('errorLoginFailed');
-				}
-
-
-				if (!$this->Seller->authenticate($seller['seller_nr'], $this->postvars['seller_email'], $market['id'])) {
-					throw new Exception('errorLoginFailed');
-				}
-
-				$this->Seller->login($seller);
-
-
-				$redirectUrl = sprintf('%s%s',
-					$this->CmtPage->makePageFilePath(6),
-					$this->CmtPage->makePageFileName(6)
-				);
-				header('Location: ' . $redirectUrl);
-				exit(0);
-			}
-		}
-		catch (Exception $e) {
-			$this->parser->setParserVar('error', true);
-			$this->parser->setParserVar('errorCode', $e->getMessage());
-		}
-
-		$this->parser->setParserVar('market_id', $market['id']);
-		$this->parser->setMultipleParserVars($market);
-		$this->parser->setMultipleParserVars($this->postvars);
-		$this->content = $this->parser->parseTemplate($this->templatesPath . 'login.tpl');
-	}
-
-	/**
-	 * Logout
-	 *
-	 * @return void
-	 */
-	public function actionLogout() {
-		Logger::log('Logging out');
-		$this->Seller->logout();
-		return $this->changeAction('login');
-	}
-	
-	
 
 
 	public function actionComposeSheet() {

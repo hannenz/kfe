@@ -125,28 +125,28 @@
 			<div class="form-field form-field--amount form-field--custom-amount">
 				<input id="amount_custom_1" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_1:VAR})}{VAR:amount_custom_1}{ELSE}0{ENDIF}" name="amount_custom_1">
 				<label for="amount_custom_1"> &times; </label>
-				<input id="value_custom_1" type="text" name="value_custom_1" value="{IF({ISSET:value_custom_1:VAR})}{VAR:value_custom_1}{ENDIF}" placeholder="Betrag" pattern="^[0-9]{0,3}(,((0|5)0?))?$" >
+				<input id="value_custom_1" type="text" name="value_custom_1" value="{IF({ISSET:value_custom_1:VAR})}{VAR:value_custom_1}{ENDIF}" placeholder="Betrag" pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
 				<label for="value_custom_1">&euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount form-field--custom-amount">
 				<input id="amount_custom_2" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_2:VAR})}{VAR:amount_custom_2}{ELSE}0{ENDIF}" name="amount_custom_2">
 				<label for="amount_custom_2"> &times; </label>
-				<input id="value_custom_2" type="text" name="value_custom_2" value="{IF({ISSET:value_custom_2:VAR})}{VAR:value_custom_2}{ENDIF}" placeholder="Betrag" />
+				<input id="value_custom_2" type="text" name="value_custom_2" value="{IF({ISSET:value_custom_2:VAR})}{VAR:value_custom_2}{ENDIF}" placeholder="Betrag" pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
 				<label for="value_custom_2">&euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount form-field--custom-amount">
 				<input id="amount_custom_3" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_3:VAR})}{VAR:amount_custom_3}{ELSE}0{ENDIF}" name="amount_custom_3">
 				<label for="amount_custom_3"> &times; </label>
-				<input id="value_custom_3" type="text" name="value_custom_3"  value="{IF({ISSET:value_custom_3:VAR})}{VAR:value_custom_3}{ENDIF}" placeholder="Betrag" />
+				<input id="value_custom_3" type="text" name="value_custom_3"  value="{IF({ISSET:value_custom_3:VAR})}{VAR:value_custom_3}{ENDIF}" placeholder="Betrag" pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
 				<label for="value_custom_3">&euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount form-field--custom-amount">
 				<input id="amount_custom_4" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_4:VAR})}{VAR:amount_custom_4}{ELSE}0{ENDIF}" name="amount_custom_4">
 				<label for="amount_custom_4"> &times; </label>
-				<input id="value_custom_4" type="text" name="value_custom_4"  value="{IF({ISSET:value_custom_4:VAR})}{VAR:value_custom_4}{ENDIF}" placeholder="Betrag" />
+				<input id="value_custom_4" type="text" name="value_custom_4"  value="{IF({ISSET:value_custom_4:VAR})}{VAR:value_custom_4}{ENDIF}" placeholder="Betrag"  pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
 				<label for="value_custom_4">&euro;</label>
 			</div>
 		</fieldset>

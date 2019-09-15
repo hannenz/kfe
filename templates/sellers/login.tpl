@@ -11,10 +11,12 @@
 	{ENDIF}
 	<form action="{PAGEURL}" class="form stack" method="post" accept-charset="utf-8">
 
-			<h4>Anmeldung für Verkäufer</h4>
+			<h4>Login</h4>
+
+			<p>Bitte melden dich mit deiner Verkäufer-Nummer und E-Mail Adresse an, um diesen Bereich nutzen zu können</p>
 
 			<input type="hidden" name="market_id" value="{VAR:market_id}" />
-			<div>Flohmarkt am {DATEFMT:"{VAR:market_datetime}":"%d. %B %Y":de_DE.utf8}</div>
+			<!-- <div>Flohmarkt am {DATEFMT:"{VAR:market_datetime}":"%d. %B %Y":de_DE.utf8}</div> -->
 
 			<div class="form-field">
 				<label for="seller_nr">Verkäufer-Nummer</label>
