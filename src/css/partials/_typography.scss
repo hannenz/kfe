@@ -39,6 +39,42 @@
 	font-weight: 200;
 	src: url('../fonts/gaegu-light-webfont.woff2') format('woff2');
 }
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 200;
+	src: url('../fonts/sourcesanspro-light-webfont.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 200;
+	src: url('../fonts/sourcesanspro-lightit-webfont.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 400;
+	src: url('../fonts/sourcesanspro-regular-webfont.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 400;
+	src: url('../fonts/sourcesanspro-it-webfont.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 500;
+	src: url('../fonts/sourcesanspro-semibold-webfont.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 600;
+	src: url('../fonts/sourcesanspro-bold-webfont.woff2') format('woff2');
+}
 
 
 html {
@@ -56,9 +92,12 @@ body {
 }
 
 .headline {
-	font-family: "Gaegu";
+	// font-family: "Gaegu";
 	color: currentColor;
 
+}
+.headline, p {
+	max-width: 30rem;
 }
 
 h1.headline {

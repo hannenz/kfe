@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>{PAGETITLE} - {CONSTANT:WEBNAME}:</title>
+	<title>{PAGETITLE} - {CONSTANT:WEBNAME}</title>
 	<meta name="description" content="{PAGEVAR:cmt_meta_description:recursive}">
 	<meta name="keywords" content="{PAGEVAR:cmt_meta_keywords:recursive}">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
