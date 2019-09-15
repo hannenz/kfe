@@ -43,7 +43,7 @@ MODE=ssh
 ##
 # @var string
 # Hostname to use for either ssh or ftp connection to remote host
-HOSTNAME=hannenz.de
+HOSTNAME=kinderflohmarkt-erbach.de
 
 ##
 # @var string
@@ -55,7 +55,7 @@ FTP_USERNAME=
 ##
 # @var string
 # Remote base directory path, relative to login path, no leading or trailing slashes!
-REMOTE_DIR=/www/kfe
+REMOTE_DIR=/www
 
 ##
 # @var string 
