@@ -1,7 +1,7 @@
 {IF({ISSET:errorSellerExists})}
 <div class="message message--error">
 	Die E-Mail-Adresse &lt;{VAR:seller_email}&gt; wurde bereits für den Markt am
-	{DATEFMT:"{VAR:market_datetime}":"%d.%m.%Y"} registriert. Vielleicht hast du die Registrierung
+	{DATEFMT:"{VAR:market_begin}":"%d.%m.%Y"} registriert. Vielleicht hast du die Registrierung
 	noch nicht abgeschlossen? Wir haben einen Aktivierungs-Link an
 	&lt;{VAR:seller_email}&gt; gesendet. Wenn du keine E-Mail erhalten hast oder
 	denkst, dass hier ein Fehler vorliegt, kontaktiere uns bitte unter
@@ -46,7 +46,7 @@
 
 <form id="registration" name="registration" class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8" novalidate>
 
-	<p>Registrierung als Verkäufer für den Erbacher Kinderflohmarkt am {DATEFMT:"{VAR:market_datetime}":"%a, %d. %B %Y"}</p>
+	<p>Registrierung als Verkäufer für den Erbacher Kinderflohmarkt am {DATEFMT:"{VAR:market_begin}":"%a, %d. %B %Y"}</p>
 	<p><em><b>Hinweis: </b>Die mit einem <b>*</b> gekennzeichneten Felder müssen ausgefüllt werden</em></p>
 
 	<div class="stack-item">

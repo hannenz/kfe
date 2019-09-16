@@ -50,7 +50,7 @@ class Market extends Model {
 	public function getUpcoming($limit = null) {
 
 		$this->filter([
-			'market_datetime > ' => 'NOW()'
+			'market_begin > ' => 'NOW()'
 		]);
 		if ($limit != null) {
 			$this->limit($limit);
@@ -69,6 +69,17 @@ class Market extends Model {
 	public function getNextUpcoming() {
 		$markets = $this->getUpcoming(1);
 		return array_shift($markets);
+	}
+	
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 */
+	public function findArchived() {
+		$query = sprintf("SELECT * FROM %s WHERE market_end < NOW() AND market_is_public=1 AND market_charity != ''", $this->tableName);
+		return $this->query($query);
 	}
 	
 
@@ -107,7 +118,13 @@ class Market extends Model {
 	 * @return void
 	 */
 	public function afterRead($result) {
+		$now = time();
 		$result['marketNumberAssignmentIsRunning'] = $this->numberAssignmentIsRunning($result);
+		$result['marketNumberAssignmentIsUpcoming'] = false;
+
+		if (strtotime($result['market_number_assignment_begin']) > $now && strtotime($result['market_number_assignment_end']) > $now && !(bool)$result['market_number_assignment_is_closed']) {
+			$result['marketNumberAssignmentIsUpcoming'] = true;
+		}
 		$result['numbersLeft'] = count($this->getAvailableNumbers($result['id']));
 		$result['registrationUrl'] = sprintf('%s%s?market_id=%u',
 			$this->CmtPage->makePageFilePath($this->registrationPageId),
@@ -116,7 +133,7 @@ class Market extends Model {
 		);
 		$result['detailUrl'] = sprintf('%s%s:%u.html',
 			$this->CmtPage->makePageFilePath($this->detailPageId),
-			strftime('%Y-%m-%s', strtotime($result['market_datetime'])),
+			strftime('%Y-%m-%s', strtotime($result['market_begin'])),
 			$result['id']
 		);
 

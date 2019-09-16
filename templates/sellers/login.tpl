@@ -11,9 +11,9 @@
 	{ENDIF}
 	<form action="{PAGEURL}" class="form stack" method="post" accept-charset="utf-8">
 
-			<h4>Login</h4>
+			<h2>Login</h2>
 
-			<p>Bitte melden dich mit deiner Verkäufer-Nummer und E-Mail Adresse an, um diesen Bereich nutzen zu können</p>
+			<p>Bitte melde dich mit deiner Verkäufernummer und E-Mail Adresse an, um diesen Bereich nutzen zu können</p>
 
 			<input type="hidden" name="market_id" value="{VAR:market_id}" />
 			<!-- <div>Flohmarkt am {DATEFMT:"{VAR:market_datetime}":"%d. %B %Y":de_DE.utf8}</div> -->
@@ -31,13 +31,13 @@
 			<div class="form-field">
 				<button {IF({ISSET:errorNoMarkets})}disabled{ENDIF} class="button" type="submit">Anmelden</button>
 			</div>
-			<div class="form--field">
-				<p>
+			<!-- <div class="form&#45;&#45;field"> -->
+				<!-- <p> -->
 					<!-- TODO: Reg.-Link nur wenn Markt laufende Nummernvergabe hat -->
 					<!-- Noch keine Verkäufernummer? <a href="{PAGEURL:7}?market_id={VAR:market_id}">Jetzt registrieren</a><br> -->
 					<!-- Verkäufernummer vergessen? <a href="">Hier klicken</a> -->
-				</p>
-			</div>
+				<!-- </p> -->
+			<!-- </div> -->
 	</form>
 	
 </section>

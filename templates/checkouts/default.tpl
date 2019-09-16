@@ -14,7 +14,7 @@
 		<!-- <input type="number" value="{VAR:marketId}" name="marketId" id="marketId" /> -->
 		<select name="marketId" id="marketId">
 			{LOOP VAR(markets)}
-			<option value="{VAR:id}">{VAR:market_datetime}</option>
+			<option value="{VAR:id}">{VAR:market_begin}</option>
 			{ENDLOOP VAR}
 		</select>
 	</div>

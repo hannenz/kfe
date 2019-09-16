@@ -130,17 +130,31 @@
 	background-color: #fff;
 
 	input, label {
-		flex: 0 1 50%;
-		max-width: 50%;
+		flex: 1;
 	}
 
 	input {
+		max-width: 80px;
+		flex: 0 1 80px;
 		text-align: center;
 	}
 
 	label {
 		font-weight: bold;
 		color: $bg-color-3;
+	}
+
+	label[for^=amount_custom] {
+		max-width: 24px;
+	}
+
+	input[name^=value_custom] {
+		text-align: left;
+		padding-left: 0;
+		color: #607714;
+		font-size: 20px;
+		font-weight: bold;
+		max-width: 4rem;
 	}
 }
 

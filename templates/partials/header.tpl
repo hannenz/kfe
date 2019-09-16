@@ -6,6 +6,6 @@
 </header>
 {IF({ISSET:cmt_visitorloggedin:SESSION})}
 <div class="userbar">
-	{SESSIONVAR:seller_nr} | {SESSIONVAR:seller_firstname} {SESSIONVAR:seller_lastname} | &lt;{SESSIONVAR:seller_email}&gt; | <a class="" href="{PAGEURL:17}?action=logout">Abmelden</a>
+	Verkäufernummer <b>{SESSIONVAR:seller_nr}</b> &middot; {SESSIONVAR:seller_firstname} {SESSIONVAR:seller_lastname} &middot; <a class="" href="{PAGEURL:6}">Etiketten drucken</a> &middot; <a class="" href="{PAGEURL:17}?action=logout">Abmelden</a>
 </div>
 {ENDIF}

@@ -74,6 +74,11 @@ if (!class_exists('\KFE\MarketsController')) {
 				return;
 			}
 
+			if ($this->pageId == 18) {
+				$this->action = 'archive';
+				return;
+			}
+
 			$this->action = 'upcoming';
 		}
 
@@ -122,6 +127,12 @@ if (!class_exists('\KFE\MarketsController')) {
 
 			$this->parser->setMultipleParserVars($market);
 			$this->content = $this->parser->parseTemplate($this->templatesPath . 'detail.tpl');
+		}
+
+		public function actionArchive() {
+			$markets = $this->Market->findArchived();
+			$this->parser->setParserVar('markets', $markets);
+			$this->content = $this->parser->parseTemplate($this->templatesPath . 'archive.tpl');
 		}
 	}
 }

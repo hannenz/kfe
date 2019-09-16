@@ -1,0 +1,23 @@
+/**
+ * src/css/components/_sidebar.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ */
+
+.markets.markets--upcoming {
+	list-style-type: none;
+	@extend .stack;
+
+	.market__datetime {
+		background-color: var(--primary-color);
+		color: #fff;
+		display: inline-block;
+		padding: 0 4px;
+		font-weight: 200;
+		b {
+			font-weight: 500;
+		}
+	}
+
+}

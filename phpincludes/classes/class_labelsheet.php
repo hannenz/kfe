@@ -169,7 +169,7 @@ class LabelSheet {
 				*************/
 				$code = sprintf('%04u%s%04u%03u%05u',
 					$this->marketData['id'],
-					strftime('%Y%m%d', strtotime($this->marketData['market_datetime'])),
+					strftime('%Y%m%d', strtotime($this->marketData['market_begin'])),
 					$this->sellerData['id'],
 					$this->sellerData['seller_nr'],
 					$value
