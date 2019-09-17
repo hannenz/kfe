@@ -1,3 +1,6 @@
+{IF("{CONSTANT:ISPRODUCTION}" == "1")}
+	<div>Etiketten-Druck ist möglich ab voraussichtlich Do, 19.09.2019.</div>
+{ELSE}
 <section>
 	<form id="composeform" class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8">
 
@@ -154,3 +157,6 @@
 		<div class="action-area">
 			<button class="button" type="submit">Gib mir die Codes!</button>
 		</div>
+	</form>
+</section>
+{ENDIF}

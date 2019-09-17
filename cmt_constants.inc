@@ -83,4 +83,11 @@ define ('CMT_LOG_TARGET', LOG_TARGET_FILE);
 // Path to Log File, if log target LOG_TARGET_FILE is selected (must be writable by web server user)
 define ('CMT_LOG_FILE', PATHTOTMP . 'logs' . DIRECTORY_SEPARATOR . 'contentomat.log');
 */
+
+if ($_SERVER['SERVER_NAME'] == 'www.kinderflohmarkt-erbach.de') {
+	define('ISPRODUCTION', true);
+}
+else {
+	define('ISPRODUCTION', false);
+}
 ?>
