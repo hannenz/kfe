@@ -11,9 +11,9 @@
 	{ENDIF}
 	<form action="{PAGEURL}" class="form stack" method="post" accept-charset="utf-8">
 
-			<h2>Login</h2>
+			<!-- <h2>Login</h2> -->
 
-			<p>Bitte melde dich mit deiner Verkäufernummer und E-Mail Adresse an, um diesen Bereich nutzen zu können</p>
+			<!-- <p>Bitte melde dich mit deiner Verkäufernummer und E&#45;Mail Adresse an, um diesen Bereich nutzen zu können</p> -->
 
 			<input type="hidden" name="market_id" value="{VAR:market_id}" />
 			<!-- <div>Flohmarkt am {DATEFMT:"{VAR:market_datetime}":"%d. %B %Y":de_DE.utf8}</div> -->

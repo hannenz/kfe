@@ -114,6 +114,7 @@ class Seller extends Model {
 		}
 
 		// Todo: Check if market is existing and is open for number assignment
+		$this->Market = new Market();
 		$market = $this->Market->findById($marketId);
 		if (empty($market) || !$this->Market->numberAssignmentIsRunning($market)) {
 			throw new NumberAssignmetNotRunningException();
@@ -247,8 +248,8 @@ class Seller extends Model {
 
 	public function login($seller) {
 
-		$this->Session->setSessionVar('cmt_visitorloggedin', true);
 		$this->Session->setMultipleSessionVars([
+			'cmt_visitorloggedin' => true,
 			'seller_nr' => $seller['seller_nr'],
 			'seller_firstname' => $seller['seller_firstname'],
 			'seller_lastname' => $seller['seller_lastname'],

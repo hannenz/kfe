@@ -104,6 +104,10 @@ h1.headline {
 
 }
 
+h2.headline {
+	margin-top: 2 * $vertical-unit;
+}
+
 p, ul {
 	margin-bottom: $vertical-unit;
 }
@@ -153,3 +157,12 @@ p, ul {
 	line-height: 1;
 	color: #000;
 }
+
+.flash-message {
+	background-color: var(--error-color);
+	color: #fff;
+	@include type-setting(0);
+	font-weight: 500;
+	padding: 4px 10px;
+}
+

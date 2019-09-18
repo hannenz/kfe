@@ -25,4 +25,26 @@
 		transform: rotate(-2deg);
 		box-shadow: 5px 5px 4px rgba(100, 100, 100, 0.5);
 	}
+
+	ol {
+		margin-top: 24px;
+		counter-reset: cnt;
+		list-style-type: none;
+		@extend .stack;
+	}
+
+	li {
+		padding-left: 24px;
+		position: relative;
+		counter-increment: cnt;
+
+		&::before {
+			content: counter(cnt)'.';
+			color: var(--primary-color);
+			font-family: Gaegu;
+			font-weight: bold;
+			position: absolute;
+			left: 0;
+		}
+	}
 }

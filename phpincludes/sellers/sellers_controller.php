@@ -11,9 +11,6 @@ use KFE\Market;
 use KFE\SellerExistsForMarketException;
 use \Exception;
 
-error_reporting(E_ALL & ~E_NOTICE);
-setlocale(LC_TIME, 'de_DE.UTF-8');
-
 /**
  * Class checkouts_controller
  * @author Johannes Braun <johannes.braun@hannenz.de>
@@ -66,14 +63,15 @@ class SellersController extends Controller {
 	 */
 	public function init() {
 		$this->Cmt = Contentomat::getContentomat();
+		$this->Session = $this->Cmt->getSession();
+
 		$this->Seller = new Seller();
 		$this->Market = new Market();
 		$this->Mail = new Mail();
 		$this->CmtPage = new CmtPage();
-		$this->Session= $this->Cmt->getSession();
-		$this->templatesPath = PATHTOWEBROOT . "templates/sellers/";
 
-		$this->isAjaxRequest = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+		$this->templatesPath = PATHTOWEBROOT . "templates/sellers/";
+		// $this->isAjaxRequest = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 	}
 
 
@@ -82,8 +80,13 @@ class SellersController extends Controller {
 	 *
 	 * @return void
 	 */
-	public function initActions($action = '') {
-		parent::initActions($action);
+	protected function initActions($action = '') {
+		// parent::initActions($action);
+
+		if (!empty($_REQUEST['action'])) {
+			$this->action = trim($_REQUEST['action']);
+			return;
+		}
 		switch ($this->pageId) {
 			case 17:
 				$this->action = !empty($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
@@ -101,7 +104,7 @@ class SellersController extends Controller {
 	 *
 	 * @return void
 	 */
-	public function actionDefault() {
+	protected function actionDefault() {
 		$this->changeAction('registrate');
 	}
 
@@ -109,15 +112,15 @@ class SellersController extends Controller {
 	/**
 	 * Handle registration of a seller for a certain market
 	 */
-	public function actionRegistrate() {
+	protected function actionRegistrate() {
 
 		try {
 			$marketId = (int)$_REQUEST['market_id'];
 			if (empty($marketId)) {
-				$this->Session->setSessionVar('flashMessage', 'No market Id');
+				$this->Session->setSessionVar('flashMessage', 'Kein Flohmarkt angegeben');
 				$this->Session->saveSessionVars();
 				header('Location: /');
-				die();
+				exit;
 			}
 
 			$this->parser->setParserVar('market_id', $marketId);
@@ -166,7 +169,10 @@ class SellersController extends Controller {
 			}
 		}
 		catch (RegistrationNotPossibleException $e) {
-			die ("Market is closed");
+			$this->Session->setSessionVar('flashMessage', 'Für den Flohmarkt mit dieser ID ist zur Zeit keine Registrierung möglich');
+			$this->Session->saveSessionVars();
+			header('Location: /');
+			exit;
 
 		}
 		catch (\Exception $e) {
@@ -195,7 +201,7 @@ class SellersController extends Controller {
 	 *
 	 * @return void
 	 */
-	public function sendActivationLink($email, $hash) {
+	protected function sendActivationLink($email, $hash) {
 		$activationUrl = sprintf('http%s://%s%s%s?action=activate&hash=%s',
 			!empty($_SERVER['HTTPS']) ? 's' : '', 
 			$_SERVER['SERVER_NAME'],
@@ -221,7 +227,7 @@ class SellersController extends Controller {
 	}
 
 
-	public function actionActivate() {
+	protected function actionActivate() {
 		$hash = $this->getvars['hash'];
 		if (empty($hash)) {
 			// TODO: Handle this case!
@@ -257,7 +263,7 @@ class SellersController extends Controller {
 	/**
 	 * Activation screen
 	 */
-	public function actionActivationPending() {
+	protected function actionActivationPending() {
 		$this->parser->setMultipleParserVars($_REQUEST);
 		$this->content = $this->parser->parseTemplate($this->templatesPath . 'activation_pending.tpl');
 	}
@@ -265,7 +271,7 @@ class SellersController extends Controller {
 	/**
 	 * Success screen
 	 */
-	public function actionSuccess() {
+	protected function actionSuccess() {
 		$this->parser->setMultipleParserVars($_REQUEST);
 		$this->content = $this->parser->parseTemplate($this->templatesPath . 'registration_success.tpl');
 	}
@@ -276,14 +282,16 @@ class SellersController extends Controller {
 	 *
 	 * @access public
 	 */
-	public function sendWelcomeMail($seller) {
+	protected function sendWelcomeMail($seller) {
 
 		$market = $this->Market->findById($seller['seller_market_id']);
 		$this->parser->setMultipleParserVars(array_merge($seller, $market));
 		$this->parser->setParserVar('sellerId', $seller['id']);
 
 		$text = $this->parser->parseTemplate($this->templatesPath . 'welcome.txt.tpl');
-		$html = $this->parser->parseTemplate($this->templatesPath . 'welcome.html.tpl');
+		$mailContent = $this->parser->parseTemplate($this->templatesPath . 'welcome.html.tpl');
+		$this->parser->setParserVar('mailContent', $mailContent);
+		$html = $this->parser->parseTemplate(PATHTOWEBROOT . 'templates/email.tpl');
 
 		$check = $this->Mail->send([
 			'recipient' => $seller['seller_email'],
@@ -300,7 +308,7 @@ class SellersController extends Controller {
 	}
 	
 
-	public function actionValidateField() {
+	protected function actionValidateField() {
 		$this->isJson = true;
 		$this->isAjax = true;
 
@@ -313,7 +321,7 @@ class SellersController extends Controller {
 	}
 
 
-	public function actionUpdateAvailableSellerNrs() {
+	protected function actionUpdateAvailableSellerNrs() {
 		$this->isJson = true;
 		$this->isAjax = true;
 
@@ -326,7 +334,7 @@ class SellersController extends Controller {
 	/**
 	 * login
 	 */
-	public function actionlogin() {
+	protected function actionlogin() {
 
 		try {
 
@@ -375,15 +383,17 @@ class SellersController extends Controller {
 	 *
 	 * @return void
 	 */
-	public function actionlogout() {
+	protected function actionLogout() {
 		$this->Seller->logout();
+		header("Location: /");
+		die();
 		return $this->changeAction('login');
 	}
 }
 
-$al = new PsrAutoloader();
-$al->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");
-$al->addNamespace('KFE', PATHTOWEBROOT . "phpincludes/classes");
+$autoLoader = new PsrAutoloader();
+$autoLoader->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");
+$autoLoader->addNamespace('KFE', PATHTOWEBROOT . "phpincludes/classes");
 
 $ctl = new SellersController();
 $content = $ctl->work();

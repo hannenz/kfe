@@ -34,7 +34,6 @@
 
 <p><a class="button" href="{PAGEURL:10}">Allgemeine Infos</a> <a class="button" href="{PAGEURL:6}">Etiketten erstellen und drucken</a></p>
 
-
 <p>
 	<b>Wir freuen uns auf dich!</b><br>
 </p>

@@ -5,11 +5,11 @@
 	vorgemerkt und einen Aktivierungslink an deine
 	E-Mail-Adresse <b>&lt;{VAR:seller_email}&gt;</b> gesendet.
 </p><p>
-	Um die Registrierung abzuschliessen, prüfe bitte dein E-Mail-Postfach und
-	klicke auf den Aktivierungs-Link (oder kopiere die URL in die Adresszeile
-	deines Browsers).
+	Um die Registrierung abzuschliessen, prüfe bitte dein E-Mail-Postfach (ggf.
+	auch im Spam-Ordner nachsehen!) und klicke auf den Aktivierungs-Link (oder
+	kopiere die URL in die Adresszeile deines Browsers).
 </p>
 
-<p>Wir freuen uns schon auf dich!<br>
+<p>Wir freuen uns auf dich!<br>
 	<b>Dein Erbacher Kinderflohmarkt-Team</b>
 </p>

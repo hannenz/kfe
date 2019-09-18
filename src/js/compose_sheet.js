@@ -12,6 +12,7 @@ function Composer() {
 	var emailInput;
 	var sellerNrInput;
 	var marketInput;
+	var sheetInfo;
 
 	this.init = function() {
 		if (document.forms.composeform) {
@@ -21,6 +22,7 @@ function Composer() {
 
 	this.setup = function() {
 
+		self.sheetInfo = document.getElementById('sheet-info');
 		button = document.querySelector('button[type=submit]');
 		inputs = document.querySelectorAll('[name^=amount]');
 		self.update();
@@ -51,11 +53,13 @@ function Composer() {
 
 		if (total > 0) {
 			button.disabled = false;
-			button.innerText = 'PDF erzeugen: ' + total + ' Etiketten auf ' + pages + ' Seiten';
+			button.innerText = 'PDF erstellen';
+			self.sheetInfo.innerHTML = "&rarr; " + total + ' Etiketten auf ' + pages + ' Seiten'
 		}
 		else {
 			button.disabled = true;
 			button.innerText = 'Wählen Sie mindestens 1 Etikett aus';
+			self.sheetInfo.innerHTML = "&rarr; " + total + ' Etiketten auf ' + pages + ' Seiten'
 		}
 	};
 

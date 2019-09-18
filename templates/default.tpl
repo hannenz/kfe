@@ -24,10 +24,10 @@
 	<section class="main-content">
 		<div class="inner-bound columns-container">
 			<div class="main">
-				<div class="stack">
-					{FLASHMESSAGE}
-				</div>
-				<div class="stack">
+				<div class="stack stack--large">
+					{IF("{HASFLASHMESSAGE}" == "1")}
+					<div class="flash-message">{FLASHMESSAGE}</div>
+					{ENDIF}
 					{LOOP CONTENT(1)}{ENDLOOP CONTENT}
 				</div>
 			</div>

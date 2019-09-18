@@ -10,13 +10,13 @@
 {ENDIF}
 {IF({ISSET:errorUnknown})}
 <div class="message message--error">
-	Es ist ein interner Fehler aufgetreten. Bitte versuchen Sie es erneut oder
-	nehmen Sie Kontakt mit uns auf 
+	Es ist ein interner Fehler aufgetreten. Bitte versuche es erneut oder
+	nimm Kontakt mit uns auf: <a href="mailto:info@kinderflohmarkt-erbach.de">&lt;info@kinderflohmarkt-erbach.de&gt;</a>
 </div>
 {ENDIF}
 {IF({ISSET:errorInvalidEmail})}
 <div class="message message--error">
-	Bitte geben Sie eine gültige E-Mail-Adresse ein
+	Bitte gib eine gültige E-Mail-Adresse ein
 </div>
 {ENDIF}
 {IF({ISSET:errorEmailsDontMatch})}
@@ -26,7 +26,7 @@
 {ENDIF}
 {IF({ISSET:errorSellerNrAlreadyAllocated})}
 <div class=" class="message message--error"">
-	Die Verkäufer-Nummer ist bereits vergeben.
+	Sorry, aber diese Verkäufer-Nummer ist leider schon vergeben.
 </div>
 {ENDIF}
 {IF({ISSET:hasValidationErrors})}
@@ -36,7 +36,7 @@
 {ENDIF}
 {IF({ISSET:error_agree})}
 <div class="message message--error">
-	Du musst unsere Datenschutzbestimmungen akzeptieren, damit wir Deine Registrierung aufnehmen dürfen.
+	Du musst unsere <a href="{PAGEURL:11}">Datenschutzbestimmungen</a> akzeptieren, damit wir deine Registrierung aufnehmen dürfen.
 </div>
 {ENDIF}
 {IF({ISSET:error_other})}
@@ -46,7 +46,7 @@
 
 <form id="registration" name="registration" class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8" novalidate>
 
-	<p>Registrierung als Verkäufer für den Erbacher Kinderflohmarkt am {DATEFMT:"{VAR:market_begin}":"%a, %d. %B %Y"}</p>
+	<p>Kinderflohmarkt am {DATEFMT:"{VAR:market_begin}":"%a, %d. %B %Y":de_DE.utf-8}</p>
 	<p><em><b>Hinweis: </b>Die mit einem <b>*</b> gekennzeichneten Felder müssen ausgefüllt werden</em></p>
 
 	<div class="stack-item">
@@ -88,7 +88,7 @@
 
 	<div class="stack-item number-select">
 		<div class="form-field form-field--select">
-			<label for="seller_nr">Verkäufer-Nummer</label>
+			<label for="seller_nr">Freie Verkäufer-Nummern</label>
 			<select name="seller_nr" id="seller_nr">
 			{LOOP VAR(availableNumbers)}
 				<option value="{VAR:nr}" {IF("{VAR:seller_nr}" == "{VAR:nr}")}selected{ENDIF}>{VAR:nr}</option>

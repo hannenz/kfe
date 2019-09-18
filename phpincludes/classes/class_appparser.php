@@ -235,5 +235,10 @@ class AppParser extends Parser {
 		}
 		return $replaceData;
 	}
+
+	protected function macro_HASFLASHMESSAGE($value, $params) {
+		$replaceData = !empty($this->session->getSessionVar('flashMessage')) ? "1" : "0";
+		return $replaceData;
+	}
 }
 ?>

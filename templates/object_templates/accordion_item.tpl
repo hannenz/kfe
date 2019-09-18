@@ -8,6 +8,6 @@
 {ELSE}
 <details class="accordion-item">
 	<summary class="accordion-item__header">{HEAD:1}</summary>
-	<div class="accordion-item__body">{HTML:1}</div>
+	<div class="accordion-item__body body-text">{HTML:1}</div>
 </details>
 {ENDIF}

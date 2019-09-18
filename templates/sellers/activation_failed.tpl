@@ -1,2 +1,2 @@
 <h1 class="headline">Aktivierung fehlgeschlagen</h1>
-<p>Sorry, aber das hat irgendwie nicht geklappt. Bitte prüfe, ob ... kopiere die URL bla bla, wende dich an uns blubb blubber</p>
+<p>Sorry, aber das hat irgendwie nicht geklappt. Bitte versuche es noch einmal, indem du die gesamte URL des Links in deiner Aktivierungs-E-Mail kopierst und in die Adresszeile deines Browsers einfügst.i Sollte auch das nicht klappen, melde dich bei uns unter <a href="mailto:kinderflohmarkt-erbach.de">&lt;info@kinderflohmarkt-erbach.de&gt;</a></p> 

@@ -79,9 +79,9 @@ class LabelsController extends Controller {
 					}
 				};
 
-				for ($i = 1; $i <= 3; $i++) {
+				for ($i = 1; $i <= 8; $i++) {
 					$amount = (int)$this->postvars['amount_custom_' . $i];
-					$value = (int)$this->postvars['value_custom_' . $i] * 100;
+					$value = (double)str_replace(',', '.', $this->postvars['value_custom_' . $i]) * 100;
 					if ($amount > 0 && $value > 0) {
 						if (isset($data[$value])) {
 							$data[$value] += $amount;

@@ -1,9 +1,16 @@
-[ ] Backup-Script auf Server
+[✓] Backup-Script auf Server (kein Cron möglich!! Tägliches Backup von one.com vorhanden)
 
+
+[ ] Infos: Link zu Nummernbergabe
+
+[✓] Aktivierung geht nicht ! sellers_controller leitet irgendwie komisch auf /
+[ ] Abgabe- und Abholungs-Daten in Markt Details aufnehme.
+[✓] Generische Links verwenden für Etiketten=Druck und Nummernvergabe, die dann immer auf den aktuellen Markt weiterleisten / umschreiben.
+[✓] Logout geht nicht? (Bsp. Abmelden, dann Registrierung aufrufen)
 [✓] Registrierungsformular: Verk.-Nr wird bei AJAX-Validierung zurückgesetzt
 [ ] Aktivierungs-Mail: Name wird noch 
 [✓] Welcome-Screen: Telefon falsch.
-[ ] Bestätigungs-Mail (Welcome): Link zu Etiketten-Druck
+[✓] Bestätigungs-Mail (Welcome): Link zu Etiketten-Druck
 [?] Eingabe von Verkäufer-Nr. mit führenden Nullen erzeugt Fehler [jobr@2019-09-13: nicht reproduzierbar]
 [✓] Etiketten: Format ok? Muss drauf, was es ist (handschriftlich) ?
 	- 2 Felder: Größe, Artikelbezeichnung

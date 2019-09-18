@@ -1,19 +1,8 @@
-{IF("{CONSTANT:ISPRODUCTION}" == "1")}
-	<div>Etiketten-Druck ist möglich ab voraussichtlich Do, 19.09.2019.</div>
-{ELSE}
 <section>
 	<form id="composeform" class="form stack" action="{PAGEURL}" method="post" accept-charset="utf-8">
-
-		<h2 class="noheadline">Etiketten drucken</h2>
-
-		<input type="hidden" value="composeSheet" name="action" />
-
-		<div class="info">
-			Wählen Sie hier, wie viele Etiketten Sie benötigen. Anschliessend erhalten Sie eine PDF-Datei zum Ausdrucken.<br>
-			<!-- Die Etiketten haben links und rechts 1cm Rand zum Lochen, bitte achten Sie jedoch bem Lochen darauf, nicht den Strichcode zu lochen -->
-			<!-- Der Strichcode beinhaltet Ihre Verkäufer&#45;Nummer, das Datum des Flohmarkts und den Wert (in Cent). Bitte beachten Sie, dass die Etiketten nur für den ausgewählten Flohmarkt gelten. -->
-			<!-- Alte Etiketten von vergangenen FLohmärkten können <b>nicht</b> benutzt werden. -->
-		</div>
+		<header class="form-header">
+			<h2>Etiketten-Generator</h2>
+		</header>
 
 		{IF({ISSET:errorIllegalSellerNr})}
 			<div class="message message--error">
@@ -33,36 +22,6 @@
 			</div>
 		{ENDIF}
 
-		<input type="hidden" name="marketId" value="{SESSIONVAR:seller_market_id}" />
-		<input type="hidden" name="sellerNr" value="{SESSIONVAR:seller_nr}" />
-		<input type="hidden" name="sellerEmail" value="{SESSIONVAR:seller_email}" />
-
-		<!-- <fieldset class="stack"> -->
-		<!-- 	<div class="form&#45;field form&#45;field&#45;&#45;select"> -->
-		<!-- 		<label for="marketId">Markt</label> -->
-		<!-- 		<select name="marketId" id="marketId"> -->
-		<!-- 			{LOOP VAR(markets)} -->
-		<!-- 			<option value="{VAR:id}" {IF("{VAR:id}" == "{VAR:marketId}")}selected{ENDIF}>{DATEFMT:"{VAR:market_datetime}":"%d.%m.%Y"}: {VAR:market_location}</option> -->
-		<!-- 			{ENDLOOP VAR} -->
-		<!-- 		</select> -->
-		<!-- 	</div> -->
-        <!--  -->
-		<!-- 	<div class="form&#45;field form&#45;field&#45;&#45;input"> -->
-		<!-- 		<label for="sellerNr">Verkäufer&#45;Nummer</label> -->
-		<!-- 		<input id="sellerNr" type="text" value="{VAR:sellerNr}" name="sellerNr" autofocus pattern="[0&#45;9]{1,3}" /> -->
-		<!-- 		<div class="form&#45;field__info"> -->
-		<!-- 			<a href="{PAGEURL:999}">Verkäufer&#45;Nr vergessen</a> -->
-		<!-- 		</div> -->
-		<!-- 	</div> -->
-        <!--  -->
-		<!-- 	<div class="form&#45;field form&#45;field&#45;&#45;input"> -->
-		<!-- 		<label for="sellerEmail">E&#45;Mail&#45;Adresse</label> -->
-		<!-- 		<input id="sellerEmail" type="email" value="{VAR:sellerEmail}" name="sellerEmail" /> -->
-		<!-- 		<div class="form&#45;field__info"> -->
-		<!-- 			Geben Sie zum Abgleich die E&#45;Mail Adresse ein, mit der Sie sich zur Nummernvergabe registriert haben. -->
-		<!-- 		</div> -->
-		<!-- 	</div> -->
-		<!-- </fieldset> -->
 
 		<fieldset class="stack columns amounts">
 			<div class="form-field form-field--amount">
@@ -152,11 +111,47 @@
 				<input id="value_custom_4" type="text" name="value_custom_4"  value="{IF({ISSET:value_custom_4:VAR})}{VAR:value_custom_4}{ENDIF}" placeholder="Betrag"  pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
 				<label for="value_custom_4">&euro;</label>
 			</div>
+
+
+			<div class="form-field form-field--amount form-field--custom-amount">
+				<input id="amount_custom_5" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_5:VAR})}{VAR:amount_custom_5}{ELSE}0{ENDIF}" name="amount_custom_5">
+				<label for="amount_custom_5"> &times; </label>
+				<input id="value_custom_5" type="text" name="value_custom_5" value="{IF({ISSET:value_custom_5:VAR})}{VAR:value_custom_5}{ENDIF}" placeholder="Betrag" pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
+				<label for="value_custom_5">&euro;</label>
+			</div>
+
+			<div class="form-field form-field--amount form-field--custom-amount">
+				<input id="amount_custom_6" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_6:VAR})}{VAR:amount_custom_6}{ELSE}0{ENDIF}" name="amount_custom_6">
+				<label for="amount_custom_6"> &times; </label>
+				<input id="value_custom_6" type="text" name="value_custom_6" value="{IF({ISSET:value_custom_6:VAR})}{VAR:value_custom_6}{ENDIF}" placeholder="Betrag" pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
+				<label for="value_custom_6">&euro;</label>
+			</div>
+
+			<div class="form-field form-field--amount form-field--custom-amount">
+				<input id="amount_custom_7" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_7:VAR})}{VAR:amount_custom_7}{ELSE}0{ENDIF}" name="amount_custom_7">
+				<label for="amount_custom_7"> &times; </label>
+				<input id="value_custom_7" type="text" name="value_custom_7"  value="{IF({ISSET:value_custom_7:VAR})}{VAR:value_custom_7}{ENDIF}" placeholder="Betrag" pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
+				<label for="value_custom_7">&euro;</label>
+			</div>
+
+			<div class="form-field form-field--amount form-field--custom-amount">
+				<input id="amount_custom_8" type="number" min="0" max="50" value="{IF({ISSET:amount_custom_8:VAR})}{VAR:amount_custom_8}{ELSE}0{ENDIF}" name="amount_custom_8">
+				<label for="amount_custom_8"> &times; </label>
+				<input id="value_custom_8" type="text" name="value_custom_8"  value="{IF({ISSET:value_custom_8:VAR})}{VAR:value_custom_8}{ENDIF}" placeholder="Betrag"  pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
+				<label for="value_custom_8">&euro;</label>
+			</div>
 		</fieldset>
 
+
 		<div class="action-area">
-			<button class="button" type="submit">Gib mir die Codes!</button>
+			<div class="form-info" id="sheet-info">&nbsp;</div>
+			<button class="button" type="submit">PDF erzeugen</button>
 		</div>
+
+		<input type="hidden" value="composeSheet" name="action" />
+		<input type="hidden" name="marketId" value="{SESSIONVAR:seller_market_id}" />
+		<input type="hidden" name="sellerNr" value="{SESSIONVAR:seller_nr}" />
+		<input type="hidden" name="sellerEmail" value="{SESSIONVAR:seller_email}" />
+
 	</form>
 </section>
-{ENDIF}
