@@ -1,5 +1,27 @@
 <!-- TODO Schema.org / JSON+LD -->
 
+<script  type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "event",
+		"@name": "Kinderflohmarkt Erbach",
+		"startDate": "{DATEFMT:'{VAR:market_begin}':'%Y-%m-%dT%H:%M'}",
+		"endDate": "{DATEFMT:'{VAR:market_end}':'%Y-%m-%dT%H:%M'}",
+		"location": {
+			"@type": "Place",
+			"name":  "Erlenbachhalle",
+			"address": {
+				"@type": "PostalAddress",
+				"streetAddress": "Jahnstraße",
+				"postalCode": "89155",
+				"addressLocality": "Erbach",
+				"addressRegion": "Baden-Württemberg",
+				"addressCountry": "DE"
+			}
+		}
+	}
+</script>
+
 <section class="market market--detail">
 
 	<div class="callout">
@@ -22,6 +44,11 @@
 		{VAR:market_remark}
 	</div>
 
+	<div class="market__dates">
+		<h4>
+		
+	</div>
+
 	<h4>Nummernvergabe</h4>
 	{IF("{VAR:marketNumberAssignmentIsUpcoming}" == "1")}
 		<table>
@@ -29,15 +56,16 @@
 				<td>Beginn:</td>
 				<td>{DATEFMT:"{VAR:market_number_assignment_begin}":"%a %d.%m.%Y ab %k:%M":de_DE.utf-8} Uhr<br></td>
 			</tr>
-			<tr>
-				<td>Ende:</td>
-				<td>{DATEFMT:"{VAR:market_number_assignment_end}":"%a %d.%m.%Y bis %k:%M":de_DE.utf-8} Uhr</td>
-			</tr>
+			<!-- <tr> -->
+			<!-- 	<td>Ende:</td> -->
+			<!-- 	<td>{DATEFMT:"{VAR:market_number_assignment_end}":"%a %d.%m.%Y bis %k:%M":de_DE.utf&#45;8} Uhr</td> -->
+			<!-- </tr> -->
 			
 		</table>
 	{ELSE}
 		<div class="">Die Nummernvergabe für diesen Markt ist geschlossen</div>
 	{ENDIF}
+
 	{IF("{VAR:marketNumberAssignmentIsRunning}" == "1")}
 		<div class="market__number-assignment">
 			<a href="{VAR:registrationUrl}">Nummernvergabe</a>
