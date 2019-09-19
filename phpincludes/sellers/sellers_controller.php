@@ -117,14 +117,13 @@ class SellersController extends Controller {
 		try {
 			$marketId = (int)$_REQUEST['market_id'];
 			if (empty($marketId)) {
-				$this->Session->setSessionVar('flashMessage', 'Kein Flohmarkt angegeben');
-				$this->Session->saveSessionVars();
-				header('Location: /');
-				exit;
+				$market = $this->Market->getNextUpcoming();
+				$marketId = $market['id'];
 			}
-
+			else {
+				$market = $this->Market->findById($marketId);
+			}
 			$this->parser->setParserVar('market_id', $marketId);
-			$market = $this->Market->findById($marketId);
 			if (!$this->Market->numberAssignmentIsRunning($market) && !$this->Session->checkIsLoggedIn()) {
 				throw new RegistrationNotPossibleException();
 			}
