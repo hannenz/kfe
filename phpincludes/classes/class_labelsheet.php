@@ -10,8 +10,11 @@ namespace KFE;
 
 use \TCPDF;
 
-error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-ini_set('display_errors', true);
+error_reporting(0);
+if (!ISPRODUCTION) {
+	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+	ini_set('display_errors', true);
+}
 
 require_once(PATHTOWEBROOT . "phpincludes/vendor/laurentbrieu/tcpdf/src/TCPDF/TCPDF.php");
 
@@ -28,6 +31,7 @@ class LabelSheetPdf extends TCPDF {
 		$this->SetTextColor(200, 50, 50);
 		$this->MultiCell(0, 20, "In Originalgröße auf dickerem Papier (135/m2) drucken (z. Bsp. Tonpapier) oder mit Karton verstärken\nEtiketten sind nur gültig für die darauf gedruckte Verkäufer-Nummer", 0, 'C', false, 1);
 	}
+
 	/**
 	 * Header with infos
 	 *
