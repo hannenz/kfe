@@ -32,7 +32,7 @@
 				</div>
 			</div>
 			<aside class="sidebar">
-				<div class="stack">
+				<div class="stack stack--large">
 					{LOOP CONTENT(2)}{ENDLOOP CONTENT}
 				</div>
 			</aside>
