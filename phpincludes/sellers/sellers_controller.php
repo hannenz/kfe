@@ -123,6 +123,9 @@ class SellersController extends Controller {
 			else {
 				$market = $this->Market->findById($marketId);
 			}
+			if (empty($market)) {
+				die("Kein Markt mit ID: " . $marketId . "gefunden");
+			}
 			$this->parser->setParserVar('market_id', $marketId);
 			if (!$this->Market->numberAssignmentIsRunning($market) && !$this->Session->checkIsLoggedIn()) {
 				throw new RegistrationNotPossibleException();
@@ -212,7 +215,9 @@ class SellersController extends Controller {
 		$this->parser->setParserVar('activationUrl', $activationUrl);
 
 		$text = $this->parser->parseTemplate($this->templatesPath . "activation_mail.txt.tpl");
-		$html = $this->parser->parseTemplate($this->templatesPath . "activation_mail.html.tpl");
+		$mailContent = $this->parser->parseTemplate($this->templatesPath . 'activation_mail.html.tpl');
+		$this->parser->setParserVar('mailContent', $mailContent);
+		$html = $this->parser->parseTemplate(PATHTOWEBROOT . 'templates/email.tpl');
 
 		$check = $this->Mail->send([
 			'recipient' => $email,

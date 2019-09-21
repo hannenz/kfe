@@ -44,24 +44,23 @@
 		{VAR:market_remark}
 	</div>
 
-	<div class="market__dates">
-		<h4>
-		
-	</div>
-
-	<h4>Nummernvergabe</h4>
+	<h4>Termine</h4>
 	{IF("{VAR:marketNumberAssignmentIsUpcoming}" == "1")}
 		<table>
 			<tr>
-				<td>Beginn:</td>
-				<td>{DATEFMT:"{VAR:market_number_assignment_begin}":"%a %d.%m.%Y ab %k:%M":de_DE.utf-8} Uhr<br></td>
+				<td>Nummernvergabe</td>
+				<td>{DATEFMT:"{VAR:market_number_assignment_begin}":"%a %d.%m.%Y ab %k:%M":de_DE.utf-8} Uhr<br><p><b>Die Anzahl der Verkäufer-Nummern ist begrenzt!</b></p></td>
 			</tr>
-			<!-- <tr> -->
-			<!-- 	<td>Ende:</td> -->
-			<!-- 	<td>{DATEFMT:"{VAR:market_number_assignment_end}":"%a %d.%m.%Y bis %k:%M":de_DE.utf&#45;8} Uhr</td> -->
-			<!-- </tr> -->
-			
+			<tr>
+				<td>Warenabgabe</td>
+				<td>{DATEFMT:"{VAR:market_submission_begin}":"%a %d.%m.%Y %k:%M":de_DE.utf-8}&thinsp;&ndash;&thinsp;{DATEFMT:"{VAR:market_submission_end}":"%k:%M":de_DE.utf-8} Uhr</td>
+			</tr>
+			<tr>
+				<td>Warenabholung</td>
+				<td>{DATEFMT:"{VAR:market_pickup_begin}":"%a %d.%m.%Y %k:%M":de_DE.utf-8}&thinsp;&ndash;&thinsp;{DATEFMT:"{VAR:market_pickup_end}":"%k:%M":de_DE.utf-8} Uhr</td>
+			</tr>
 		</table>
+		
 	{ELSE}
 		<div class="">Die Nummernvergabe für diesen Markt ist geschlossen</div>
 	{ENDIF}
