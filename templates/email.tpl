@@ -19,14 +19,14 @@
 					</td>
 				</tr>
 				<tr>
-					<td style="background-color: #b3dc2f; height: 500px; color: #231f20; font-size: 14px; line-height: 18px; padding: 16px;">
+					<td style="box-sizing: border-box; vertical-align: top; background-color: #b3dc2f; height: 500px; color: #231f20; font-size: 14px; line-height: 18px; padding: 20px;">
 						{VAR:mailContent}
 					</td>
 				</tr>
 				<tr>
-					<td style="background-color: #51369b; height: 100px; padding: 10px">
-						<a style="color: #fff" href="https://www.kinderflohmarkt-erbach">https://www.kinderflohmarkt-erbach.de</a><br>
-						<a style="color: #fff" href="https://www.kinderflohmarkt-erbach.de/impressum">Impressum</a>
+					<td style="background-color: #51369b; height: 100px; padding: 0 20px">
+						<a style="color: #fff; text-decoration: none;" href="https://www.kinderflohmarkt-erbach.de">https://www.kinderflohmarkt-erbach.de</a><br>
+						<a style="color: #fff; text-decoration: none;" href="https://www.kinderflohmarkt-erbach.de/impressum">Impressum</a>
 					</td>
 				</tr>
 			</table>
