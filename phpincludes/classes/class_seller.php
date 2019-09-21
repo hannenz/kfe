@@ -280,6 +280,18 @@ class Seller extends Model {
 		return !empty($this->Session->getSessionVar('cmt_visitorloggedin'));
 	}
 	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 */
+	public function findByEmailAndHash($email, $hash) {
+		return $this->filter([
+			'seller_email' => $email,
+			'seller_activation_hash' => $hash
+		])->findOne();
+	}
+	
 	
 }
 ?>

@@ -198,6 +198,10 @@ class SellersController extends Controller {
 		$this->content = $this->parser->parseTemplate($this->templatesPath . "registration.tpl");
 	}
 
+	// protected function actionTestActivationLink() {
+	// 	$this->sendActivationLink("jbhannenz@gmail.com", "5226d09be923305fca3c5c20b052309e68fca775a6f54b1694388e713474662f");
+	// }
+
 	/**
 	 * Send an email containing an activation link
 	 *
@@ -213,6 +217,12 @@ class SellersController extends Controller {
 		);
 		$this->parser->setParserVar('email', $email);
 		$this->parser->setParserVar('activationUrl', $activationUrl);
+
+		error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+		$seller = $this->Seller->findByEmailAndHash($email, $hash);
+		$market = $this->Market->findById($seller['seller_market_id']);
+		$this->parser->setMultipleParserVars($market);
+		$this->parser->setMultipleParserVars($seller);
 
 		$text = $this->parser->parseTemplate($this->templatesPath . "activation_mail.txt.tpl");
 		$mailContent = $this->parser->parseTemplate($this->templatesPath . 'activation_mail.html.tpl');
