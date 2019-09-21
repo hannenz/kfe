@@ -43,6 +43,7 @@ RewriteRule ^checkliste/?$ /de/10/infos.html [R=301,NC,L]
 RewriteRule ^verkaufsnummern/?$ /de/2/Start.html [R=301,NC,L]
 RewriteRule ^etiketten(-drucken)?$ /de/6/Etiketten-drucken.html [R=301,NC,L]
 RewriteRule ^nummernvergabe$ /de/7/Registrierung.html [R=301,NC,L]
+RewriteRule ^impressum$ /de/12/Impressum.html [R=301,NC,L]
 
 #### content-o-mat: end ####
 
