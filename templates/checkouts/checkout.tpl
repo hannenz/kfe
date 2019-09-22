@@ -1,4 +1,4 @@
-<form class="checkout" id="checkout">
+<form class="checkout" id="checkout" autocomplete="off">
 	<input type="hidden" value="{VAR:marketId}" name="marketId" id="marketId" />
 	<input type="hidden" value="{VAR:checkoutId}" name="checkoutId" id="checkoutId" />
 
@@ -18,8 +18,8 @@
 			<input id="checkout-change-value" class="checkout-change" type="text" readonly value="-,-- &euro;" />
 		</div>
 		<div class="checkout-display">
-			<label for="checkout-code-finput">Code</label>
-			<input id="checkout-code-input" class="checkout-code" type="text" name="code" value="" autofocus />
+			<label for="checkout-code-finput">Code foo</label>
+			<input id="checkout-code-input" class="checkout-code" type="text" name="code" value="" autocomplete="off" autofocus />
 		</div>
 	</div>
 

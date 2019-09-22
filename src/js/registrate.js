@@ -37,7 +37,6 @@ function Registration() {
 					return;
 				}
 				
-				var 
 			}
 			var formData = new FormData(self.form);
 			xhr.send(formData);

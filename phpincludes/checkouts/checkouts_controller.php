@@ -90,7 +90,8 @@ class CheckoutsController extends ApplicationController {
 					'checkoutId' => $this->checkoutId,
 					'applicationId' => $this->applicationID,
 					'user_name' => $this->user->getUserName(),
-					'user_alias' => $this->user->getUserAlias()
+					'user_alias' => $this->user->getUserAlias(),
+					'marketDate' => strftime('%d.%m.%Y', strtotime($market['market_begin']))
 				]);
 
 				$this->content = $this->parser->parseTemplate($this->templatesPath . "checkout_standalone.tpl");
@@ -104,7 +105,7 @@ class CheckoutsController extends ApplicationController {
 
 		$markets = $this->Market->findAll();
 		$this->parser->setParserVar('markets', $markets);
-		$this->content = $this->parser->parseTemplate($this->templatesPath . "default.tpl");
+		$this->content = $this->parser->parseTemplate("default.tpl");
 	}
 
 

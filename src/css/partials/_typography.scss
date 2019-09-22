@@ -131,7 +131,7 @@ p, ul {
 	}
 }
 
-.main-content a:not(.button) {
+.main-content a:not(.button):not(.cancel-link) {
 	padding: 0 3px;
 	color: $primary-color;
 	text-decoration: none;

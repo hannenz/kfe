@@ -3,7 +3,6 @@
  *
  * @author Johannes Braun <johannes.braun@hannenz.de
  * @version 2019-07-15
- * @copyright , 15 Juli, 2019
  * @package kfe
  */
 
@@ -14,7 +13,10 @@ function Checkout() {
 	this.marketId = document.getElementById('marketId').value;
 	this.checkoutId = document.getElementById('checkoutId').value;
 
+	// This is the carts cue
 	this.carts = [];
+
+	// This is a single cart
 	this.cart = {
 		timestamp: Date.now(),
 		checkoutId: this.checkoutId,
@@ -28,15 +30,18 @@ function Checkout() {
 	this.codeInput = document.getElementById('checkout-code-input');
 
 
-
+	/**
+	 * Init
+	 */
 	this.init = function() {
 		self.statusMessage("Bereit.");
 		self.setup();
-	}
+	};
 
 
-
-
+	/**
+	 * Setup
+	 */
 	this.setup = function() {
 
 		// If camera is available, setup camera barcode scanner
@@ -66,13 +71,12 @@ function Checkout() {
 
 		console.log("Checkout::setup");
 
-		// window.addEventListener('beforeunload', function(e) {
-		// 	console.log("About to unload the page");
-		// 	var mssg = 'Seite wirklich verlassen?';
-		// 	e.preventDefault();
-		// 	(e || window.event).returnValue =  mssg;
-		// 	return mssg;
-		// });
+		window.onbeforeunload = function(e) {
+			var mssg = 'Seite wirklich verlassen?';
+			e.preventDefault();
+			(e || window.event).returnValue =  mssg;
+			return mssg;
+		};
 
 		document.forms.checkout.addEventListener('submit', function(e) {
 			e.preventDefault();
@@ -80,28 +84,33 @@ function Checkout() {
 		});
 
 		self.codeInput.addEventListener('blur', function(ev) {
-			setTimeout(function() {
-				self.codeInput.focus();
-			}, 10);
+			if (self.hasDialog) {
+				setTimeout(function() {
+					self.codeInput.focus();
+				}, 10);
+			}
 		});
 
 		self.setupBarcodeScanner();
+
 		self.camDiv = document.getElementById('cam');
 
 		var chkbx = document.getElementById('js-toggle-camera-scanner');
-		chkbx.addEventListener('change', function(e) {
+		if (chkbx) {
+			chkbx.addEventListener('change', function(e) {
 
-			if (this.checked) {
-				console.log("Starting camera scanner");
-				// self.camDiv.style.display = 'block';
-				self.cameraBarcodeScanner.turnOn();
-			}
-			else {
-				console.log("Stopping camera scanner");
-				self.cameraBarcodeScanner.turnOff();
-				// self.camDiv.style.display = 'none';
-			}
-		});
+				if (this.checked) {
+					console.log("Starting camera scanner");
+					// self.camDiv.style.display = 'block';
+					self.cameraBarcodeScanner.turnOn();
+				}
+				else {
+					console.log("Stopping camera scanner");
+					self.cameraBarcodeScanner.turnOff();
+					// self.camDiv.style.display = 'none';
+				}
+			});
+		}
 
 
 		var buttons = document.querySelectorAll('.button-panel > .button');
@@ -120,7 +129,23 @@ function Checkout() {
 	this.onKeyUp = function(ev) {
 		ev.preventDefault();
 		ev.stopPropagation();
+
+		console.log(ev.keyCode);
+
 		switch (ev.keyCode) {
+
+			case 8: // Backspace
+				self.actionCancelLast();
+				break;
+
+			case 13: // Return
+				//self.actionCommit();
+				break;
+
+			case 27: // Escape
+				self.closeDialog();
+				break;
+
 			case 65: // Q
 				self.change(500);
 				break;
@@ -174,40 +199,54 @@ function Checkout() {
 				break;
 
 			case 'cancel-last':
-				if (self.cart.items.length == 0) {
-					return;
-				}
-
-				self.cancelLast();
-				self.createTableFromCart();
+				self.actionCancelLast();
 				break;
 
 			case 'cancel':
-				if (self.cart.items.length == 0) {
-					return;
-				}
-
-				if (window.confirm("Sind Sie sicher, dass sie den gesamten Vorgang stornieren möchten?")) {
-					self.cancelCart();
-					self.createTableFromCart();
-				}
+				self.actionCancel();
 				break;
 
 			case 'commit':
-				self.commitCart();
-				self.cancelCart();
-				self.createTableFromCart();
-				self.updateTotalTurnover();
+				self.actionCommit();
 				break;
 
 			default:
-				console.log("action: " + action + " to be implemented yet");
+				console.log("Unknown action: " + action);
 				break;
 		}
 
 		self.codeInput.focus();
 		return false;
 	};
+
+
+	this.actionCancel = function() {
+		if (self.cart.items.length == 0) {
+			return;
+		}
+
+		if (window.confirm("Sind Sie sicher, dass sie den gesamten Vorgang stornieren möchten?")) {
+			self.cancelCart();
+			self.createTableFromCart();
+		}
+	}
+
+	this.actionCommit = function() {
+		self.commitCart();
+		self.cancelCart();
+		self.createTableFromCart();
+		self.updateTotalTurnover();
+	}
+
+	this.actionCancelLast = function() {
+		if (self.cart.items.length == 0) {
+			return;
+		}
+
+		self.cancelLast();
+		self.createTableFromCart();
+	}
+		
 
 
 	/**
@@ -295,7 +334,8 @@ function Checkout() {
 
 	this.cancelLast = function() {
 		var i;
-		if ((i = self.cart.items.length - 1) > 0) {
+		console.log('cancelLast');
+		if ((i = self.cart.items.length - 1) >= 0) {
 			self.cancelItem(i);
 		}
 	};
@@ -305,17 +345,33 @@ function Checkout() {
 		if (self.cart.items[i]) {
 
 			item = self.cart.items[i];
-			var mssg = "Sind Sie sicher, diese Position zu stornieren?\n#" + (i + 1)  + "\nVerkäufer-Nr: " + item.sellerId + "\nBetrag: " + (item.value / 100).toFixed(2) + "EUR";
-			console.log(mssg);
-			if (!window.confirm(mssg)) {
-				return;
-			}
+			// var mssg = "Diese Position zu stornieren?\n#" + (i + 1)  + "\nVerkäufer-Nr: " + item.sellerNr + "\nBetrag: <strong>" + (item.value / 100).toFixed(2) + " EUR<strong>";
+			// console.log(mssg);
+			// if (!window.confirm(mssg)) {
+			// 	return;
+			// }
 
-			self.cart.items.splice(i, 1);
+			self.dialog('Position stornieren?', "#" + (i + 1)  + "<br>Verkäufer-Nr: " + item.sellerNr + "<br>Betrag: <b>" + (item.value / 100).toFixed(2) + " EUR</b>", {
+				actions: [
+					{
+						text: "Nein",
+						click: function() {
+							self.closeDialog();
+						}
+					},
+					{
+						text: "Ja",
+						click: function() {
+							self.cart.items.splice(i, 1);
+							self.closeDialog();
+							self.createTableFromCart();
+							self.codeInput.focus();
+							self.persist();
+						}
+					}
+				]
+			});
 		}
-		self.createTableFromCart();
-		self.codeInput.focus();
-		self.persist();
 	}
 
 
@@ -386,11 +442,12 @@ function Checkout() {
 
 			td = document.createElement('td');
 			td.classList.add('action');
-			var btn = document.createElement('button');
+			var btn = document.createElement('a');
 			td.appendChild(btn);
 			row.appendChild(td);
 
-			btn.innerHTML = 'Stornieren';
+			btn.innerHTML = '&times; stornieren';
+			btn.className = 'cancel-link';
 			btn.addEventListener('click', function(ev) {
 				var tr = this.parentNode.parentNode;
 				var children = tr.parentNode.childNodes;
@@ -618,5 +675,50 @@ function Checkout() {
 		var el = document.getElementById('statusbar-message');
 		el.innerHTML = mssg;
 		el.classList.add(type);
+	};
+
+	this.dialog = function(title, mssg, options) {
+		var overlay = document.createElement('div');
+		overlay.className = 'dialog-overlay';
+		overlay.id = 'dialog';
+
+		var dialog = document.createElement('div');
+		dialog.className = 'dialog';
+
+		var dlgHeader = document.createElement('header');
+		dlgHeader.className = 'dialog__header';
+		dlgHeader.innerHTML = title;
+
+		var dlgBody = document.createElement('div');
+		dlgBody.className = 'dialog__body';
+		dlgBody.innerHTML = mssg;
+
+		var dlgActionArea = document.createElement('footer');
+		dlgActionArea.className = 'dialog__action-area';
+
+		console.log(options.actions);
+		options.actions.forEach(function(action) {
+			var btn = document.createElement('button');
+			btn.innerText = action.text;
+			btn.className = 'button';
+			btn.addEventListener('click', action.click);
+			dlgActionArea.appendChild(btn);
+			btn.focus();
+			console.log(document.activeElement);
+		});
+
+		dialog.appendChild(dlgHeader);
+		dialog.appendChild(dlgBody);
+		dialog.appendChild(dlgActionArea);
+
+		overlay.appendChild(dialog);
+		document.body.appendChild(overlay);
+		self.hasDialog = true;
+	};
+
+	this.closeDialog = function() {
+		var dlg = document.getElementById('dialog');
+		document.body.removeChild(dlg);
+		self.hasDialog = false;
 	};
 };

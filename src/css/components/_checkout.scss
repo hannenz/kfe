@@ -26,6 +26,19 @@
 	// }
 }
 
+
+.checkout__header {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
+	background-color: var(--bg-color-3);
+	color: #fff;
+	font-size: 13px;
+	grid-column: 1 / span 12;
+	grid-row: 1 / 1;
+}
+
+
 .checkout {
 	background-color: #dbe0db;
 	display: grid;
@@ -37,7 +50,7 @@
 
 	&__cart {
 		grid-column: 1 / span 8;
-		grid-row: 1 / span 11;
+		grid-row: 2 / span 11;
 		background-color: #fff;
 		border-right: 3px solid rgba(100, 100, 100, 0.1);
 		overflow: scroll;
@@ -45,13 +58,26 @@
 
 	&__displays {
 		grid-column: 9/ span 4;
-		grid-row: 1 / span 4;
+		grid-row: 2 / span 4;
 		padding-right: 0.25rem;
 	}
 
 	&__button-panel {
 		grid-column: 9 / span 4;
-		grid-row: 5 / span 4;
+		grid-row: 7 / span 4;
+	}
+
+	.button[data-action^=cancel] {
+		background-color: var(--error-color);
+		grid-column: span 3;
+	}
+
+	.button[data-action=cancel-last] {
+	}
+
+	.button[data-action=commit] {
+		background-color: var(--bg-color-2);
+		grid-column: span 6;
 	}
 
 	&__footer {
@@ -62,6 +88,7 @@
 
 .checkout-display {
 	position: relative;
+	margin-bottom: 1px;
 
 	label {
 		position: absolute;
@@ -78,10 +105,15 @@
 }
 
 
+.checkout__cart {
+	background-color: #dbe0db;
+	padding: 0 10px 0 10px;
+}
 .cart {
 	width: 100%;
 	border-collapse: collapse;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	font-size: 24px;
 
 	th,
 	td {
@@ -94,14 +126,14 @@
 		&:nth-child(2) {
 			color: rgba(0, 0, 0, 0.3);
 		}
-		&:nth-child(3)
-		{
+		&:nth-child(3) {
 			display: none;
 		}
 	}
 
 	th {
-		background-color: rgba(0, 0, 0, 0.1);
+		background-color: #fff;
+		font-weight: normal;
 	}
 
 
@@ -112,17 +144,31 @@
 
 	.currency {
 	}
+
+	.cancel-link {
+		visibility: hidden;
+		color: var(--primary-color);	
+		vertical-align: middle;
+		font-weight: 500;
+		cursor: pointer;
+	}
+
+	tr:hover .cancel-link {
+		visibility: visible;
+	}
 }
 
 .button-panel {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 	grid-template-rows: 1fr 1fr 1fr 1fr;
-	grid-gap: 3px;
+	grid-gap: 6px;
 	padding-right: 0.25rem;
 
 	.button {
 		margin: 0;
+		grid-column: span 2;
+
 	}
 }
 
@@ -150,8 +196,8 @@
 }
 
 #checkout-change-value {
-	background-color: var(--background-color);
-	color: rgba(255, 255, 255, 1);
+	// background-color: var(--background-color);
+	// color: rgba(255, 255, 255, 1);
 }
 
 .checkout-code {

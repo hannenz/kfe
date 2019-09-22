@@ -14,6 +14,8 @@ $bg-color-4: darken($bg-color, 33%);
 $primary-color: #51369b;
 $text-color: #231f20;
 $error-color: #c00000;
+$grey-1: #f0f0f0;
+$grey-2: #e0e0e0;
 
 :root {
 	--background-color: $bg-color;
@@ -24,6 +26,8 @@ $error-color: #c00000;
 	--primary-color: #{$primary-color};
 	--text-color: #{$text-color};
 	--error-color: #{$error-color};
+	--grey-1: #{$grey-1};
+	--grey-2: #{$grey-2};
 }
 
 
