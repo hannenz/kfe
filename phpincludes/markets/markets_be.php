@@ -17,6 +17,25 @@ $autoLoader->addNamespace('KFE', PATHTOWEBROOT . 'phpincludes/classes');
 class MarketBackendController extends ApplicationController {
 
 
+	/**
+	/* @var Contentomat\Parser;
+	 */
+	protected $Parser;
+
+	/**
+	 * @var KFE\Market
+	 */
+	protected $Market;
+
+	/**
+	 * @var KFE\Seller
+	 */
+	protected $Seller;
+
+	/**
+	 * @var KFE\Cart
+	 */
+	protected $Cart;
 
 	/**
 	 * Abzug für Spende in Prozent
@@ -32,20 +51,35 @@ class MarketBackendController extends ApplicationController {
 		$this->Market = new Market();
 		$this->Seller = new Seller();
 		$this->Cart = new Cart();
+		$this->Parser = new \Contentomat\Parser;
 		if (isset($this->getvars['id'])) {
-			$this->marketId = array_shift($this->getvars['id']);
+			$this->marketId = $this->getvars['id'];
+			if (is_array($this->marketId)) {
+				$this->marketId = array_shift($this->marketId);
+			}
 		}
 	}
 
-	public function actionDefault() {
+	public function initActions($action = '') {
+		parent::initActions();
+		if (!empty($_REQUEST['action'])) {
+			$this->action = $_REQUEST['action'];
+			return;
+		}
+	}
+
+	protected function actionDefault() {
+		$this->Parser->setParserVar('marketId', $this->marketId);
+		$this->content = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/default.tpl');
+	}
+
+	protected function actionEvaluate() {
 
 		if (empty($this->marketId)) {
 			return;
 		}
 
-
 		$market = $this->Market->findById($this->marketId);
-
 		$sellers = $this->Seller->filter(['seller_market_id', $this->marketId])->findAll();
 
 		foreach ($sellers as $n => $seller) {
@@ -53,12 +87,13 @@ class MarketBackendController extends ApplicationController {
 			$sellers[$n]['items'] = [];
 			$sellers[$n]['total'] = 0;
 			$sellers[$n]['itemsCount'] = 0;
+			$discount = (!$this->Seller->isEmployee($seller['seller_nr'])) ? $this->discount : 0;
 
 			// Get all carts from the seller's market 
 			$carts = $this->Cart->filter(['cart_market_id' => $this->marketId])->findAll();
 			foreach ($carts as $cart) {
 				foreach ($cart['items'] as &$item) {
-					if ($item['sellerId'] == $seller['id']) {
+					if ($item['sellerNr'] == $seller['seller_nr']) {
 
 						$vf = (float)$item['value'] / 100;
 
@@ -72,20 +107,21 @@ class MarketBackendController extends ApplicationController {
 					}
 				}
 
-				$sellers[$n]['discountValue'] = $sellers[$n]['total'] * ($this->discount / 100);
-				$sellers[$n]['totalNet'] = $sellers[$n]['total'] * ((100 - $this->discount) / 100);
-
+				$sellers[$n]['discount'] = $discount;
+				$sellers[$n]['discountValue'] = $sellers[$n]['total'] * ($discount / 100);
+				$sellers[$n]['totalNet'] = $sellers[$n]['total'] * ((100 - $discount) / 100);
 			}
 		}
 
-		$this->myParser = new \Contentomat\Parser();
-		$this->myParser->setParserVar('discount', $this->discount);
-		$this->myParser->setParserVar('sellers', $sellers);
-		$this->content = $this->myParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/evaluation.tpl');
+		$this->Parser->setParserVar('sellers', $sellers);
+		$this->Parser->setParserVar('marketId', $market['id']);
+		$this->Parser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
+		$this->content = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/evaluation.tpl');
 	}
 }
 
 $ctl = new MarketBackendController();
 $marketEvaluation = $ctl->work();
+$content = $marketEvaluation;
 ?>
 

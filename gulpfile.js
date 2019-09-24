@@ -81,7 +81,8 @@ var settings = {
 		dest: pkg.project_settings.prefix + 'css/',
 		srcMain: [
 			'./src/css/main.scss',
-			'./src/css/market_be.scss'
+			'./src/css/market_be.scss',
+			'./src/css/seller_be.scss'
 			// You can add more files here that will be built seperately,
 			// f.e. newsletter.scss
 		],
