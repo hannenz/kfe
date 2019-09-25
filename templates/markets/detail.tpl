@@ -49,7 +49,13 @@
 		<table>
 			<tr>
 				<td>Nummernvergabe</td>
-				<td>{DATEFMT:"{VAR:market_number_assignment_begin}":"%a %d.%m.%Y ab %k:%M":de_DE.utf-8} Uhr<br><p><b>Die Anzahl der Verkäufer-Nummern ist begrenzt!</b></p></td>
+				<td>
+					<p>
+						{DATEFMT:"{VAR:market_number_assignment_begin}":"%a %d.%m.%Y ab %k:%M":de_DE.utf-8} Uhr<br>
+						<b>Die Anzahl der Verkäufer-Nummern ist begrenzt!<br></b>
+						Die Nummernvergabe endet, sobald alle Nummern<br> vergeben sind.
+					</p>
+				</td>
 			</tr>
 			<tr>
 				<td>Warenabgabe</td>

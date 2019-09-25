@@ -47,6 +47,7 @@ class Seller extends Model {
 			'seller_firstname' => ['not-empty' => '/^.+$/'],
 			'seller_lastname' => ['not-empty' => '/^.+$/'],
 			'seller_email' => [ 'valid-email' =>  '/^.+@.+\..+$/' ],
+			'seller_phone' => [ 'valid-phone' =>  '/^[\s0-9\.\/\-\+\(\)]+$/' ],
 			'seller_email_confirm' => [ 'match' => 'matchEmails' ],
 			'agree' => ['agree' => '/^agreed$/'],
 			// 'seller_nr' => ['seller-nr-is-unique' => 'sellerNrIsUnique']
@@ -137,6 +138,7 @@ class Seller extends Model {
 		// We let exceptions fall throuhgh to controller to handle it there
 		$this->save([
 			'seller_email' => $email,
+			'seller_phone' => $data['seller_phone'],
 			'seller_firstname' => $data['seller_firstname'],
 			'seller_lastname' => $data['seller_lastname'],
 			'seller_nr' => $data['seller_nr'],

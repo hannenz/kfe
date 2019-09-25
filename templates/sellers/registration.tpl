@@ -80,9 +80,9 @@
 	</div>
 
 	<div class="stack-item">
-		<div class="form-field form-field--input">
+		<div class="form-field form-field--input form-field--required {IF({ISSET:error_seller_phone})}form-field--error{ENDIF}">
 			<label for="phone">Telefon (für Rückfragen)</label>
-			<input type="text" value="{VAR:seller_phone}" name="seller_phone" id="phone" />
+			<input type="text" value="{VAR:seller_phone}" name="seller_phone" id="phone" required  pattern="^[\s0-9\.\/\-\+\(\)]+$" />
 		</div>
 	</div>
 
