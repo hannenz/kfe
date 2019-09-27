@@ -122,6 +122,9 @@ class Market extends Model {
 		$result['marketNumberAssignmentIsRunning'] = $this->numberAssignmentIsRunning($result);
 		$result['marketNumberAssignmentIsUpcoming'] = false;
 
+		$result['marketBeginISO8601'] = date('c', strtotime($result['market_begin']));
+		$result['marketEndISO8601'] = date('c', strtotime($result['market_end']));
+
 		if (strtotime($result['market_number_assignment_begin']) > $now && strtotime($result['market_number_assignment_end']) > $now && !(bool)$result['market_number_assignment_is_closed']) {
 			$result['marketNumberAssignmentIsUpcoming'] = true;
 		}

@@ -4,6 +4,39 @@
  * @author Johannes Braun <johannes.braun@hannenz.de>
  * @package kfe
  */
-.market.market--detail {
 
+table.market-dates {
+	width: auto;
+
+	td {
+		padding: 3px 1rem 3px 0;
+
+		&:last-child {
+			padding-right: 0;
+		}
+	}
+
+	tr {
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--bg-color-2);
+	}
+}
+
+@include for-size(tablet-portrait-up) {
+	.market__description {
+		ul {
+			columns: 2;
+		}
+	}
+}
+
+.number-assignment-info-box {
+	background-color: #fff;
+	border: 3px solid var(--primary-color);
+	display: inline-block;
+	padding: 20px;
+	> *:last-child {
+		margin-bottom: 0 !important;
+	}
 }

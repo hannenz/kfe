@@ -125,10 +125,18 @@ if (!class_exists('\KFE\MarketsController')) {
 			}
 			$market = array_shift($market);
 
+			$availableNumbers = $this->Market->getAvailableNumbers($market['id']);
+			$this->parser->setParserVar('availableNumbers', $availableNumbers);
+
 			$this->parser->setMultipleParserVars($market);
 			$this->content = $this->parser->parseTemplate($this->templatesPath . 'detail.tpl');
 		}
 
+
+
+		/**
+		 * Archive action
+		 */
 		public function actionArchive() {
 			$markets = $this->Market->findArchived();
 			$this->parser->setParserVar('markets', $markets);

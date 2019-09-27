@@ -1,12 +1,13 @@
-<!-- TODO Schema.org / JSON+LD -->
+<!-- Foo Bar -->
 
 <script  type="application/ld+json">
 	{
 		"@context": "https://schema.org",
 		"@type": "event",
-		"@name": "Kinderflohmarkt Erbach",
-		"startDate": "{DATEFMT:'{VAR:market_begin}':'%Y-%m-%dT%H:%M'}",
-		"endDate": "{DATEFMT:'{VAR:market_end}':'%Y-%m-%dT%H:%M'}",
+		"name": "Kinderflohmarkt Erbach",
+		"description": "{VAR:market_description:strip_tags}",
+		"startDate": "{VAR:marketBeginISO8601}",
+		"endDate": "{VAR:marketEndISO8601}",
 		"location": {
 			"@type": "Place",
 			"name":  "Erlenbachhalle",
@@ -22,7 +23,7 @@
 	}
 </script>
 
-<section class="market market--detail">
+<section class="market market--detail stack">
 
 	<div class="callout">
 		<div class="callout__head">
@@ -35,6 +36,32 @@
 		</div>
 	</div>
 
+	<div class="stack">
+		<div class="number-assignment-info-box">
+
+			{IF("{VAR:marketNumberAssignmentIsRunning}" == "1")}
+				{IF("{COUNT:availableNumbers}" != "0")}
+					<p>
+						<a class="button" href="{VAR:registrationUrl}">Nummernvergabe: Hier klicken</a>
+					</p>
+					<p>
+						<b>Die Anzahl der Verkäufer-Nummern ist begrenzt!<br></b>
+						Die Nummernvergabe endet, sobald alle Nummern<br> vergeben sind.
+					</p>
+				{ELSE}
+					<p>
+						<strong>Für diesen Markt sind leider bereits alle Nummern vergeben.</strong><br>
+						Nochmal vorbeischauen lohnt sich, manchmal werden Nummern wieder frei!
+					</p>
+				{ENDIF}
+			{ELSE}
+				<p>
+					Die Nummernvergabe startet am<br>
+					<strong> {DATEFMT:"{VAR:market_number_assignment_begin}":"%a. %d.%m.%Y ab %k:%M Uhr":de_DE.utf-8}</strong>
+				</p>
+			{ENDIF}
+		</div>
+	</div>
 	
 	<div class="market__description body-text">
 		{VAR:market_description}
@@ -44,38 +71,19 @@
 		{VAR:market_remark}
 	</div>
 
-	<h4>Termine</h4>
-	{IF("{VAR:marketNumberAssignmentIsUpcoming}" == "1")}
-		<table>
-			<tr>
-				<td>Nummernvergabe</td>
-				<td>
-					<p>
-						{DATEFMT:"{VAR:market_number_assignment_begin}":"%a %d.%m.%Y ab %k:%M":de_DE.utf-8} Uhr<br>
-						<b>Die Anzahl der Verkäufer-Nummern ist begrenzt!<br></b>
-						Die Nummernvergabe endet, sobald alle Nummern<br> vergeben sind.
-					</p>
-				</td>
-			</tr>
-			<tr>
-				<td>Warenabgabe</td>
-				<td>{DATEFMT:"{VAR:market_submission_begin}":"%a %d.%m.%Y %k:%M":de_DE.utf-8}&thinsp;&ndash;&thinsp;{DATEFMT:"{VAR:market_submission_end}":"%k:%M":de_DE.utf-8} Uhr</td>
-			</tr>
-			<tr>
-				<td>Warenabholung</td>
-				<td>{DATEFMT:"{VAR:market_pickup_begin}":"%a %d.%m.%Y %k:%M":de_DE.utf-8}&thinsp;&ndash;&thinsp;{DATEFMT:"{VAR:market_pickup_end}":"%k:%M":de_DE.utf-8} Uhr</td>
-			</tr>
-		</table>
-		
-	{ELSE}
-		<div class="">Die Nummernvergabe für diesen Markt ist geschlossen</div>
-	{ENDIF}
 
-	{IF("{VAR:marketNumberAssignmentIsRunning}" == "1")}
-		<div class="market__number-assignment">
-			<a href="{VAR:registrationUrl}">Nummernvergabe</a>
-		</div>
-	{ENDIF}
+	<table class="market-dates">
+		<tr>
+			<td>Warenabgabe</td>
+			<td>{DATEFMT:"{VAR:market_submission_begin}":"%a. %d.%m.%Y":de_DE.utf-8}</td>
+			<td>{DATEFMT:"{VAR:market_submission_begin}":"%k:%M":de_DE.utf-8}&thinsp;&ndash;&thinsp;{DATEFMT:"{VAR:market_submission_end}":"%k:%M":de_DE.utf-8} Uhr</td>
+		</tr>
+		<tr>
+			<td>Warenabholung</td>
+			<td>{DATEFMT:"{VAR:market_pickup_begin}":"%a. %d.%m.%Y":de_DE.utf-8}</td>
+			<td>{DATEFMT:"{VAR:market_pickup_begin}":"%k:%M":de_DE.utf-8}&thinsp;&ndash;&thinsp;{DATEFMT:"{VAR:market_pickup_end}":"%k:%M":de_DE.utf-8} Uhr</td>
+		</tr>
+	</table>
 
 	<div class="market_media">
 		<ul>
