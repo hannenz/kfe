@@ -5,9 +5,15 @@
  */
 namespace KFE;
 
+if (!defined("CMT_APPLAUNCHER")) {
+	exit();
+}
+
 use \Contentomat\PsrAutoloader;
 use \Contentomat\ApplicationController;
 use \Contentomat\Parser;
+use \Contentomat\Contentomat;
+use \Contentomat\Session;
 use \KFE\Seller;
 use \KFE\Market;
 use \KFE\Cart;
@@ -47,6 +53,8 @@ class SellerBackendController extends ApplicationController {
 
 
 	public function init() {
+		$this->Cmt = Contentomat::getContentomat();
+		$this->Session = $this->Cmt->getSession();
 		$this->Seller = new Seller();
 		$this->Market = new Market();
 		$this->Cart = new Cart();
@@ -58,6 +66,45 @@ class SellerBackendController extends ApplicationController {
 			$sellerId = array_shift($this->getvars['id']);
 			$this->seller = $this->Seller->findById($sellerId);
 		}
+
+		// $this->handleFilter();
+	}
+
+	public function initActions($action = '') {
+		parent::initActions($action);
+
+	}
+
+
+	/**
+	 * Display and handle a filter for markets
+	 *
+	 * @return void
+	 */
+	protected function actionDefault() {
+		if (isset($_POST['sellerMarketId'])) {
+			$sellerMarketId = $_POST['sellerMarketId'];
+			$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
+		}
+		else {
+			$sellerMarketId = $this->Session->getSessionVar('sellerMarketId');
+		}
+
+		if (empty($sellerMarketId)) {
+			$this->Session->deleteSessionVar('sellerMarketId');
+			$sellerMarketId = 0;
+			$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
+		}
+
+		$markets = $this->Market->findAll();
+		$this->Parser->setParserVar('markets', $markets);
+		$this->content = $this->Parser->parseTemplate(PATHTOWEBROOT.'templates/sellers/be_market_filter.tpl');
+
+		// 9999 == all markets, no filter
+		if ($sellerMarketId != 9999) {
+			$query = sprintf('WHERE seller_market_id=%u', (int)$sellerMarketId);
+		}
+		$this->cmt->setVar('cmtAddQuery', $query);
 	}
 
 
@@ -68,7 +115,7 @@ class SellerBackendController extends ApplicationController {
 	 * @access public
 	 * @return void
 	 */
-	public function actionDefault() {
+	public function actionEdit() {
 
 		if (empty($this->seller)) {
 			return;
@@ -127,4 +174,5 @@ class SellerBackendController extends ApplicationController {
 
 $ctl = new SellerBackendController();
 $sellerSumSheet = $ctl->work();
+$content = $sellerSumSheet;
 ?>
