@@ -104,7 +104,48 @@ class SellerBackendController extends ApplicationController {
 		if ($sellerMarketId != 9999) {
 			$query = sprintf('WHERE seller_market_id=%u', (int)$sellerMarketId);
 		}
-		$this->cmt->setVar('cmtAddQuery', $query);
+		$this->Cmt->setVar('cmtAddQuery', $query);
+	}
+
+	protected function actionExport() {
+		if (isset($_POST['sellerMarketId'])) {
+			$sellerMarketId = $_POST['sellerMarketId'];
+			$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
+		}
+		else {
+			$sellerMarketId = $this->Session->getSessionVar('sellerMarketId');
+		}
+
+		$this->Seller->export(
+			['seller_market_id' => $sellerMarketId],
+			[
+				'seller_nr',
+				'seller_lastname',
+				'seller_firstname',
+				'seller_email',
+				'seller_phone',
+				'seller_registration_date',
+				'seller_is_activated'
+			],
+			'csv');
+	}
+
+	public function actionSumsheets() {
+		if (isset($_POST['sellerMarketId'])) {
+			$sellerMarketId = $_POST['sellerMarketId'];
+			$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
+		}
+		else {
+			$sellerMarketId = $this->Session->getSessionVar('sellerMarketId');
+		}
+
+		if (empty($sellerMarketId)) {
+			die("No market id");
+		}
+
+		$this->Seller->generateSumsheets([
+			'seller_market_id' => $sellerMarketId
+		]);
 	}
 
 

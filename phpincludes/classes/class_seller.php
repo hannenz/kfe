@@ -4,6 +4,8 @@ namespace KFE;
 use Contentomat\Model;
 use Contentomat\Mail;
 use Contentomat\Contentomat;
+use Contentomat\FieldHandler;
+use Contentomat\FileHandler;
 use \Exception;
 
 class RegistrationValidationException extends Exception { }
@@ -36,10 +38,22 @@ class Seller extends Model {
 	 */
 	protected $Session;
 
+	/**
+	 * @var Contentomat\FieldHandler
+	 */
+	protected $FieldHandler;
+
+
+	/**
+	 * @var Contentomat\FileHandler
+	 */
+	protected $FileHandler;
 
 
 	public function init() {
 		$this->Mail = new Mail();
+		$this->FieldHandler = new FieldHandler();
+		$this->FileHandler = new FileHandler();
 		$this->Cmt = Contentomat::getContentomat();
 		$this->Session = $this->Cmt->getSession();
 		$this->tableName = 'kfe_sellers';
@@ -293,7 +307,103 @@ class Seller extends Model {
 			'seller_activation_hash' => $hash
 		])->findOne();
 	}
+
+
+	/**
+	 * Export sellers
+	 *
+	 * @param Array 		$conditions: Conditions (as passed to filter)
+	 * @param Array 		$columns: Array of field names (columns)
+	 * @param string 		$type: Type, currently only 'csv' is supported
+	 * @throws Exception
+	 * @return void
+	 */
+	public function export($conditions = [], $columns = null, $type = 'csv') {
+		switch ($type) {
+			case 'csv':
+				$this->exportCSV($conditions, $columns);
+				break;
+		}
+	}
 	
-	
+	/**
+	 * Export to CSV
+	 *
+	 * @param Array 		Conditions
+	 * @param Array 		Columns (field names)
+	 * @param Array 		Options (field names)
+	 * @throws Exception
+	 * @return void
+	 */
+	protected function exportCSV($conditions = [], $columns = null, $options = []) {
+		$defaultOptions = [
+			'delimiter' => ',',
+			'enclosure' => '"',
+			'escapeChar' => '\\',
+			'filename' => 'verkaeufer.csv'
+		];
+		$options = array_merge($defaultOptions, $options);
+
+		$sellers = $this->filter($conditions)->findAll();
+
+		$fields = $this->FieldHandler->getAllFields([
+			'tableName' => $this->tableName,
+			'getAll' => true
+		]);
+
+		// Get all field names from FieldHandler
+		if ($columns == null) {
+			$columns = [];
+			foreach ($fields as $field) {
+				$columns[] = $field['cmt_fieldname'];
+			}
+		}
+
+		// Open a file
+		$tempFile = tempnam(PATHTOTMP, '');
+		$fh = fopen($tempFile, 'w');
+
+		// Output header
+		$aliases = [];
+		foreach ($columns as $column) {
+			foreach ($fields as $field) {
+				if ($field['cmt_fieldname'] == $column) {
+					array_push($aliases, $field['cmt_fieldalias']);
+					break;
+				}
+			}
+		}
+		fputcsv($fh, $aliases, $options['delimiter'], $options['enclosure'], $options['escapeChar']);
+
+		foreach ($sellers as $seller) {
+			$fields = [];
+			foreach ($columns as $column) {
+				// $content .= sprintf("\"%s\",", $seller[$column]);
+				array_push($fields, $seller[$column]);
+			}
+			// $content .= "\n";
+			fputcsv($fh, $fields, $options['delimiter'], $options['enclosure'], $options['escapeChar']);
+		}
+
+		fclose($fh);
+
+		$this->FileHandler->handleDownload([
+			'downloadFile' => $tempFile,
+			'downloadFileAlias' => $options['filename'],
+			'deleteFile' => true
+		]);
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @param Array 	$conditions
+	 * @return void
+	 */
+	public function generateSumsheets($conditions) {
+		echo '<pre>'; var_dump($conditions); echo '</pre>'; die();
+
+
+	}
 }
 ?>

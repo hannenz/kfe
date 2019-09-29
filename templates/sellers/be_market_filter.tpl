@@ -30,7 +30,9 @@
 					{ENDLOOP VAR}
 					<option value="9999" {IF("{SESSIONVAR:sellerMarketId}" == "9999")}selected="selected"{ENDIF}>Alle</option>
 				</select>
-				&nbsp;<button class="cmtButton" type="submit">anzeigen</button>
+				&nbsp;<button class="cmtButton" type="submit" name="action" value="default">anzeigen</button>
+				<button class="cmtButton" type="submit" name="action" value="export">Exportieren: CSV</button>
+				<button class="cmtButton" type="submit" name="action" value="sumsheets">Summenblätter</button>
 			</div>
 		</form>
 	</div>
