@@ -10,7 +10,6 @@
  */
 namespace KFE;
 
-error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 if (!defined("CMT_APPLAUNCHER")) {
 	exit();
 }
@@ -23,7 +22,6 @@ use \Contentomat\Session;
 use \KFE\Seller;
 use \KFE\Market;
 use \KFE\Cart;
-
 
 
 if (!class_exists('\KFE\SellerBackendController')) {
@@ -74,9 +72,37 @@ if (!class_exists('\KFE\SellerBackendController')) {
 			// $this->handleFilter();
 		}
 
+
 		public function initActions($action = '') {
 			parent::initActions($action);
 
+			switch ($this->action) {
+
+				case 'duplicate':
+				case 'new':
+					$this->action = 'void';
+					break;
+
+				case 'view':
+					$this->action = 'edit';
+					break;
+
+				case 'abortNew':
+				case 'abortEdit':
+				case 'abortDuplicate':
+					$this->action = 'overview';
+					break;
+			}
+		}
+
+
+		protected function actionVoid() {
+			// deliberatley left blank!
+		}
+
+
+		protected function actionDefault() {
+			$this->changeAction('overview');
 		}
 
 
@@ -85,7 +111,7 @@ if (!class_exists('\KFE\SellerBackendController')) {
 		 *
 		 * @return void
 		 */
-		protected function actionDefault() {
+		protected function actionOverview() {
 			if (isset($_POST['sellerMarketId'])) {
 				$sellerMarketId = $_POST['sellerMarketId'];
 				$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
@@ -209,11 +235,13 @@ if (!class_exists('\KFE\SellerBackendController')) {
 				'totalNetEuro' => $totalNetEuro,
 				'sellerId' => $this->seller['id']
 			]);
-			$this->content = $this->Parser->parseTemplate($this->templatesPath . 'sumsheet.tpl');
+			$content = $this->Parser->parseTemplate($this->templatesPath . 'sumsheet.tpl');
 
 			if (!empty($this->requestvars['print'])) {
-				die ($this->content);
+				die ($content);
 			}
+
+			$this->Cmt->setVar('sellerSumSheet', $content);
 		}
 	}
 }
@@ -224,6 +252,6 @@ $autoLoader->addNamespace('Contentomat', INCLUDEPATHTOADMIN . 'classes');
 $autoLoader->addNamespace('KFE', PATHTOWEBROOT . 'phpincludes/classes');
 
 $ctl = new SellerBackendController();
-$sellerSumSheet = $ctl->work();
-$content = $sellerSumSheet;
+// $sellerSumSheet = $ctl->work();
+$content = $ctl->work();
 ?>
