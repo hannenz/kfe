@@ -169,13 +169,13 @@ if (!class_exists('\KFE\SellerBackendController')) {
 				$sellerMarketId = $this->Session->getSessionVar('sellerMarketId');
 			}
 
-			if (empty($sellerMarketId)) {
-				die("No market id");
-			}
-
+			// if (empty($sellerMarketId)) {
+			// 	die("No market id");
+			// }
+            //
 			$this->Seller->generateSumsheets([
 				'seller_market_id' => $sellerMarketId
-			]);
+			], $sellerMarketId);
 		}
 
 
@@ -192,34 +192,14 @@ if (!class_exists('\KFE\SellerBackendController')) {
 				return;
 			}
 
-			$sellerItems = [];
-
-			// Get all carts from the seller's market 
-			if ($this->Seller->isEmployee($this->seller['seller_nr'])) {
-				$market = $this->Market->getNextUpcoming();
-				$marketId = $market['id'];
-			}
-			else {
-				$marketId = $this->seller['seller_market_id'];
-			}
-
-			$carts = $this->Cart->filter([
-				'cart_market_id' => $marketId
-			])->findAll();
-
 			$total = 0;
 			$discount = 20;
-			foreach ($carts as $cart) {
-				$items = (array)json_decode($cart['cart_items'], true);
-				foreach ($items as $item) {
-					if ($item['sellerNr'] == $this->seller['seller_nr']) {
-						$item['valueEuro'] = $item['value'] / 100;
-						$item['dateTimeFmt'] = strftime('%d.%m.%Y %T', $item['ts'] / 1000);
-						$sellerItems[] = $item;
-						$total += $item['value'];
-					}
-				}
+
+			$sales = $this->Seller->getSales($this->seller['id']);
+			foreach ($sales as $sale) {
+				$total += $sale['value'];
 			}
+
 			$totalEuro = $total / 100;
 			$discountValue = $total * ($discount / 100);
 			$discountValueEuro = $discountValue / 100;

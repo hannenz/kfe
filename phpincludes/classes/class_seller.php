@@ -7,6 +7,9 @@ use Contentomat\Contentomat;
 use Contentomat\FieldHandler;
 use Contentomat\FileHandler;
 use \Exception;
+use \KFE\Market;
+use \KFE\Cart;
+use \KFE\SellerSumsheet;
 
 class RegistrationValidationException extends Exception { }
 class SellerExistsForMarketException extends Exception { }
@@ -398,12 +401,64 @@ class Seller extends Model {
 	 * undocumented function
 	 *
 	 * @param Array 	$conditions
+	 * @param int 		Market ID
 	 * @return void
 	 */
-	public function generateSumsheets($conditions) {
-		echo '<pre>'; var_dump($conditions); echo '</pre>'; die();
+	public function generateSumsheets($conditions, $marketId) {
 
+		$this->Market = new Market();
+		$this->Cart = new Cart();
 
+		$market = $this->Market->findById($marketId);
+
+		$sellers = $this->filter($conditions)->findAll();
+		foreach ($sellers as &$seller) {
+			$seller['sales'] = $this->getSales($seller['id']);
+		}
+
+		$this->SellerSumsheet = new SellerSumsheet($sellers, $market, sprintf('Auswertung-%s.pdf', strftime('%Y-%m-%d-%H%M')));
+		$this->SellerSumsheet->create();
 	}
+
+
+	/**
+	 * Get a seller's sale
+	 *
+	 * @param int 		Seller ID
+	 * @return Array 	Array of sales (cart items)
+	 */
+	public function getSales($sellerId) {
+
+
+		$seller = $this->findById($sellerId);
+
+		// Get all carts from the seller's market 
+		if ($this->isEmployee($seller['seller_nr'])) {
+			$market = $this->Market->getNextUpcoming();
+			$marketId = $market['id'];
+		}
+		else {
+			$marketId = $seller['seller_market_id'];
+		}
+
+		$carts = $this->Cart->filter([
+			'cart_market_id' => $marketId
+		])->findAll();
+
+		$sales = [];
+		foreach ($carts as $cart) {
+			$items = (array)json_decode($cart['cart_items'], true);
+			foreach ($items as $item) {
+				if ($item['sellerNr'] == $seller['seller_nr']) {
+					$item['valueEuro'] = $item['value'] / 100;
+					$item['dateTimeFmt'] = strftime('%d.%m.%Y %T', $item['ts'] / 1000);
+					array_push($sales, $item);
+				}
+			}
+		}
+
+		return $sales;
+	}
+
 }
 ?>
