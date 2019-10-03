@@ -9,6 +9,8 @@
 namespace KFE;
 
 use \TCPDF;
+use \Contentomat\Parser;
+
 
 error_reporting(0);
 if (!ISPRODUCTION || true) {
@@ -26,29 +28,48 @@ require_once(PATHTOWEBROOT . "phpincludes/vendor/laurentbrieu/tcpdf/src/TCPDF/TC
  */
 class SellerSumsheet extends TCPDF {
 
+
 	/**
 	 * @var Array
 	 */
-	protected $sellerData;
-
 	protected $sellers;
+
+	protected $currentSeller;
+
+	/**
+	 * @var Array
+	 */
 	protected $market;
+
+	/**
+	 * @var string
+	 */
 	protected $filename;
+
+	/**
+	 * @var \Contentomat\Parser
+	 */
+	protected $Parser;
  
 	/**
 	 * Constructor
 	 */
 	public function __construct($sellers, $market, $filename) {
-		parent::__construct();
+
+		parent::__construct('P', 'mm', 'A4', true, 'UTF-8', false, false);
 
 		$this->sellers = $sellers;
 		$this->market = $market;
 		$this->filename = $filename;
 
+		$this->Parser = new \Contentomat\Parser();
+
 		// $this->pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false, false);
 		$this->SetCreator(PDF_CREATOR);
 		$this->SetAuthor('Johannes Braun');
 		$this->SetTitle('Kinderflohmarkt Erbach - Verkäufer-Auswertung');
+
+		$this->setTopMargin(20);
 
 		// set auto page breaks
 		// $this->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
@@ -57,10 +78,9 @@ class SellerSumsheet extends TCPDF {
 
 	public function Header() {
 		$this->setXY(10, 10);
-		$this->writeHTML(sprintf('Erbacher Kinderflohmart am %s', strftime('%d.%m %Y', strtotime($this->market['market_begin']))));
+		$headerHTML = sprintf('<div style="text-align: left; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #c0c0c0; padding-bottom: 1cm;">Erbacher Kinderflohmarkt am %s | Verkäufer-Nr. <b>%03u:</b> %s %s</div>', strftime('%d.%m.%Y', strtotime($this->market['market_begin'])), $this->currentSeller['seller_nr'], $this->currentSeller['seller_firstname'], $this->currentSeller['seller_lastname']);
+		$this->writeHTML($headerHTML);
 	}
-
-
 
 
 	/**
@@ -73,15 +93,15 @@ class SellerSumsheet extends TCPDF {
 		setlocale(LC_ALL, 'de_DE.UTF-8');
 
 		foreach ($this->sellers as $seller) {
-			$this->AddPage();
-			$this->setXY(10, 30);
-			$this->writeHTML(sprintf("<b>%u</b> %s %s", $seller['seller_nr'], $seller['seller_firstname'], $seller['seller_lastname']));
 
-			$html = '<table><tbody>';
-			foreach ($seller['sales'] as $item) {
-				$html .= sprintf('<tr><td>%s</td><td style="text-align:right">%.2f</td></tr>', $item['dateTimeFmt'], $item['valueEuro']);
-			}
-			$html .= '</tbody></table>';
+			$this->currentSeller = $seller;
+
+			$this->AddPage();
+
+			$this->Parser->setMultipleParserVars(array_merge($seller, $this->market));
+			$html = $this->Parser->parseTemplate(PATHTOWEBROOT . "templates/sellers/seller_sumsheet.tpl");
+
+			// die ($html);
 
 			$this->writeHTML($html);
 		}

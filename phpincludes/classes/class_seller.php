@@ -409,15 +409,40 @@ class Seller extends Model {
 		$this->Market = new Market();
 		$this->Cart = new Cart();
 
-		$market = $this->Market->findById($marketId);
-
-		$sellers = $this->filter($conditions)->findAll();
-		foreach ($sellers as &$seller) {
-			$seller['sales'] = $this->getSales($seller['id']);
+		if ($marketId == 0) {
+			$market = $this->Market->getNextUpcoming();
+		}
+		else {
+			$market = $this->Market->findById($marketId);
 		}
 
-		$this->SellerSumsheet = new SellerSumsheet($sellers, $market, sprintf('Auswertung-%s.pdf', strftime('%Y-%m-%d-%H%M')));
+		$sellers = $this->filter($conditions)->order(['seller_nr' => 'ASC'])->findAll();
+		foreach ($sellers as &$seller) {
+			$seller = $this->calculateTotals($seller);
+		}
+		$filename = sprintf('Auswertung-%s.pdf', strftime('%Y-%m-%d-%H%M'));
+		$this->SellerSumsheet = new SellerSumsheet($sellers, $market, $filename);
 		$this->SellerSumsheet->create();
+	}
+
+
+	public function calculateTotals($seller) {
+		$seller['sales'] = $this->getSales($seller['id']);
+		$seller['salesTotal'] = 0;
+		foreach ($seller['sales'] as $item) {
+			$seller['salesTotal'] += $item['value'];
+		}
+		$seller['salesTotalEuro'] = $seller['salesTotal'] / 100;
+		$seller['salesTotalEuroFmt'] = sprintf('%.2f', $seller['salesTotalEuro']);
+		$seller['discountPercent'] = ($this->isEmployee($seller['seller_nr']) ? 0 : 20);
+		$seller['discountValue'] = $seller['salesTotal'] * $seller['discountPercent'] / 100;
+		$seller['discountValueEuro'] = $seller['discountValue'] / 100;
+		$seller['discountValueEuroFmt'] = sprintf('%.2f', $seller['discountValueEuro']);
+		$seller['grossValue'] = $seller['salesTotal'] - $seller['discountValue'];
+		$seller['grossValueEuro'] = $seller['grossValue'] / 100;
+		$seller['grossValueEuroFmt'] = sprintf('%.2f', $seller['grossValueEuro']);
+
+		return $seller;
 	}
 
 
@@ -451,6 +476,7 @@ class Seller extends Model {
 			foreach ($items as $item) {
 				if ($item['sellerNr'] == $seller['seller_nr']) {
 					$item['valueEuro'] = $item['value'] / 100;
+					$item['valueEuroFmt'] = sprintf('%.2f', ($item['value'] / 100));
 					$item['dateTimeFmt'] = strftime('%d.%m.%Y %T', $item['ts'] / 1000);
 					array_push($sales, $item);
 				}

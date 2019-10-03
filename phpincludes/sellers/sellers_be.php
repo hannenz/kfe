@@ -161,6 +161,7 @@ if (!class_exists('\KFE\SellerBackendController')) {
 		}
 
 		public function actionSumsheets() {
+
 			if (isset($_POST['sellerMarketId'])) {
 				$sellerMarketId = $_POST['sellerMarketId'];
 				$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
