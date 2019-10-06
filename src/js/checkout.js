@@ -12,6 +12,7 @@ function Checkout() {
 
 	this.marketId = document.getElementById('marketId').value;
 	this.checkoutId = document.getElementById('checkoutId').value;
+	this.cashierId = document.getElementById('cashierId').value;
 
 	// This is the carts cue
 	this.carts = [];
@@ -21,13 +22,18 @@ function Checkout() {
 		timestamp: Date.now(),
 		checkoutId: this.checkoutId,
 		marketId: this.marketId,
+		cashierId: this.cashierId,
 		submitted: false,
+		submittedTimestamp: null,
 		items: []
 	};
+
 
 	this.totalInput = document.getElementById('checkout-total');
 	this.changeInput = document.getElementById('checkout-change-value');
 	this.codeInput = document.getElementById('checkout-code-input');
+	this.cue = document.getElementById('js-cue');
+	this.cueLabel = document.getElementById('js-cue-label');
 
 
 	/**
@@ -130,7 +136,7 @@ function Checkout() {
 		ev.preventDefault();
 		ev.stopPropagation();
 
-		console.log(ev.keyCode);
+		// console.log(ev.keyCode);
 
 		switch (ev.keyCode) {
 
@@ -186,7 +192,7 @@ function Checkout() {
 	this.onPanelButtonClicked = function(ev) {
 		ev.preventDefault();
 		var action = this.dataset.action;
-		console.log(action);
+		// console.log(action);
 		switch (action) {
 			case 'change':
 				self.change(this.dataset.value);
@@ -256,7 +262,7 @@ function Checkout() {
 	 * @return void
 	 */
 	this.change = function(value) {
-		self.changeInput.value = ((value - (self.getCartTotal(self.cart))) / 100).toFixed(2) + ' €';
+		self.changeInput.value = ((value - (self.getCartTotal(self.cart))) / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
 	}
 
 
@@ -334,7 +340,7 @@ function Checkout() {
 
 	this.cancelLast = function() {
 		var i;
-		console.log('cancelLast');
+		// console.log('cancelLast');
 		if ((i = self.cart.items.length - 1) >= 0) {
 			self.cancelItem(i);
 		}
@@ -351,7 +357,7 @@ function Checkout() {
 			// 	return;
 			// }
 
-			self.dialog('Position stornieren?', "#" + (i + 1)  + "<br>Verkäufer-Nr: " + item.sellerNr + "<br>Betrag: <b>" + (item.value / 100).toFixed(2) + " EUR</b>", {
+			self.dialog('Position stornieren?', "#" + (i + 1)  + "<br>Verkäufer-Nr: " + item.sellerNr + "<br>Betrag: <b>" + (item.value / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) + "</b>", {
 				actions: [
 					{
 						text: "Nein",
@@ -436,7 +442,8 @@ function Checkout() {
 			row.appendChild(td);
 
 			td = document.createElement('td');
-			td.innerText = (item.value / 100).toFixed(2) + ' €';
+			console.log("foo foo");
+			td.innerText = (item.value / 100).toLocaleString('de-DE', {style: 'currency', currency: 'EUR'});
 			td.classList.add('currency');
 			row.appendChild(td);
 
@@ -458,7 +465,7 @@ function Checkout() {
 				}
 
 				if (n > 0) {
-					console.log("Cancel button has been clicked");
+					// console.log("Cancel button has been clicked");
 					self.cancelItem(n - 1);
 				}
 			});
@@ -467,7 +474,7 @@ function Checkout() {
 			total += item.value;
 		}
 
-		self.totalInput.value = (total / 100).toFixed(2) + ' €';
+		self.totalInput.value = (total / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
 		self.changeInput.value = '-,-- €';
 
 		if (self.cart.items.length == 0) {
@@ -514,13 +521,11 @@ function Checkout() {
 		// this is a simple method to clone a Javascript object:
 		var clone = JSON.parse(JSON.stringify(self.cart));
 
+		self.carts.push(clone);
+
 		if (navigator.onLine) {
 			self.statusMessage("Bon wird übermittelt");
 			self.submitCart(clone);
-		}
-		else {
-			self.statusMessage("Offline: Bon wird zur späteren Übermittlung gespeichert");
-			self.carts.push(clone);
 		}
 
 		self.updateTotalTurnover();
@@ -531,7 +536,7 @@ function Checkout() {
 
 	this.updateTotalTurnover = function() {
 		var totalTurnover = self.calcTotalTurnover() / 100;
-		document.getElementById('js-total-turnover').innerText = totalTurnover.toFixed(2);
+		document.getElementById('js-total-turnover').innerText = totalTurnover.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
 		document.getElementById('js-total-carts').innerText = self.carts.length;
 	}
 
@@ -542,12 +547,14 @@ function Checkout() {
 	 * preapre for a new one
 	 */
 	this.cancelCart = function() {
-		console.log("Cancelling cart");
+		// console.log("Cancelling cart");
 		self.cart.timestamp = Date.now();
 		self.cart.marketId = self.marketId;
 		self.cart.checkoutId = self.checkoutId;
+		self.cart.cashierId = self.cashierId;
 		self.cart.items = [];
 		self.cart.submitted = false;
+		self.cart.submittedTimestamp = null;
 
 		self.persist();
 	}
@@ -572,15 +579,6 @@ function Checkout() {
 	this.resurrect = function() {
 		var checkoutId, marketId, cart;
 
-		// if ((checkoutId = window.localStorage.getItem('checkoutId')) != null) {
-		// 	console.log("resurrecting checkoutId", checkoutId);
-		// 	self.checkoutId = checkoutId;
-		// }
-
-		// if ((marketId = window.localStorage.getItem('marketId')) != null) {
-		// 	self.marketId = marketId;
-		// }
-
 		if ((cart = window.localStorage.getItem('cart')) != null) {
 			self.cart = JSON.parse(cart);
 			self.createTableFromCart();
@@ -591,6 +589,7 @@ function Checkout() {
 			self.updateTotalTurnover();
 		}
 	};
+
 
 	this.calcTotalTurnover = function() {
 		var turnover = 0;
@@ -628,6 +627,7 @@ function Checkout() {
 		data.append('action',  'add');
 		data.append('timestamp', cart.timestamp);
 		data.append('marketId', cart.marketId);
+		data.append('cashierId', cart.cashierId);
 		data.append('checkoutId', cart.checkoutId);
 		data.append('items', JSON.stringify(cart.items));
 		data.append('total', self.getCartTotal(cart));
@@ -636,16 +636,21 @@ function Checkout() {
 		xhr.addEventListener('load', function() {
 			var response = JSON.parse(this.responseText);
 			if (response.success) {
-				cart.submitted = true;
-				console.log(response.cartId);
+				// cart.submitted = true;
+				// console.log(response.cartId);
 				self.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId + ' <a href="/de/4/Checkout.html?action=cancel&id=' + response.cartId + '&marketId=' + self.marketId + '&checkoutId=' + self.checkoutId +'">Stornieren?</a>', 'success');
+				document.body.classList.remove('is-busy');
 
 				// Try to find this cart in the cue and if found, remove it
 				// self.carts.forEach(function(cueCart, i) {
 				for (var i = 0; i < self.carts.length; i++) {
-					if (parseInt(self.carts[i].timestamp) == parseInt(response.cartTimestamp)) {
+					if (parseInt(self.carts[i].timestamp) == parseInt(response.cartTimestamp) &&
+						parseInt(self.checkoutId) == parseInt(response.cartCheckoutId)) {
 						console.log("Found cart in cue, un-cueing it!", i);
-						self.carts.splice(i, 1);
+						self.carts[i].submitted = true;
+						self.carts[i].submittedTimestamp = new Date();
+
+						// self.carts.splice(i, 1);
 						self.persist();
 						break;
 					}
@@ -659,6 +664,8 @@ function Checkout() {
 		});
 		xhr.open('POST', '/de/9/carts.html');
 		xhr.send(data);
+
+		document.body.classList.add('is-busy');
 	};
 
 
@@ -727,4 +734,10 @@ function Checkout() {
 		document.body.removeChild(dlg);
 		self.hasDialog = false;
 	};
+
+	this.updateCue = function() {
+
+		self.cueLabel.innerText = self.carts.length + " Vorgänge in der Warteschlange";
+		
+	}
 };

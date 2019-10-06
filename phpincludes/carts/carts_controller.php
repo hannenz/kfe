@@ -64,7 +64,8 @@ class CartsController extends Controller {
 				'cart_checkout_id' => (int)$_REQUEST['checkoutId'],
 				'cart_total' => (float)$_REQUEST['total'],
 				'cart_items' => $_REQUEST['items'],
-				'cart_items_count' => count((array)json_decode($_REQUEST['items'], true))
+				'cart_items_count' => count((array)json_decode($_REQUEST['items'], true)),
+				'cart_cashier_id' => (int)$_REQUEST['cashierId']
 			];
 			$cartId = $this->Cart->add($data);
 		}
@@ -76,9 +77,10 @@ class CartsController extends Controller {
 		$this->content = [
 			'success' => $success,
 			'cartId' => $cartId,
-			// We return the original cart's timestamp so that we can identify
-			// this cart client side (remove it from carts cue)
-			'cartTimestamp' => $data['cart_timestamp']
+			// We return the original cart's timestamp and checkout id, so that
+			// we can identify this cart client side (remove it from carts cue)
+			'cartTimestamp' => $data['cart_timestamp'],
+			'cartCheckoutId' => $data['cart_checkout_id']
 		];
 		die (json_encode($this->content));
 	}

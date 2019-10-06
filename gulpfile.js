@@ -82,7 +82,8 @@ var settings = {
 		srcMain: [
 			'./src/css/main.scss',
 			'./src/css/market_be.scss',
-			'./src/css/seller_be.scss'
+			'./src/css/seller_be.scss',
+			'./src/css/cart_edit.scss'
 			// You can add more files here that will be built seperately,
 			// f.e. newsletter.scss
 		],
@@ -103,7 +104,11 @@ var settings = {
 	},
 
 	js: {
-		src:	'./src/js/*.js',
+		src: [
+			'./src/js/main.js',
+			'./src/js/checkout.js',
+			'./src/js/cart_edit.js'
+		],
 		dest:	pkg.project_settings.prefix + 'js/',
 		destFile:	'main.min.js'
 	},
@@ -209,20 +214,21 @@ gulp.task('css-prod', function(done) {
 /*
  * Task: Concat and uglify Javascript
  */
-gulp.task('js-dev', function() {
+gulp.task('js-dev', function(done) {
 	return gulp
 		.src(settings.js.src)
 		.pipe($.jsvalidate().on('error', function(jsvalidate) { console.log(jsvalidate.message); this.emit('end') }))
 		.pipe($.sourcemaps.init())
-		.pipe($.concat(settings.js.destFile))
+		// .pipe($.concat(settings.js.destFile))
 		.pipe($.uglify().on('error', function(uglify) { console.log(uglify.message); this.emit('end') }))
 		.pipe($.sourcemaps.write('./'))
 		.pipe(gulp.dest(settings.js.dest))
 		.pipe($.browserSync.stream())
 	;
+	done();
 });
 
-gulp.task('js-prod', function() {
+gulp.task('js-prod', function(done) {
 	return gulp
 		.src(settings.js.src)
 		.pipe($.jsvalidate().on('error', function(jsvalidate) { console.log(jsvalidate.message); this.emit('end') }))
@@ -232,6 +238,7 @@ gulp.task('js-prod', function() {
 		.pipe($.header(banner, { pkg: pkg }))
 		.pipe(gulp.dest(settings.js.dest))
 	;
+	done();
 });
 
 

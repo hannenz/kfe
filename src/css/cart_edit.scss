@@ -1,0 +1,49 @@
+/**
+ * src/css/cart_edit.scss
+ *
+ * Stylesheet for carts edit view: jQuery.appendgrid
+ * table for cart items
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ * @version 2019-10-06
+ */
+
+#tblConfigGrid {
+	width: 100%;
+	max-width: 700px;
+}
+#tblConfigGrid td {
+	border: 0;
+}
+#tblConfigGrid td, #tblConfigGrid th {
+	padding: 1px;
+}
+#tblConfigGrid tr {
+	border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+}
+#tblConfigGrid input {
+	appearance: none;
+	border: 0;
+	box-shadow: none;
+}
+#tblConfigGrid tr > td:first-child {
+	width: 40px;
+}
+#tblConfigGrid .ui-widget-header {
+	background-image: none;
+	background-color: #f6f6f6;
+}
+#tblConfigGrid .cmtButton.cmtButtonAdd {
+	background-image: url('/admin/templates/default/administration/img/icons/add_large.png');
+}
+#tblConfigGrid .cmtButton.cmtButtonMoveUp {
+	background-image: url('/admin/templates/default/administration/img/icons/up_large.png');
+}
+#tblConfigGrid .cmtButton.cmtButtonMoveDown {
+	background-image: url('/admin/templates/default/administration/img/icons/down_large.png');
+}
+#tblConfigGrid .cmtButton.cmtButtonDelete {
+	background-image: url('/admin/templates/default/administration/img/icons/delete_large.png');
+}
+

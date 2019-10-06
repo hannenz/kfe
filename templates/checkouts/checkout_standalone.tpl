@@ -18,15 +18,15 @@
 
 	<section class="main-content">
 
-
 		<form class="checkout" id="checkout" autocomplete="off">
 			<input type="hidden" value="{VAR:marketId}" name="marketId" id="marketId" />
 			<input type="hidden" value="{VAR:checkoutId}" name="checkoutId" id="checkoutId" />
+			<input type="hidden" value="{VAR:user_id}" name="cashierId" id="cashierId" />
 
 			<header class="checkout__header">
-				<div> Kasse {VAR:checkoutId} </div>
-				<div> Markt #{VAR:marketId} am {VAR:marketDate} </div>
-				<div> {VAR:user_name} <a href="/admin/index.php?{SID}&action=logout" class="no-button">Abmelden</a> </div>
+				<div>Kasse {VAR:checkoutId}</div>
+				<div>Markt #{VAR:marketId} am {VAR:marketDate}</div>
+				<div>{VAR:user_name} <a href="/admin/index.php?{SID}&action=logout" class="no-button">Abmelden</a> </div>
 			</header>
 
 			<div class="checkout__cart">
@@ -68,7 +68,7 @@
 
 			<div class="checkout__footer">
 				<div class="statusbar">
-					<div>Gesamtumsatz: <b id="js-total-turnover">0,00</b> &euro; (<span id="js-total-carts">0</span> Vorgänge)</div>
+					<div>Gesamtumsatz: <b id="js-total-turnover">0,00 &euro;</b> (<span id="js-total-carts">0</span> Vorgänge)</div>
 					<!-- <input type="checkbox" id="js&#45;toggle&#45;camera&#45;scanner"><label for="js&#45;toggle&#45;camera&#45;scanner">Scanner an/aus</label> -->
 					<!-- <div id="cam"></div> -->
 					<!-- <a href="{CONSTANT:PAGEURL}?{SID}&#38;launch={VAR:applicationId}" class="button">Zurück</a> -->
@@ -84,7 +84,7 @@
 		</script>
 	</section>
 
-	<script src="/dist/js/main.min.js"></script>
+	<script src="/dist/js/checkout.js"></script>
 </body>
 </html>
 

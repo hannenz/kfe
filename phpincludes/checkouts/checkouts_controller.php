@@ -89,6 +89,7 @@ class CheckoutsController extends ApplicationController {
 					'marketId' => $this->marketId,
 					'checkoutId' => $this->checkoutId,
 					'applicationId' => $this->applicationID,
+					'user_id' => $this->user->getUserID(),
 					'user_name' => $this->user->getUserName(),
 					'user_alias' => $this->user->getUserAlias(),
 					'marketDate' => strftime('%d.%m.%Y', strtotime($market['market_begin']))
