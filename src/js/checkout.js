@@ -256,7 +256,7 @@ function Checkout() {
 	 * @return void
 	 */
 	this.change = function(value) {
-		self.changeInput.value = ((value - (self.getCartTotal())) / 100).toFixed(2) + ' €';
+		self.changeInput.value = ((value - (self.getCartTotal(self.cart))) / 100).toFixed(2) + ' €';
 	}
 
 
@@ -481,9 +481,15 @@ function Checkout() {
 	}
 
 
-	this.getCartTotal = function() {
+	/**
+	 * Calculate the total sum of a cart
+	 *
+	 * @param Cart
+	 * @return double
+	 */
+	this.getCartTotal = function(cart) {
 		var total = 0;
-		self.cart.items.forEach(function(item) {
+		cart.items.forEach(function(item) {
 			total += item.value;
 		});
 
@@ -624,7 +630,7 @@ function Checkout() {
 		data.append('marketId', cart.marketId);
 		data.append('checkoutId', cart.checkoutId);
 		data.append('items', JSON.stringify(cart.items));
-		data.append('total', self.getCartTotal());
+		data.append('total', self.getCartTotal(cart));
 
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener('load', function() {

@@ -39,6 +39,7 @@
     "moment": "^2.24.0"
   },
   "dependencies": {
+    "jquery.appendgrid": "^1.7.1",
     "quagga": "^0.12.1"
   },
   "project_settings": {

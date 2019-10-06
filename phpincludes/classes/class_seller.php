@@ -60,6 +60,7 @@ class Seller extends Model {
 		$this->Cmt = Contentomat::getContentomat();
 		$this->Session = $this->Cmt->getSession();
 		$this->tableName = 'kfe_sellers';
+		$this->Cart = new Cart();
 		$this->setValidationRules([
 			'seller_firstname' => ['not-empty' => '/^.+$/'],
 			'seller_lastname' => ['not-empty' => '/^.+$/'],
@@ -317,17 +318,25 @@ class Seller extends Model {
 	 *
 	 * @param Array 		$conditions: Conditions (as passed to filter)
 	 * @param Array 		$columns: Array of field names (columns)
-	 * @param string 		$type: Type, currently only 'csv' is supported
+	 * @param string 		$type: Type, currently 'csv' and 'ssv' is supported (ssv stands for 'semicolon delimited values')
 	 * @throws Exception
 	 * @return void
 	 */
 	public function export($conditions = [], $columns = null, $type = 'csv') {
+		$options = ['filename' => 'Erbacher_Kinderflohmarkt_Verkaeuferliste.csv'];
 		switch ($type) {
+			case 'ssv':
+				$options['delimiter'] = ';';
+				$this->exportCSV($conditions, $columns, $options);
+				break;
 			case 'csv':
-				$this->exportCSV($conditions, $columns);
+			default:
+				$options['delimiter']= ',';
+				$this->exportCSV($conditions, $columns, $options);
 				break;
 		}
 	}
+
 	
 	/**
 	 * Export to CSV
@@ -347,7 +356,7 @@ class Seller extends Model {
 		];
 		$options = array_merge($defaultOptions, $options);
 
-		$sellers = $this->filter($conditions)->findAll();
+		$sellers = $this->filter($conditions)->order(['seller_nr' => 'ASC'])->findAll();
 
 		$fields = $this->FieldHandler->getAllFields([
 			'tableName' => $this->tableName,
@@ -406,8 +415,13 @@ class Seller extends Model {
 	 */
 	public function generateSumsheets($conditions, $marketId) {
 
-		$this->Market = new Market();
-		$this->Cart = new Cart();
+		if (!$this->Market) {
+			$this->Market = new Market();
+		}
+
+		if (!$this->Cart) {
+			$this->Cart = new Cart();
+		}
 
 		if ($marketId == 0) {
 			$market = $this->Market->getNextUpcoming();
@@ -456,6 +470,9 @@ class Seller extends Model {
 
 
 		$seller = $this->findById($sellerId);
+		if (!$this->Market) {
+			$this->Market = new Market();
+		}
 
 		// Get all carts from the seller's market 
 		if ($this->isEmployee($seller['seller_nr'])) {

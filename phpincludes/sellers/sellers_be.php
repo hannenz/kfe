@@ -56,6 +56,7 @@ if (!class_exists('\KFE\SellerBackendController')) {
 
 		public function init() {
 			$this->Cmt = Contentomat::getContentomat();
+			$this->Cmt->setErrorReporting('error');
 			$this->Session = $this->Cmt->getSession();
 			$this->Seller = new Seller();
 			$this->Market = new Market();
@@ -92,6 +93,7 @@ if (!class_exists('\KFE\SellerBackendController')) {
 				case 'abortDuplicate':
 					$this->action = 'overview';
 					break;
+
 			}
 		}
 
@@ -137,6 +139,7 @@ if (!class_exists('\KFE\SellerBackendController')) {
 			$this->Cmt->setVar('cmtAddQuery', $query);
 		}
 
+
 		protected function actionExport() {
 			if (isset($_POST['sellerMarketId'])) {
 				$sellerMarketId = $_POST['sellerMarketId'];
@@ -146,19 +149,21 @@ if (!class_exists('\KFE\SellerBackendController')) {
 				$sellerMarketId = $this->Session->getSessionVar('sellerMarketId');
 			}
 
-			$this->Seller->export(
-				['seller_market_id' => $sellerMarketId],
-				[
-					'seller_nr',
-					'seller_lastname',
-					'seller_firstname',
-					'seller_email',
-					'seller_phone',
-					'seller_registration_date',
-					'seller_is_activated'
-				],
-				'csv');
+
+			$conditions = ['seller_market_id' => $sellerMarketId];
+			$columns = [
+				'seller_nr',
+				'seller_lastname',
+				'seller_firstname',
+				'seller_email',
+				'seller_phone',
+				'seller_registration_date',
+				'seller_is_activated'
+			];
+
+			$this->Seller->export($conditions, $columns, $this->postvars['exportType']);
 		}
+
 
 		public function actionSumsheets() {
 
@@ -170,15 +175,10 @@ if (!class_exists('\KFE\SellerBackendController')) {
 				$sellerMarketId = $this->Session->getSessionVar('sellerMarketId');
 			}
 
-			// if (empty($sellerMarketId)) {
-			// 	die("No market id");
-			// }
-            //
 			$this->Seller->generateSumsheets([
 				'seller_market_id' => $sellerMarketId
 			], $sellerMarketId);
 		}
-
 
 		/**
 		 * Creates a sumsheet for a seller, e.g. sum up all sold items by this
@@ -188,6 +188,8 @@ if (!class_exists('\KFE\SellerBackendController')) {
 		 * @return void
 		 */
 		public function actionEdit() {
+
+			$this->Cmt->setErrorReporting('error');
 
 			if (empty($this->seller)) {
 				return;
