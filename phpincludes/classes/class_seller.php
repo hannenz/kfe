@@ -413,7 +413,10 @@ class Seller extends Model {
 	 * @param int 		Market ID
 	 * @return void
 	 */
-	public function generateSumsheets($conditions, $marketId) {
+	public function generateSumsheets($conditions, $marketId, $options) {
+		$options = array_merge([
+			'skipEmpty' => false
+		], $options);
 
 		if (!$this->Market) {
 			$this->Market = new Market();
@@ -436,7 +439,7 @@ class Seller extends Model {
 		}
 		$filename = sprintf('Auswertung-%s.pdf', strftime('%Y-%m-%d-%H%M'));
 		$this->SellerSumsheet = new SellerSumsheet($sellers, $market, $filename);
-		$this->SellerSumsheet->create();
+		$this->SellerSumsheet->create($options['skipEmpty']);
 	}
 
 

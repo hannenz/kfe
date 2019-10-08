@@ -1,16 +1,21 @@
 <div class="sumsheet" style="font-family:sans-serif; font-size: 14px;">
-	<div class="sumsheet__header">
-		<p><b>{PRINTF:{VAR:seller_nr}:%03u}</b> {VAR:seller_lastname}, {VAR:seller_firstname}</p>
-	</div>
+
+	<!-- <div class="sumsheet__header"> -->
+	<!-- 	<p><b>{PRINTF:{VAR:seller_nr}:%03u}</b> {VAR:seller_lastname}, {VAR:seller_firstname}</p> -->
+	<!-- </div> -->
+
 	{IF({COUNT:sales} == 0)}
 		<p>Leider nichts verkauft &hellip; </p>
 	{ELSE}
-	<table class="sumsheet__table" style="width: 16cm; border-collapse: collapse; font-size: 10px">
+
+	<p>{COUNT:sales} Verkäufe</p>
+
+	<table class="sumsheet__table" style="width: 100%; border-collapse: collapse; font-size: 10px">
 		<thead>
 			<tr style="font-weight: bold">
-				<th style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px;">Datum/Uhrzeit</th>
-				<th style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px;">Kasse</th>
-				<th style="font-size: 10px; text-align: right; vertical-align: top; line-height: 22px;">Betrag</th>
+				<td style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px;">Datum/Uhrzeit</td>
+				<td style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px;">Kasse</td>
+				<td style="font-size: 10px; text-align: right; vertical-align: top; line-height: 22px;">Betrag</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -24,12 +29,12 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="2" style="border-top-style: solid; border-top-width: 0.5px; border-top-color: #404040">Summe</td>
-				<td  style="border-top-style: solid; border-top-width: 0.5px; border-top-color: #404040; text-align: right">{VAR:salesTotalEuroFmt} &euro;</td>
+				<td colspan="2" style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px; border-top-style: solid; border-top-width: 0.5px; border-top-color: #404040; font-weight: bold;">Summe</td>
+				<td  style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px; border-top-style: solid; border-top-width: 0.25px; border-top-color: #404040; text-align: right; font-weight: bold;">{VAR:salesTotalEuroFmt} &euro;</td>
 			</tr>
 			<tr>
-				<td colspan="2">Abzgl. {VAR:discountPercent} %</td>
-				<td style="text-align: right">{VAR:discountValueEuroFmt} &euro;</td>
+				<td colspan="2" style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px;">Abzgl. {VAR:discountPercent} %</td>
+				<td style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px; text-align: right">- {VAR:discountValueEuroFmt} &euro;</td>
 			</tr>
 			<tr>
 				<td colspan="2">Auszahlungsbetrag</td>

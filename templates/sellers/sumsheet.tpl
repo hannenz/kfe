@@ -1,6 +1,7 @@
 <link rel="stylesheet" type="text/css" href="/dist/css/seller_be.css">
 
 <div class="seller-sumsheet">
+	<p>{COUNT:sellerItems} Verkäufe</p>
 	<table>
 		<thead>
 			<tr>

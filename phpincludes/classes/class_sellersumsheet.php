@@ -70,6 +70,9 @@ class SellerSumsheet extends TCPDF {
 		$this->SetTitle('Kinderflohmarkt Erbach - Verkäufer-Auswertung');
 
 		$this->setTopMargin(20);
+		$this->setLeftMargin(20);
+		$this->setRightMargin(20);
+
 
 		// set auto page breaks
 		// $this->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
@@ -77,8 +80,11 @@ class SellerSumsheet extends TCPDF {
 
 
 	public function Header() {
-		$this->setXY(10, 10);
-		$headerHTML = sprintf('<div style="text-align: left; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #c0c0c0; padding-bottom: 1cm;">Erbacher Kinderflohmarkt am %s | Verkäufer-Nr. <b>%03u:</b> %s %s</div>', strftime('%d.%m.%Y', strtotime($this->market['market_begin'])), $this->currentSeller['seller_nr'], $this->currentSeller['seller_firstname'], $this->currentSeller['seller_lastname']);
+		$this->setY(10);
+		$this->Parser->setMultipleParserVars(array_merge($this->currentSeller, $this->market));
+		$headerHTML = $this->Parser->parseTemplate(PATHTOWEBROOT . "templates/sellers/seller_sumsheet_header.tpl");
+	// sprintf('', strftime('%d.%m.%Y', strtotime($this->market['market_begin'])), $this->currentSeller['seller_nr'], $this->currentSeller['seller_lastname'], $this->currentSeller['seller_firstname']);
+
 		$this->writeHTML($headerHTML);
 	}
 
@@ -86,13 +92,19 @@ class SellerSumsheet extends TCPDF {
 	/**
 	 * Create a barcode sheet
 	 *
+	 * @param boolean 		$skipEmpty, if set, only sellers with sales will be
+	 * 						output
 	 * @return void
 	 */
-	public function create() {
+	public function create($skipEmpty = true) {
 
 		setlocale(LC_ALL, 'de_DE.UTF-8');
 
 		foreach ($this->sellers as $seller) {
+
+			if($skipEmpty && empty($seller['sales'])) {
+				continue;
+			}
 
 			$this->currentSeller = $seller;
 
@@ -101,9 +113,7 @@ class SellerSumsheet extends TCPDF {
 			$this->Parser->setMultipleParserVars(array_merge($seller, $this->market));
 			$html = $this->Parser->parseTemplate(PATHTOWEBROOT . "templates/sellers/seller_sumsheet.tpl");
 
-			// die ($html);
-
-			$this->writeHTML($html);
+			$this->writeHTMLCell(140, 0, 35, 20, $html, 0, 0, false);
 		}
 
 		$this->Output($this->filename, 'I');

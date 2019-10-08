@@ -165,6 +165,12 @@ if (!class_exists('\KFE\SellerBackendController')) {
 		}
 
 
+		/**
+		 * Action to generate all sumsheets for sellers matching a certain
+		 * condition
+		 *
+		 * Parameters are passed via POST
+		 */
 		public function actionSumsheets() {
 
 			if (isset($_POST['sellerMarketId'])) {
@@ -180,6 +186,21 @@ if (!class_exists('\KFE\SellerBackendController')) {
 			], $sellerMarketId);
 		}
 
+
+		/**
+		 * Action to generate a single sumsheet PDF
+		 * Seller ID and market ID are passed via GET
+		 */
+		public function actionSumsheet() {
+			$conditions = [ 'id' => $_REQUEST['seller_id'] ];
+			$marketId = $_REQUEST['market_id'];
+			$options = [
+				'skipEmpty' => !empty($_REQUEST['skipEmpty'])
+			];
+			$this->Seller->generateSumsheets($conditions, $marketId, $options);
+		}
+
+
 		/**
 		 * Creates a sumsheet for a seller, e.g. sum up all sold items by this
 		 * seller
@@ -191,39 +212,12 @@ if (!class_exists('\KFE\SellerBackendController')) {
 
 			$this->Cmt->setErrorReporting('error');
 
-			if (empty($this->seller)) {
-				return;
-			}
-
-			$total = 0;
-			$discount = 20;
-
-			$sales = $this->Seller->getSales($this->seller['id']);
-			foreach ($sales as $sale) {
-				$total += $sale['value'];
-			}
-
-			$totalEuro = $total / 100;
-			$discountValue = $total * ($discount / 100);
-			$discountValueEuro = $discountValue / 100;
-			$totalNet = $total - $discountValue;
-			$totalNetEuro = $totalNet / 100;
-
-			$this->Parser->setMultipleParserVars([
-				'sellerItems' => $sellerItems,
-				'total' => $total,
-				'totalEuro' => $totalEuro,
-				'discount' => $discount,
-				'discountValueEuro' => $discountValueEuro,
-				'totalNetEuro' => $totalNetEuro,
-				'sellerId' => $this->seller['id']
-			]);
-			$content = $this->Parser->parseTemplate($this->templatesPath . 'sumsheet.tpl');
-
-			if (!empty($this->requestvars['print'])) {
-				die ($content);
-			}
-
+			$content = sprintf('<a class="cmtButton" href="?sid=%s&cmtApplicationID=%u&action=sumsheet&seller_id=%u&market_id=%u">Summenblatt erzeugen</a>',
+				SID,
+				$this->getvars['cmtApplicationID'],
+				$this->seller['id'],
+				$this->seller['seller_market_id'] != 0 ? $this->seller['seller_market_id'] : 1
+			);
 			$this->Cmt->setVar('sellerSumSheet', $content);
 		}
 	}
