@@ -49,6 +49,7 @@ function Checkout() {
 			this.cameraBarcodeScanner.setup(document.getElementById('cam'),  function(result) {
 				var item = self.getItemFromCode(result.codeResult.code);
 				self.cart.addItem(item);
+				self.persist();
 			});
 		}, function() {
 			console.log("No camera available, never mind …");
@@ -225,6 +226,7 @@ function Checkout() {
 
 		if (window.confirm("Sind Sie sicher, dass sie den gesamten Vorgang stornieren möchten?")) {
 			self.cart.clear();
+			self.persist();
 			self.createTableFromCart();
 		}
 	}
@@ -241,10 +243,13 @@ function Checkout() {
 			return;
 		}
 
-		self.cart.cancelLast();
-		self.createTableFromCart();
+		var i;
+		if ((i = self.cart.items.length - 1) >= 0) {
+			self.cancelItem(i);
+			self.createTableFromCart();
+		}
 	}
-		
+
 
 
 	/**
@@ -278,6 +283,7 @@ function Checkout() {
 				if (item != null) {
 					self.cart.addItem(item);
 					self.createTableFromCart();
+					self.persist();
 				}
 				else {
 					alert ("Invalid code: " + code);
@@ -332,11 +338,6 @@ function Checkout() {
 
 
 	this.cancelLast = function() {
-		var i;
-		// console.log('cancelLast');
-		if ((i = self.cart.items.length - 1) >= 0) {
-			self.cart.removeItem(i);
-		}
 	};
 
 
@@ -602,7 +603,7 @@ function Checkout() {
 		data.append('cashierId', cart.cashierId);
 		data.append('checkoutId', cart.checkoutId);
 		data.append('items', JSON.stringify(cart.items));
-		data.append('total', self.cart.getTotal());
+		data.append('total', cart.getTotal());
 
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener('load', function() {

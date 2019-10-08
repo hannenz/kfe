@@ -47,15 +47,15 @@ var Cart = {
 	},
 
 	removeItem: function(i) {
-		if (self.items[i]) {
-			self.items.splice(i, 1);
+		if (this.items[i]) {
+			this.items.splice(i, 1);
 		}
 	},
 
 	getData: function() {
 		return {
-			checkoutId: this.checkoutId,
 			marketId: this.marketId,
+			checkoutId: this.checkoutId,
 			cashierId: this.cashierId,
 			timestamp: this.timestamp,
 			submitted: this.submitted,
@@ -66,13 +66,13 @@ var Cart = {
 	},
 
 	setData: function(data) {
-		this.checkoutId = data.checkoutId;
 		this.marketId = data.marketId;
+		this.checkoutId = data.checkoutId;
 		this.cashierId = data.cashierId;
 		this.timestamp = data.timestamp;
 		this.submitted = data.submitted;
 		this.submittedTimestamp = data.submittedTimestamp;
 		this.id = data.id;
 		this.items = data.items;
-	},
+	}
 };
