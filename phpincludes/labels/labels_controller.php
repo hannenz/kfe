@@ -124,7 +124,7 @@ class LabelsController extends Controller {
 	 */
 	public function actionValidateSeller() {
 
-		error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
+		// error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
 
 		$success = false;
 

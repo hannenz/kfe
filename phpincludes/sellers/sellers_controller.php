@@ -218,7 +218,7 @@ class SellersController extends Controller {
 		$this->parser->setParserVar('email', $email);
 		$this->parser->setParserVar('activationUrl', $activationUrl);
 
-		error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+		// error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 		$seller = $this->Seller->findByEmailAndHash($email, $hash);
 		$market = $this->Market->findById($seller['seller_market_id']);
 		$this->parser->setMultipleParserVars($market);

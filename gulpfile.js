@@ -45,8 +45,8 @@ const banner = [
 
 
 //array of gulp task names that should be included in "gulp build" task
-var build_dev  = ['clean:dist', 'js-dev', 'jsvendor', 'css-dev', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
-var build_prod = ['clean:dist', 'js-prod', 'jsvendor', 'css-prod', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
+var build_dev  = ['clean:dist', 'js-dev', 'jsvendor', 'js-checkout', 'css-dev', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
+var build_prod = ['clean:dist', 'js-prod', 'jsvendor', 'js-checkout', 'css-prod', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
 
 
 
@@ -77,13 +77,13 @@ var settings = {
 	},
 
 	css: {
-		src: './src/css/**/*.scss',
+		src: 'src/css/**/*.scss',
 		dest: pkg.project_settings.prefix + 'css/',
 		srcMain: [
-			'./src/css/main.scss',
-			'./src/css/market_be.scss',
-			'./src/css/seller_be.scss',
-			'./src/css/cart_edit.scss'
+			'src/css/main.scss',
+			'src/css/market_be.scss',
+			'src/css/seller_be.scss',
+			'src/css/cart_edit.scss'
 			// You can add more files here that will be built seperately,
 			// f.e. newsletter.scss
 		],
@@ -105,44 +105,51 @@ var settings = {
 
 	js: {
 		src: [
-			'./src/js/main.js',
-			'./src/js/checkout.js',
-			'./src/js/cart_edit.js'
+			'src/js/main.js',
+			'src/js/cart_edit.js'
 		],
 		dest:	pkg.project_settings.prefix + 'js/',
 		destFile:	'main.min.js'
 	},
 
+	jscheckout: {
+		src: [
+			'src/js/checkout/*.js',
+		],
+		dest: pkg.project_settings.prefix + 'js/',
+		destFile: 'checkout.js'
+	},
+
 	jsvendor: {
 		src: [
-			'./src/js/vendor/**/*.js',
+			'src/js/vendor/**/*.js',
 			// Add single vendor files here,
 			// they will be copied as is to `{prefix}/js/vendor/`, 
-			// e.g. './node_modules/flickity/dist/flickity.pkgd.min.js',
-			'./node_modules/quagga/dist/quagga.min.js',
-			'./node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.js'
+			// e.g. 'node_modules/flickity/dist/flickity.pkgd.min.js',
+			'node_modules/quagga/dist/quagga.min.js',
+			'node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.js'
 		],
 		dest:	pkg.project_settings.prefix + 'js/vendor/'
 	},
 
 	cssvendor: {
 		src:	[
-			'./src/css/vendor/**/*.css',
+			'src/css/vendor/**/*.css',
 			// Add single vendor files here,
 			// they will be copied as is to `{prefix}/css/vendor/`, 
-			// e.g. './node_modules/flickity/dist/flickity.min.css'
-			'./node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.css'
+			// e.g. 'node_modules/flickity/dist/flickity.min.css'
+			'node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.css'
 		],
 		dest:	pkg.project_settings.prefix + 'css/vendor/'
 	},
 
 	fonts: {
-		src:	'./src/fonts/**/*',
+		src:	'src/fonts/**/*',
 		dest:	pkg.project_settings.prefix + 'fonts/'
 	},
 	
 	images: {
-		src:	'./src/img/**/*',
+		src:	'src/img/**/*',
 		dest:	pkg.project_settings.prefix + 'img/',
 		options: [ 
 			$.imagemin.optipng({ optimizationLevel: 5 }),
@@ -151,7 +158,7 @@ var settings = {
 	},
 
 	icons: {
-		src:	'./src/icons/**/*.svg',
+		src:	'src/icons/**/*.svg',
 		dest:	pkg.project_settings.prefix + 'img/icons/',
 		options: [
 			$.imagemin.svgo(svgoOptions)
@@ -159,7 +166,7 @@ var settings = {
 	},
 
 	sprite: {
-		src: './src/icons/*.svg',
+		src: 'src/icons/*.svg',
 		dest: pkg.project_settings.prefix + 'img/',
 		destFile:	'icons.svg',
 		options: [
@@ -168,7 +175,7 @@ var settings = {
 	},
 
 	favicons: {
-		src: './src/img/favicon.svg',
+		src: 'src/img/favicon.svg',
 		dest: pkg.project_settings.prefix + 'img/favicons/',
 		background: '#ffffff'
 	}
@@ -237,6 +244,20 @@ gulp.task('js-prod', function(done) {
 		.pipe($.uglify().on('error', function(uglify) { console.log(uglify.message); this.emit('end') }))
 		.pipe($.header(banner, { pkg: pkg }))
 		.pipe(gulp.dest(settings.js.dest))
+	;
+	done();
+});
+
+gulp.task('js-checkout', function(done) {
+	return gulp
+		.src(settings.jscheckout.src)
+		.pipe($.jsvalidate().on('error', function(jsvalidate) { console.log(jsvalidate.message); this.emit('end') }))
+		.pipe($.concat(settings.jscheckout.destFile))
+		// .pipe($.stripdebug())
+		// .pipe($.uglify().on('error', function(uglify) { console.log(uglify.message); this.emit('end') }))
+		.pipe($.header(banner, { pkg: pkg }))
+		.pipe(gulp.dest(settings.jscheckout.dest))
+		.pipe($.browserSync.stream())
 	;
 	done();
 });
@@ -323,6 +344,7 @@ gulp.task('default', gulp.series('css-dev', function() {
 
 	gulp.watch(settings.css.src, gulp.series('css-dev'));
 	gulp.watch(settings.js.src, gulp.series('js-dev'));
+	gulp.watch(settings.jscheckout.src, gulp.series('js-checkout'));
 
 }));
 

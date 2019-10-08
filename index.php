@@ -46,7 +46,7 @@ use \Contentomat\DBCex;
 
     // Session überprüfen
     $cmt = Contentomat::getContentomat();
-	// $cmt->setErrorReporting('warning');
+	$cmt->setErrorReporting('error');
 	$page = new cmtPage();
     $session = SessionHandler::getSession();
 	$db = new DBCex();

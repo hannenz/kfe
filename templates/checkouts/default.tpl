@@ -21,7 +21,7 @@
 
 		<div class="form-field form-field--text">
 			<label for="checkoutId">Kassen-Nr</label>
-			<input type="number" value="{IF({ISSET:checkoutId})}{VAR:checkoutId}{ELSE}1{ENDIF}" name="checkoutId" id="checkoutId" />
+			<input type="number" value="{IF({ISSET:checkoutId})}{VAR:checkoutId}{ELSE}1{ENDIF}" name="checkoutId" id="checkoutId" autofocus />
 		</div>
 
 		<div class="form-field form-field--select">

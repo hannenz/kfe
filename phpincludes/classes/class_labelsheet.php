@@ -10,12 +10,12 @@ namespace KFE;
 
 use \TCPDF;
 
-error_reporting(0);
-if (!ISPRODUCTION) {
-	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-	ini_set('display_errors', true);
-}
-
+// error_reporting(0);
+// if (!ISPRODUCTION) {
+// 	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+// 	ini_set('display_errors', true);
+// }
+//
 require_once(PATHTOWEBROOT . "phpincludes/vendor/laurentbrieu/tcpdf/src/TCPDF/TCPDF.php");
 
 class LabelSheetPdf extends TCPDF {

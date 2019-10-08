@@ -18,23 +18,14 @@ function Checkout() {
 	this.carts = [];
 
 	// This is a single cart
-	this.cart = {
-		timestamp: Date.now(),
-		checkoutId: this.checkoutId,
-		marketId: this.marketId,
-		cashierId: this.cashierId,
-		submitted: false,
-		submittedTimestamp: null,
-		items: []
-	};
-
+	this.cart = Object.create(Cart);
+	this.cart.init(this.marketId, this.checkoutId, this.cashierId);
 
 	this.totalInput = document.getElementById('checkout-total');
 	this.changeInput = document.getElementById('checkout-change-value');
 	this.codeInput = document.getElementById('checkout-code-input');
 	this.cue = document.getElementById('js-cue');
 	this.cueLabel = document.getElementById('js-cue-label');
-
 
 	/**
 	 * Init
@@ -57,7 +48,7 @@ function Checkout() {
 			this.cameraBarcodeScanner = new CameraBarcodeScanner();
 			this.cameraBarcodeScanner.setup(document.getElementById('cam'),  function(result) {
 				var item = self.getItemFromCode(result.codeResult.code);
-				self.addToCart(item);
+				self.cart.addItem(item);
 			});
 		}, function() {
 			console.log("No camera available, never mind …");
@@ -68,6 +59,7 @@ function Checkout() {
 			document.body.classList.add('is-online');
 			self.submitCarts();
 		});
+
 		window.addEventListener('offline', function() {
 			document.body.classList.remove('is-online');
 		});
@@ -232,14 +224,14 @@ function Checkout() {
 		}
 
 		if (window.confirm("Sind Sie sicher, dass sie den gesamten Vorgang stornieren möchten?")) {
-			self.cancelCart();
+			self.cart.clear();
 			self.createTableFromCart();
 		}
 	}
 
 	this.actionCommit = function() {
 		self.commitCart();
-		self.cancelCart();
+		self.cart.clear();
 		self.createTableFromCart();
 		self.updateTotalTurnover();
 	}
@@ -249,7 +241,7 @@ function Checkout() {
 			return;
 		}
 
-		self.cancelLast();
+		self.cart.cancelLast();
 		self.createTableFromCart();
 	}
 		
@@ -262,7 +254,7 @@ function Checkout() {
 	 * @return void
 	 */
 	this.change = function(value) {
-		self.changeInput.value = ((value - (self.getCartTotal(self.cart))) / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+		self.changeInput.value = ((value - (self.cart.getTotal())) / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
 	}
 
 
@@ -284,7 +276,8 @@ function Checkout() {
 				var code = this.value;
 				var item = self.getItemFromCode(code);
 				if (item != null) {
-					self.addToCart(item);
+					self.cart.addItem(item);
+					self.createTableFromCart();
 				}
 				else {
 					alert ("Invalid code: " + code);
@@ -342,21 +335,16 @@ function Checkout() {
 		var i;
 		// console.log('cancelLast');
 		if ((i = self.cart.items.length - 1) >= 0) {
-			self.cancelItem(i);
+			self.cart.removeItem(i);
 		}
 	};
+
 
 	this.cancelItem = function(i) {
 
 		if (self.cart.items[i]) {
 
 			item = self.cart.items[i];
-			// var mssg = "Diese Position zu stornieren?\n#" + (i + 1)  + "\nVerkäufer-Nr: " + item.sellerNr + "\nBetrag: <strong>" + (item.value / 100).toFixed(2) + " EUR<strong>";
-			// console.log(mssg);
-			// if (!window.confirm(mssg)) {
-			// 	return;
-			// }
-
 			self.dialog('Position stornieren?', "#" + (i + 1)  + "<br>Verkäufer-Nr: " + item.sellerNr + "<br>Betrag: <b>" + (item.value / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) + "</b>", {
 				actions: [
 					{
@@ -368,7 +356,7 @@ function Checkout() {
 					{
 						text: "Ja",
 						click: function() {
-							self.cart.items.splice(i, 1);
+							self.cart.removeItem(i);
 							self.closeDialog();
 							self.createTableFromCart();
 							self.codeInput.focus();
@@ -381,12 +369,12 @@ function Checkout() {
 	}
 
 
-	this.addToCart = function(item) {
-		self.cart.items.push(item);
-		self.createTableFromCart();
-		self.persist();
-		// Play a sound
-	}
+	// this.addToCart = function(item) {
+	// 	self.cart.addItem(item);
+	// 	self.createTableFromCart();
+	// 	self.persist();
+	// 	// Play a sound
+	// }
 
 	this.createTableFromCart = function() {
 		var table = document.getElementById('js-cart');
@@ -442,7 +430,6 @@ function Checkout() {
 			row.appendChild(td);
 
 			td = document.createElement('td');
-			console.log("foo foo");
 			td.innerText = (item.value / 100).toLocaleString('de-DE', {style: 'currency', currency: 'EUR'});
 			td.classList.add('currency');
 			row.appendChild(td);
@@ -489,22 +476,6 @@ function Checkout() {
 
 
 	/**
-	 * Calculate the total sum of a cart
-	 *
-	 * @param Cart
-	 * @return double
-	 */
-	this.getCartTotal = function(cart) {
-		var total = 0;
-		cart.items.forEach(function(item) {
-			total += item.value;
-		});
-
-		return total;
-	};
-
-	
-	/**
 	 * Committing a cart means finishing it and add it to the cue / list of
 	 * carts. If we are online the cart is also submitted to the server
 	 */
@@ -520,13 +491,16 @@ function Checkout() {
 		// The cart needs to be cloned before pushed to the stack,
 		// this is a simple method to clone a Javascript object:
 		var clone = JSON.parse(JSON.stringify(self.cart));
+		var cartData = self.cart.getData();
 
-		self.carts.push(clone);
+		self.carts.push(cartData);
 
 		if (navigator.onLine) {
 			self.statusMessage("Bon wird übermittelt");
-			self.submitCart(clone);
+			self.submitCart(cartData);
 		}
+
+		self.cart.clear();
 
 		self.updateTotalTurnover();
 		self.persist();
@@ -567,7 +541,7 @@ function Checkout() {
 	this.persist = function() {
 		// window.localStorage.setItem('checkoutId', self.checkoutId);
 		// window.localStorage.setItem('marketId', self.marketId);
-		window.localStorage.setItem('cart', JSON.stringify(self.cart));
+		window.localStorage.setItem('cart', JSON.stringify(self.cart.getData()));
 		window.localStorage.setItem('carts', JSON.stringify(self.carts));
 	};
 
@@ -577,11 +551,11 @@ function Checkout() {
 	 * Restore current cart and cart cue from localStorage
 	 */
 	this.resurrect = function() {
-		var checkoutId, marketId, cart;
+		// var checkoutId, marketId, cart;
 
 		if ((cart = window.localStorage.getItem('cart')) != null) {
-			self.cart = JSON.parse(cart);
-			self.createTableFromCart();
+			self.cart.setData(JSON.parse(cart));
+			// self.createTableFromCart();
 		}
 
 		if ((carts = window.localStorage.getItem('carts')) != null) {
@@ -621,8 +595,6 @@ function Checkout() {
 			return;
 		}
 
-		console.log("submitting cart: ", cart);
-
 		var data = new FormData();
 		data.append('action',  'add');
 		data.append('timestamp', cart.timestamp);
@@ -630,7 +602,7 @@ function Checkout() {
 		data.append('cashierId', cart.cashierId);
 		data.append('checkoutId', cart.checkoutId);
 		data.append('items', JSON.stringify(cart.items));
-		data.append('total', self.getCartTotal(cart));
+		data.append('total', self.cart.getTotal());
 
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener('load', function() {
@@ -649,6 +621,7 @@ function Checkout() {
 						console.log("Found cart in cue, un-cueing it!", i);
 						self.carts[i].submitted = true;
 						self.carts[i].submittedTimestamp = new Date();
+						self.carts[i].id = response.cartId
 
 						// self.carts.splice(i, 1);
 						self.persist();
@@ -670,7 +643,7 @@ function Checkout() {
 
 
 	this.showCarts = function() {
-		console.log("Showiong carts");
+		console.log("Showing carts");
 		var containerEl = document.createElement('ul');
 
 		self.carts.forEach(function(cart) {

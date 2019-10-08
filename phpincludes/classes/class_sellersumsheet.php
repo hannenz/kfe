@@ -12,11 +12,11 @@ use \TCPDF;
 use \Contentomat\Parser;
 
 
-error_reporting(0);
-if (!ISPRODUCTION || true) {
-	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
-	ini_set('display_errors', true);
-}
+// error_reporting(0);
+// if (!ISPRODUCTION || true) {
+// 	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
+// 	ini_set('display_errors', true);
+// }
 
 require_once(PATHTOWEBROOT . "phpincludes/vendor/laurentbrieu/tcpdf/src/TCPDF/TCPDF.php");
 
