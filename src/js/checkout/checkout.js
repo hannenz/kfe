@@ -138,7 +138,7 @@ function Checkout() {
 				break;
 
 			case 13: // Return
-				//self.actionCommit();
+				// self.actionCommit();
 				break;
 
 			case 27: // Escape
@@ -491,7 +491,7 @@ function Checkout() {
 
 		// The cart needs to be cloned before pushed to the stack,
 		// this is a simple method to clone a Javascript object:
-		var clone = JSON.parse(JSON.stringify(self.cart));
+		// var clone = JSON.parse(JSON.stringify(self.cart));
 		var cartData = self.cart.getData();
 
 		self.carts.push(cartData);
@@ -598,12 +598,16 @@ function Checkout() {
 
 		var data = new FormData();
 		data.append('action',  'add');
-		data.append('timestamp', cart.timestamp);
 		data.append('marketId', cart.marketId);
-		data.append('cashierId', cart.cashierId);
 		data.append('checkoutId', cart.checkoutId);
+		data.append('cashierId', cart.cashierId);
+		data.append('timestamp', cart.timestamp);
 		data.append('items', JSON.stringify(cart.items));
-		data.append('total', cart.getTotal());
+		var total = 0;
+		cart.items.forEach(function(item) {
+			total += item.value;
+		});
+		data.append('total', total);
 
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener('load', function() {
