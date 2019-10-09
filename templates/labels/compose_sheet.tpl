@@ -23,7 +23,7 @@
 		{ENDIF}
 
 
-		<fieldset class="stack columns amounts">
+		<div class="stack columns amounts">
 			<div class="form-field form-field--amount">
 				<input id="amount_50" type="number" min="0" max="50" value="{IF({ISSET:amount_50:VAR})}{VAR:amount_50}{ELSE}1{ENDIF}" name="amount_50" id="amount_50">
 				<label for="amount_50"> &times; 0,50 &euro;</label>
@@ -140,7 +140,7 @@
 				<input id="value_custom_8" type="text" name="value_custom_8"  value="{IF({ISSET:value_custom_8:VAR})}{VAR:value_custom_8}{ENDIF}" placeholder="Betrag"  pattern="^[0-9]{0,3}(,((0|5)0?))?$" />
 				<label for="value_custom_8">&euro;</label>
 			</div>
-		</fieldset>
+		</div>
 
 
 		<div class="action-area">
