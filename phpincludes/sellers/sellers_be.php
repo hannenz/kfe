@@ -183,7 +183,7 @@ if (!class_exists('\KFE\SellerBackendController')) {
 
 			$this->Seller->generateSumsheets([
 				'seller_market_id' => $sellerMarketId
-			], $sellerMarketId);
+			], $sellerMarketId, []);
 		}
 
 
