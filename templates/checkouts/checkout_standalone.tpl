@@ -69,6 +69,7 @@
 			<div class="checkout__footer">
 				<div class="statusbar">
 					<div>Gesamtumsatz: <b id="js-total-turnover">0,00 &euro;</b> (<span id="js-total-carts">0</span> Vorgänge)</div>
+					<a id="submit-carts-btn" href="javascript:;">Submit</a>
 					<!-- <input type="checkbox" id="js&#45;toggle&#45;camera&#45;scanner"><label for="js&#45;toggle&#45;camera&#45;scanner">Scanner an/aus</label> -->
 					<!-- <div id="cam"></div> -->
 					<!-- <a href="{CONSTANT:PAGEURL}?{SID}&#38;launch={VAR:applicationId}" class="button">Zurück</a> -->

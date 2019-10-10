@@ -26,6 +26,7 @@ function Checkout() {
 	this.codeInput = document.getElementById('checkout-code-input');
 	this.cue = document.getElementById('js-cue');
 	this.cueLabel = document.getElementById('js-cue-label');
+	this.submitCartsBtn = document.getElementById('submit-carts-btn');
 
 	/**
 	 * Init
@@ -117,6 +118,8 @@ function Checkout() {
 			var btn = buttons[i];
 			btn.addEventListener('click', self.onPanelButtonClicked);
 		}
+
+		this.submitCartsBtn.addEventListener('click', this.submitCarts);
 
 		// Periodically try to submit carts to server
 		// window.setInterval(self.submitCarts, 5000);
@@ -615,7 +618,7 @@ function Checkout() {
 			if (response.success) {
 				// cart.submitted = true;
 				// console.log(response.cartId);
-				self.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId + ' <a href="/de/4/Checkout.html?action=cancel&id=' + response.cartId + '&marketId=' + self.marketId + '&checkoutId=' + self.checkoutId +'">Stornieren?</a>', 'success');
+				self.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId, 'success');
 				document.body.classList.remove('is-busy');
 
 				// Try to find this cart in the cue and if found, remove it
