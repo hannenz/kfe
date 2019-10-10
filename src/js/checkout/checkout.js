@@ -20,6 +20,7 @@ function Checkout() {
 	// This is a single cart
 	this.cart = Object.create(Cart);
 	this.cart.init(this.marketId, this.checkoutId, this.cashierId);
+	this.cart.clear();
 
 	this.totalInput = document.getElementById('checkout-total');
 	this.changeInput = document.getElementById('checkout-change-value');
@@ -59,7 +60,7 @@ function Checkout() {
 
 		window.addEventListener('online', function() {
 			document.body.classList.add('is-online');
-			self.submitCarts();
+			window.setTimeout(self.submitCarts, 3000);
 		});
 
 		window.addEventListener('offline', function() {
@@ -470,12 +471,27 @@ function Checkout() {
 
 		if (self.cart.items.length == 0) {
 			document.querySelector('[data-action=cancel]').setAttribute('disabled', true);
+			document.querySelector('[data-action=cancel-last]').setAttribute('disabled', true);
 			document.querySelector('[data-action=commit]').setAttribute('disabled', true);
 		}
 		else {
 			document.querySelector('[data-action=cancel]').removeAttribute('disabled');
+			document.querySelector('[data-action=cancel-last]').removeAttribute('disabled');
 			document.querySelector('[data-action=commit]').removeAttribute('disabled');
 		}
+
+
+
+		document.querySelectorAll('[data-action^=change]').forEach(function(btn) {
+			if (btn.dataset.value < total || total == 0) {
+				btn.setAttribute('disabled', true);
+			}
+			else {
+				btn.removeAttribute('disabled');
+			}
+		});
+
+
 	}
 
 
@@ -516,6 +532,18 @@ function Checkout() {
 		var totalTurnover = self.calcTotalTurnover() / 100;
 		document.getElementById('js-total-turnover').innerText = totalTurnover.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
 		document.getElementById('js-total-carts').innerText = self.carts.length;
+		document.getElementById('js-total-carts-submitted').innerText = self.countSubmittedCarts();
+	};
+
+
+	this.countSubmittedCarts = function() {
+		var n = 0;
+		this.carts.forEach(function(cart) {
+			if (cart.submitted) {
+				n++;
+			}
+		});
+		return n;
 	}
 
 
