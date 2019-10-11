@@ -26,7 +26,7 @@
 			<header class="checkout__header">
 				<div>Kasse {VAR:checkoutId}</div>
 				<div>Markt #{VAR:marketId} am {VAR:marketDate}</div>
-				<div>{VAR:user_name} <a href="/admin/index.php?{SID}&action=logout" class="no-button">Abmelden</a> </div>
+				<div style="white-space: nowrap">{VAR:user_name} <a href="/admin/index.php?{SID}&action=logout" class="no-button">Abmelden</a> </div>
 			</header>
 
 			<div class="checkout__cart">

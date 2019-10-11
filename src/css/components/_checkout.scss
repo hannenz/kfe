@@ -306,7 +306,8 @@
 	width: 100%;
 
 	> div {
-		display: inline-block;
+		// display: inline-block;
+		display: block;
 	}
 
 	#cam, #js-toggle-camera-scanner {
