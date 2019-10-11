@@ -659,6 +659,8 @@ function Checkout() {
 						self.carts[i].submittedTimestamp = new Date();
 						self.carts[i].id = response.cartId
 
+						self.updateTotalTurnover();
+
 						// self.carts.splice(i, 1);
 						self.persist();
 						break;
