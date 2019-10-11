@@ -35,34 +35,36 @@
 
 			</div>
 
-			<div class="checkout__displays">
-				<div class="checkout-display">
-					<label for="checkout-total">Summe</label>
-					<input id="checkout-total" class="checkout-total" type="text" name="checkout-total" readonly value="0,00 &euro;" />
+			<div class="checkout__controls">
+				<div class="checkout__displays">
+					<div class="checkout-display">
+						<label for="checkout-total">Summe</label>
+						<input id="checkout-total" class="checkout-total" type="text" name="checkout-total" readonly value="0,00 &euro;" />
+					</div>
+					<div class="checkout-display">
+						<label for="checkout-change">Rückgeld</label>
+						<input id="checkout-change-value" class="checkout-change" type="text" readonly value="-,-- &euro;" />
+					</div>
+					<div class="checkout-display">
+						<label for="checkout-code-finput">Code</label>
+						<input id="checkout-code-input" class="checkout-code" type="text" name="code" value="" autofocus />
+					</div>
 				</div>
-				<div class="checkout-display">
-					<label for="checkout-change">Rückgeld</label>
-					<input id="checkout-change-value" class="checkout-change" type="text" readonly value="-,-- &euro;" />
-				</div>
-				<div class="checkout-display">
-					<label for="checkout-code-finput">Code</label>
-					<input id="checkout-code-input" class="checkout-code" type="text" name="code" value="" autofocus />
-				</div>
-			</div>
 
-			<div class="checkout__button-panel">
+				<div class="checkout__button-panel">
 
-				<div class="button-panel">
-					<button class="button" data-action="cancel-last">Storno<br>Letzte</button>
-					<button class="button" data-action="cancel">Storno Gesamt</button>
-					<button class="button" data-action="change" data-value="500">5,00</button>
-					<button class="button" data-action="change" data-value="1000">10,00</button>
-					<button class="button" data-action="change" data-value="2000">20,00</button>
-					<button class="button" data-action="change" data-value="5000">50,00</button>
-					<button class="button" data-action="change" data-value="10000">100,00</button>
-					<!-- <button class="button" data&#45;action="change" data&#45;value="20000">200,00</button> -->
-					<button class="button" data-action="change-custom" data-value="999999">Anderer Betrag</button>
-					<button class="button" data-action="commit" type="submit">Fertig</button>
+					<div class="button-panel">
+						<button class="button" data-action="cancel-last">Storno<br>Letzte</button>
+						<button class="button" data-action="cancel">Storno Gesamt</button>
+						<button class="button" data-action="change" data-value="500">5,00</button>
+						<button class="button" data-action="change" data-value="1000">10,00</button>
+						<button class="button" data-action="change" data-value="2000">20,00</button>
+						<button class="button" data-action="change" data-value="5000">50,00</button>
+						<button class="button" data-action="change" data-value="10000">100,00</button>
+						<!-- <button class="button" data&#45;action="change" data&#45;value="20000">200,00</button> -->
+						<button class="button" data-action="change-custom" data-value="999999">Anderer Betrag</button>
+						<button class="button" data-action="commit" type="submit">Buchen</button>
+					</div>
 				</div>
 			</div>
 
