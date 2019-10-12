@@ -75,7 +75,7 @@ class SellerSumsheet extends TCPDF {
 
 
 		// set auto page breaks
-		// $this->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
+		$this->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 	}
 
 
@@ -113,7 +113,10 @@ class SellerSumsheet extends TCPDF {
 			$this->Parser->setMultipleParserVars(array_merge($seller, $this->market));
 			$html = $this->Parser->parseTemplate(PATHTOWEBROOT . "templates/sellers/seller_sumsheet.tpl");
 
-			$this->writeHTMLCell(140, 0, 35, 20, $html, 0, 0, false);
+			// jobr@2019-10-12 Don't use writeHTMLCell because of messedup
+			// page-breaks with multi-page sellers
+			// $this->writeHTMLCell(140, 0, 35, 20, $html, 0, 0, false);
+			$this->writeHTML($html);
 		}
 
 		$this->Output($this->filename, 'I');
