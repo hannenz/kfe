@@ -2,6 +2,7 @@
 namespace KFE;
 
 use KFE\Cart;
+use KFE\Item;
 use Contentomat\Contentomat;
 use Contentomat\Controller;
 use Contentomat\PsrAutoloader;
@@ -56,18 +57,35 @@ class CartsController extends Controller {
 		$success = true;
 
 		try {
+
+			$items = (array)json_decode($_REQUEST['items'], true);
+
 			$data = [
-				'cart_timestamp' => (int)$_REQUEST['timestamp'],
 				'cart_datetime' => strftime('%F %T', (int)$_REQUEST['timestamp'] / 1000),
 				'cart_submitted_datetime' => strftime('%F %T', time()),
 				'cart_market_id' => (int)$_REQUEST['marketId'],
 				'cart_checkout_id' => (int)$_REQUEST['checkoutId'],
 				'cart_total' => (float)$_REQUEST['total'],
-				'cart_items' => $_REQUEST['items'],
-				'cart_items_count' => count((array)json_decode($_REQUEST['items'], true)),
+				'cart_items_count' => count($items),
 				'cart_cashier_id' => (int)$_REQUEST['cashierId']
 			];
+
 			$cartId = $this->Cart->add($data);
+			if (!empty($cartId)) {
+
+				foreach ($items as $item) {
+					$itemData = [
+						'item_datetime' => $item['ts'],
+						'item_market_id' => $item['marketId'],
+						'item_seller_id' => $item['sellerId'],
+						'item_checkout_id' => $item['checkoutId'],
+						'item_code' => $item['code'],
+						'item_value' => $item['value'],
+						'item_cart_id' => $cartId
+					];
+					$this->Item->add($itemData);
+				}
+			}
 		}
 		catch (Exception $e) {
 			$success = false;

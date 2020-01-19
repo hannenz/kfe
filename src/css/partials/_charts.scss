@@ -1,0 +1,107 @@
+.market-evaluation {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	> * + * {
+		margin-top: 3rem;
+	}
+
+	h1 {
+		margin: 0;
+	}
+}
+
+.figures {
+	display: grid;
+	// grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(200px, 4fr));
+	grid-gap: 48px 24px; 
+	align-self: stretch;
+}
+
+.pie-chart {
+	width: 100px;
+	height: 100px;
+	transform: rotate(-90deg);
+	background: var(--color1);
+	border-radius: 50%;
+	circle {
+		fill: var(--color1);
+		stroke: var(--color2);
+		stroke-width: 32;
+		// stroke-dasharray: 50 100;
+	}
+
+	circle + circle {
+		stroke: var(--color3);
+		fill: none;
+	}
+}
+
+.chart {
+	--color1: yellowgreen;
+	--color2: #655;
+	--color3: mediumturquoise;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+
+	> * + * {
+		margin-top: 1.5rem;
+	}
+
+	// box-shadow: 2px 2px 6px rgba(30, 30, 30, .2);
+	// padding: 1rem;
+
+	&__title {
+		text-align: center;
+		margin: 0;
+	}
+
+	figcaption {
+		margin-top: 12px;
+		font-weight: bold;
+		text-align: left;
+		font-feature-settings: 'tnum';
+
+		dl {
+			margin: 0;
+			overflow: hidden;
+
+			:nth-child(3), :nth-child(4) {
+				color: var(--color2);
+			}
+			:nth-child(5), :nth-child(6) {
+				color: var(--color1);
+			}
+			:nth-child(7), :nth-child(8) {
+				color: var(--color3);
+			}
+
+			:nth-child(2), :nth-child(2) {
+				font-size: 1.25em;
+				font-weight: bold;
+			}
+		}
+
+		dt {
+			width: 80px;
+			float: left;
+			clear: left;
+
+			&::after {
+				content: ':';
+			}
+		}
+
+		dd {
+			display: block;
+			float: left;
+			text-align: left;
+			margin: 0;
+		}
+	}
+} 

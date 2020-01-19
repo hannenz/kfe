@@ -411,6 +411,8 @@ class Seller extends Model {
 	 *
 	 * @param Array 	$conditions
 	 * @param int 		Market ID
+	 * @param Array 	Options
+	 * 					- `skipEmpty`: Dont print sellers wothout sales
 	 * @return void
 	 */
 	public function generateSumsheets($conditions, $marketId, $options) {
@@ -458,6 +460,7 @@ class Seller extends Model {
 		$seller['grossValue'] = $seller['salesTotal'] - $seller['discountValue'];
 		$seller['grossValueEuro'] = $seller['grossValue'] / 100;
 		$seller['grossValueEuroFmt'] = sprintf('%.2f', $seller['grossValueEuro']);
+		$seller['itemsCount'] = count($seller['sales']);
 
 		return $seller;
 	}

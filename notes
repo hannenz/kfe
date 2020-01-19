@@ -1,11 +1,24 @@
+2020-01-19
+
+- E-Mail Adressen einrichten: Wiebke
+- Archiv: Aufbau der Seite; Texte z. Bsp. Einleitungstext, dann fortlaufend die
+  Märkte als Liste mit nur Datum und charity
+- Karitative Zwecke 10/2019: Links korrekt? Link Palliativ Ulm?
+
+
+
+------
+
+
+
 [✓] Backup-Script auf Server (kein Cron möglich!! Tägliches Backup von one.com vorhanden)
 
 [ ] Text wenn keine Nummern mehr da sind: "Für diesen Markt sind leider alle Nummern bereits vergeben"
 [✓] Hände besser sichtbar
 [✓] Link / Button Nummernvergabe größer, prominenter
 [✓] Nummernvergabe auch vorher größer
-[ ] Caritativer Zweck verlinken (-> Archiv)
-[ ] Zweispaltive LIste bei Info
+[✓] Caritativer Zweck verlinken (-> Archiv)
+[ ] Zweispaltive Liste bei Info
 [ ] Wiebke: {info,nummernvergabe}@kinderflohmarkt-erbach.de einrichten
 
 

@@ -50,11 +50,14 @@ class Market extends Model {
 	public function getUpcoming($limit = null) {
 
 		$this->filter([
-			'market_begin > ' => 'NOW()'
+			'market_begin > ' => strftime('%Y-%m-%d %H:%M')
+		])->order([
+			'market_begin' => 'ASC'
 		]);
 		if ($limit != null) {
 			$this->limit($limit);
 		}
+		
 		$markets = $this->findAll();
 
 		return $markets;
