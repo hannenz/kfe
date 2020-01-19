@@ -4,8 +4,31 @@
 - Archiv: Aufbau der Seite; Texte z. Bsp. Einleitungstext, dann fortlaufend die
   Märkte als Liste mit nur Datum und charity
 - Karitative Zwecke 10/2019: Links korrekt? Link Palliativ Ulm?
+- Barcodes robuster: Könnte versuchen, das Nummernformat noch einmal zu ändern
+  (weniger Ziffern), 
+- Auswertung
+
+- Stammkunden über "Eintrag duplizieren", ggf. Feld "Markt" in der Eingabemaske als SELECT Felkd
+- Startseite: Nummernvergabe ab ... {Datum} - wenn Startdatum Nummernvergabe vorhanden
 
 
+[ ] Verkäufer-Nr auf Etikett größer
+[ ] Checkout: Manuelle Code-Eingabe verbessern
+[ ] Summenblatt: Branding (Hände), "Vielen Dank für Ihre Spende", Hinweis auf Spendenzweck
+
+
+Barcodes robuster machen:
+
+Druck:
+- Druckrichtung ("Zaun" vs. "Leiter", bei Tintenstrahldruckern ist "Zaun" besser)
+- höchstmögliche Auflösung
+- höchstmöglicher Kontrast bei rotem Licht
+  (http://www.etikettenwissen.de/wiki/Strichcode_Farben) -> schwarz/weiss, schwarz/gelb, schwarz/orange
+
+- Test mit Smartphone-App
+
+- Ruhezonen
+- POS: Eher EAN13
 
 ------
 
