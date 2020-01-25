@@ -186,9 +186,11 @@ class LabelSheet {
 				/*****************
 				*  Seller Number *
 				*****************/
-				$text = sprintf("Verkäufer-Nummer: %03u", $this->sellerData['seller_nr']);
-				$this->pdf->SetXY($offx + 15, $offy + 38);
-				$this->pdf->Cell(30, 6, $text, 0, 0, 'L', false, '', 0, false, 'T', 'T');
+				$text = sprintf("Verkäufer-Nummer: <span style=\"font-size:12px\"><strong>%03u</strong></span>", $this->sellerData['seller_nr']);
+				$this->pdf->SetXY($offx + 15, $offy + 37);
+				// $this->pdf->setFontSize(12);
+				// $this->pdf->Cell(30, 6, $text, 0, 0, 'L', false, '', 0, false, 'T', 'T');
+				$this->pdf->writeHTML($text);
 
 
 				/***********
