@@ -57,7 +57,9 @@
 			{ELSE}
 				<p>
 					Die Nummernvergabe startet am<br>
-					<strong> {DATEFMT:"{VAR:market_number_assignment_begin}":"%a. %d.%m.%Y ab %k:%M Uhr":de_DE.utf-8}</strong>
+					<strong> {DATEFMT:"{VAR:market_number_assignment_begin}":"%a. %d.%m.%Y ab %k:%M Uhr":de_DE.utf-8}</strong><br>
+					Ausschliesslich online!<br>
+					Keine Nummernvergabe per E-Mail oder Telefon!
 				</p>
 			{ENDIF}
 		</div>
@@ -73,16 +75,21 @@
 
 
 	<table class="market-dates">
+		{IF("{VAR:market_submission_begin}" != "0000-00-00 00:00:00")}
 		<tr>
 			<td>Warenabgabe</td>
 			<td>{DATEFMT:"{VAR:market_submission_begin}":"%a. %d.%m.%Y":de_DE.utf-8}</td>
 			<td>{DATEFMT:"{VAR:market_submission_begin}":"%k:%M":de_DE.utf-8}&thinsp;&ndash;&thinsp;{DATEFMT:"{VAR:market_submission_end}":"%k:%M":de_DE.utf-8} Uhr</td>
 		</tr>
+		{ENDIF}
+		{IF("{VAR:market_submission_end}" != "0000-00-00 00:00:00")}
+		<tr>
 		<tr>
 			<td>Warenabholung</td>
 			<td>{DATEFMT:"{VAR:market_pickup_begin}":"%a. %d.%m.%Y":de_DE.utf-8}</td>
 			<td>{DATEFMT:"{VAR:market_pickup_begin}":"%k:%M":de_DE.utf-8}&thinsp;&ndash;&thinsp;{DATEFMT:"{VAR:market_pickup_end}":"%k:%M":de_DE.utf-8} Uhr</td>
 		</tr>
+		{ENDIF}
 	</table>
 
 	<div class="market_media">
