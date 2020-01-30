@@ -93,12 +93,47 @@
 	</table>
 
 	<div class="market_media">
-		<ul>
+		{IF({COUNT:marketDocuments})}
+		<h2 class="headline">Downloads</h2>
+		<ul class="market-decouments">
 			{LOOP VAR(marketDocuments)}
 				<li>
-					<a href="{VAR:media_document_internal_file}" download>{VAR:media_document_file}</a>
+					{VAR:media_title} <br>
+					<a href="/media/markets/{VAR:media_document_file_internal}" download>
+						{VAR:media_document_file}
+					</a>
 				</li>
 			{ENDLOOP VAR}
 		</ul>
+		{ENDIF}
+
+		{IF({COUNT:marketMaps})}
+		<h2 class="headline">Anfahrt</h2>
+		<div class="market-maps">
+			{LOOP VAR(marketMaps)}
+					<figure>
+						<div class="project-map" data-lat="{VAR:media_map_latitude}" data-lon="{VAR:media_map_longitude}" data-zoom="{VAR:media_map_zoom}" data-title="{VAR:media_title}" data-description="{VAR:media_description}" style="min-height: 360px;"></div>
+					</figure>
+			{ENDLOOP VAR}
+		</div>
+		{ENDIF}
+
 	</div>
 </section>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	var maps = document.querySelectorAll('.project-map');
+	for (var i = 0; i < maps.length; i++) {
+		var mapEl = maps[i];
+		var map = L.map(mapEl).setView([mapEl.dataset.lat, mapEl.dataset.lon], mapEl.dataset.zoom);
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+		}).addTo(map);
+		L.marker([mapEl.dataset.lat, mapEl.dataset.lon]).addTo(map)
+			.bindPopup('<strong>' + mapEl.dataset.title + '</strong><br>' + mapEl.dataset.description)
+		    .openPopup();
+	}
+});
+</script>

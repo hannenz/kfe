@@ -107,8 +107,11 @@ if (!class_exists('\KFE\MarketsController')) {
 		public function actionDetail () {
 			$market = $this->Market->findById($this->marketId, ['fetchMedia' => [
 				'image' => 'marketImages',
-				'document' => 'marketDocuments'
+				'document' => 'marketDocuments',
+				'map' => 'marketMaps'
 			]]);
+
+			// echo '<pre>'; var_dump($market); echo '</pre>'; die();
 
 			$this->parser->setMultipleParserVars($market);
 			$this->content = $this->parser->parseTemplate($this->templatesPath . 'detail.tpl');

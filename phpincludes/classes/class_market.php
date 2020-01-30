@@ -58,7 +58,11 @@ class Market extends Model {
 			$this->limit($limit);
 		}
 		
-		$markets = $this->findAll();
+		$markets = $this->findAll(['fetchMedia' => [
+			'image' => 'marketImages',
+			'document' => 'marketDocuments',
+			'map' => 'marketMaps'
+		]]);
 
 		return $markets;
 	}
