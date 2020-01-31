@@ -51,12 +51,16 @@ class MarketBackendController extends ApplicationController {
 		$this->Cart = new Cart();
 		// $this->Parser = new \Contentomat\Parser;
 
-		if (isset($this->getvars['id'])) {
-			$this->marketId = $this->getvars['id'];
+		if (isset($this->getvars['marketId'])) {
+			$this->marketId = $this->getvars['marketId'];
 			if (is_array($this->marketId)) {
 				$this->marketId = array_shift($this->marketId);
 			}
 		}
+
+		// if (!empty($this->marketId)) {
+		// 	$this->cmtAction = 'evaluate';
+		// }
 
 		$this->handleContentomatVars();
 	}
@@ -115,10 +119,13 @@ class MarketBackendController extends ApplicationController {
 			}
 		}
 
-		$this->parser->setParserVar('sellers', $sellers);
-		$this->parser->setParserVar('marketId', $market['id']);
-		$this->parser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
-		$this->content = $this->parser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/evaluation.tpl');
+		$MyParser = new \Contentomat\Parser();
+
+		$MyParser->setParserVar('sellers', $sellers);
+		$MyParser->setParserVar('marketId', $market['id']);
+		$MyParser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
+
+		$this->content = $MyParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/evaluation.tpl');
 	}
 }
 
