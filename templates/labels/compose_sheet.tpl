@@ -25,62 +25,62 @@
 
 		<div class="stack columns amounts">
 			<div class="form-field form-field--amount">
-				<input id="amount_50" type="number" min="0" max="50" value="{IF({ISSET:amount_50:VAR})}{VAR:amount_50}{ELSE}1{ENDIF}" name="amount_50" id="amount_50">
+				<input id="amount_50" type="number" min="0" max="50" value="{IF({ISSET:amount_50:VAR})}{VAR:amount_50}{ELSE}0{ENDIF}" name="amount_50" id="amount_50">
 				<label for="amount_50"> &times; 0,50 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_100" type="number" min="0" max="50" value="{IF({ISSET:amount_100:VAR})}{VAR:amount_100}{ELSE}1{ENDIF}" name="amount_100" id="amount_100">
+				<input id="amount_100" type="number" min="0" max="50" value="{IF({ISSET:amount_100:VAR})}{VAR:amount_100}{ELSE}0{ENDIF}" name="amount_100" id="amount_100">
 				<label for="amount_100"> &times; 1,00 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_150" type="number" min="0" max="50" value="{IF({ISSET:amount_150:VAR})}{VAR:amount_150}{ELSE}1{ENDIF}" name="amount_150" id="amount_150">
+				<input id="amount_150" type="number" min="0" max="50" value="{IF({ISSET:amount_150:VAR})}{VAR:amount_150}{ELSE}0{ENDIF}" name="amount_150" id="amount_150">
 				<label for="amount_150"> &times; 1,50 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_200" type="number" min="0" max="50" value="{IF({ISSET:amount_200:VAR})}{VAR:amount_200}{ELSE}1{ENDIF}" name="amount_200">
+				<input id="amount_200" type="number" min="0" max="50" value="{IF({ISSET:amount_200:VAR})}{VAR:amount_200}{ELSE}0{ENDIF}" name="amount_200">
 				<label for="amount_200"> &times; 2,00 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_250" type="number" min="0" max="50" value="{IF({ISSET:amount_250:VAR})}{VAR:amount_250}{ELSE}1{ENDIF}" name="amount_250">
+				<input id="amount_250" type="number" min="0" max="50" value="{IF({ISSET:amount_250:VAR})}{VAR:amount_250}{ELSE}0{ENDIF}" name="amount_250">
 				<label for="amount_250"> &times; 2,50 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_300" type="number" min="0" max="50" value="{IF({ISSET:amount_300:VAR})}{VAR:amount_300}{ELSE}1{ENDIF}" name="amount_300">
+				<input id="amount_300" type="number" min="0" max="50" value="{IF({ISSET:amount_300:VAR})}{VAR:amount_300}{ELSE}0{ENDIF}" name="amount_300">
 				<label for="amount_300"> &times; 3,00 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_350" type="number" min="0" max="50" value="{IF({ISSET:amount_350:VAR})}{VAR:amount_350}{ELSE}1{ENDIF}" name="amount_350">
+				<input id="amount_350" type="number" min="0" max="50" value="{IF({ISSET:amount_350:VAR})}{VAR:amount_350}{ELSE}0{ENDIF}" name="amount_350">
 				<label for="amount_350"> &times; 3,50 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_400" type="number" min="0" max="50" value="{IF({ISSET:amount_400:VAR})}{VAR:amount_400}{ELSE}1{ENDIF}" name="amount_400">
+				<input id="amount_400" type="number" min="0" max="50" value="{IF({ISSET:amount_400:VAR})}{VAR:amount_400}{ELSE}0{ENDIF}" name="amount_400">
 				<label for="amount_400"> &times; 4,00 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_500" type="number" min="0" max="50" value="{IF({ISSET:amount_500:VAR})}{VAR:amount_500}{ELSE}1{ENDIF}" name="amount_500">
+				<input id="amount_500" type="number" min="0" max="50" value="{IF({ISSET:amount_500:VAR})}{VAR:amount_500}{ELSE}0{ENDIF}" name="amount_500">
 				<label for="amount_500"> &times; 5,00 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_600" type="number" min="0" max="50" value="{IF({ISSET:amount_600:VAR})}{VAR:amount_600}{ELSE}1{ENDIF}" name="amount_600">
+				<input id="amount_600" type="number" min="0" max="50" value="{IF({ISSET:amount_600:VAR})}{VAR:amount_600}{ELSE}0{ENDIF}" name="amount_600">
 				<label for="amount_600"> &times; 6,00 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_700" type="number" min="0" max="50" value="{IF({ISSET:amount_700:VAR})}{VAR:amount_700}{ELSE}1{ENDIF}" name="amount_700">
+				<input id="amount_700" type="number" min="0" max="50" value="{IF({ISSET:amount_700:VAR})}{VAR:amount_700}{ELSE}0{ENDIF}" name="amount_700">
 				<label for="amount_700"> &times; 7,00 &euro;</label>
 			</div>
 
 			<div class="form-field form-field--amount">
-				<input id="amount_1000" type="number" min="0" max="50" value="{IF({ISSET:amount_1000:VAR})}{VAR:amount_1000}{ELSE}1{ENDIF}" name="amount_1000">
+				<input id="amount_1000" type="number" min="0" max="50" value="{IF({ISSET:amount_1000:VAR})}{VAR:amount_1000}{ELSE}0{ENDIF}" name="amount_1000">
 				<label for="amount_1000"> &times; 10,00 &euro;</label>
 			</div>
 

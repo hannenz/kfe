@@ -359,7 +359,7 @@ class SellersController extends Controller {
 
 			if (!empty($this->postvars)) {
 
-				$seller = $this->Seller->findBySellerNr($this->postvars['seller_nr']);
+				$seller = $this->Seller->findBySellerNr($this->postvars['seller_nr'], $market['id']);
 				if (empty($seller)) {
 					throw new Exception('errorLoginFailed');
 				}

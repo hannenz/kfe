@@ -127,7 +127,30 @@ function Checkout() {
 
 		self.resurrect();
 		self.createTableFromCart();
+
+		document.forms.manual_entry_form.addEventListener('submit', function(ev) {
+			ev.preventDefault();
+
+			var manualEntrySellerNrInput = document.getElementById('manual-entry-seller-nr');
+			var manualEntryValueInput = document.getElementById('manual-entry-value');
+
+			var sellerNr = manualEntrySellerNrInput.value;
+			var value = parseInt(manualEntryValueInput.value);
+
+			// var ci = new CartItem();
+
+			var item = new CartItem().newFromValues(self.marketId, self.checkoutId, sellerNr, value);
+			self.cart.addItem(item);
+			self.createTableFromCart();
+			self.persist();
+
+			document.forms.manual_entry_form.reset();
+			manualEntrySellerNrInput.focus();
+
+			return false;
+		});
 	};
+
 
 	this.onKeyUp = function(ev) {
 		ev.preventDefault();

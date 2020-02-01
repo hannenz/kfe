@@ -18,6 +18,7 @@
 
 	<section class="main-content">
 
+		<form id="manual-entry-form" name="manual_entry_form"></form>
 		<form class="checkout" id="checkout" autocomplete="off">
 			<input type="hidden" value="{VAR:marketId}" name="marketId" id="marketId" />
 			<input type="hidden" value="{VAR:checkoutId}" name="checkoutId" id="checkoutId" />
@@ -50,6 +51,22 @@
 						<input id="checkout-code-input" class="checkout-code" type="text" name="code" value="" autofocus />
 					</div>
 				</div>
+				<details>
+					<summary>Manuelle Eingabe</summary>
+					<div name="manualEntryForm">
+						<div class="form-field">
+							<label for="manual-entry-seller-nr">Verkäufer-Nr</label>
+							<input form="manual-entry-form" name="manual_entry_seller_nr" id="manual-entry-seller-nr" pattern="[0-9]+" />
+						</div>
+						<div class="form-field">
+							<label for="manual-entry-value">Betrag</label>
+							<input form="manual-entry-form" name="manual_entry_value" id="manual-entry-value" pattern="[0-9]+" />
+						</div>
+						<div class="form-field form-field--submit">
+							<button form="manual-entry-form" id="manual-entry-submit-btn" type="submit">OK</button>
+						</div>
+					</div>
+				</details>
 
 				<div class="checkout__button-panel">
 

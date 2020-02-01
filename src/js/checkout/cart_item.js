@@ -5,9 +5,8 @@
  * @package kfe
  * @version 2019-10-08
  */
-function CartItem() {
+var CartItem = function() {
 
-	var self = this;
 
 	var marketId = null;
 	var sellerId = null;
@@ -16,47 +15,69 @@ function CartItem() {
 	var ts = null;
 	var checkoutId = null;
 	var code = null;
+}
 
 
-	function newFromCode(code, checkoutId) {
 
-		var marketId = parseInt(code.substring(0, 4));
-		var marketDate = code.substring(4, 12);
-		var sellerId = parseInt(code.substring(12, 16));
-		var sellerNr = parseInt(code.substring(16, 19));
-		var value = parseInt(code.substring(19));
+CartItem.prototype.newFromCode = function(code, checkoutId) {
 
-		if (Number.isNaN(marketId)) {
-			console.log("Invalid code", code);
-			return null;
-		}
-		if (!marketDate.match(/^\d{4}\d{2}\d{2}$/)) {
-			console.log("Invalid code", code);
-			return null;
-		}
-		if (Number.isNaN(sellerId)) {
-			console.log("Invalid code", code);
-			return null;
-		}
-		if (Number.isNaN(sellerNr)) {
-			console.log("Invalid code", code);
-			return null;
-		}
-		if (Number.isNaN(value)) {
-			console.log("Invalid code", code);
-			return null;
-		}
+	var marketId = parseInt(code.substring(0, 4));
+	var marketDate = code.substring(4, 12);
+	var sellerId = parseInt(code.substring(12, 16));
+	var sellerNr = parseInt(code.substring(16, 19));
+	var value = parseInt(code.substring(19));
 
-		item.marketId = marketId;
-		item.sellerId = sellerId;
-		item.sellerNr = sellerNr;
-		item.value = value;
-		item.ts = Date.now();
-		item.checkoutId = checkoutId;
-		item.code = code;
-
-		return this;
+	if (Number.isNaN(marketId)) {
+		console.log("Invalid code", code);
+		return null;
+}
+	if (!marketDate.match(/^\d{4}\d{2}\d{2}$/)) {
+		console.log("Invalid code", code);
+		return null;
+	}
+	if (Number.isNaN(sellerId)) {
+		console.log("Invalid code", code);
+		return null;
+	}
+	if (Number.isNaN(sellerNr)) {
+		console.log("Invalid code", code);
+		return null;
+	}
+	if (Number.isNaN(value)) {
+		console.log("Invalid code", code);
+		return null;
 	}
 
-};
+	this.marketId = marketId;
+	this.sellerId = sellerId;
+	this.sellerNr = sellerNr;
+	this.value = value;
+	this.ts = Date.now();
+	this.checkoutId = checkoutId;
+	this.code = code;
 
+	return this;
+}
+
+
+
+/**
+ * Create a new cart item from values
+ *
+ * @param int 	marketId
+ * @param int 	checkoutId
+ * @param int 	sellerNr
+ * @param int 	value (in cent)
+ */
+CartItem.prototype.newFromValues = function(marketId, checkoutId, sellerNr, value) {
+
+	this.marketId = marketId;
+	this.sellerId = null;
+	this.sellerNr = sellerNr;
+	this.value = value;
+	this.ts = Date.now();
+	this.checkoutId = checkoutId;
+	this.code = '';
+	
+	return this;
+};

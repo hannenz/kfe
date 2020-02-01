@@ -62,7 +62,7 @@ class LabelsController extends Controller {
 			$errors = [];
 
 			try {
-				$seller = $this->Seller->findBySellerNr($sellerNr);
+				$seller = $this->Seller->findBySellerNr($sellerNr, $marketId);
 				if (empty($seller)) {
 					$errors[] = 'errorIllegalSellerId';
 					throw new Exception();

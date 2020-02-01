@@ -76,11 +76,15 @@ class Seller extends Model {
 	/**
 	 * Get a seller by its seller nr
 	 *
-	 * @param int
+	 * @param int sellerNr
+	 * @param int marketId
 	 * @return Array
 	 */
-	public function findBySellerNr($sellerNr) {
-		return $this->filter(['seller_nr' => $sellerNr])->findOne();
+	public function findBySellerNr($sellerNr, $marketId) {
+		return $this->filter([
+			'seller_nr' => $sellerNr,
+			'seller_market_id' => $marketId
+		])->findOne();
 	}
 
 
@@ -249,7 +253,8 @@ class Seller extends Model {
 		// First we check if the seller_nr / email combination is valid
 		$result = $this->filter([
 			'seller_nr' => $sellerNr,
-			'seller_email' => $sellerEmail
+			'seller_email' => $sellerEmail,
+			'seller_market_id' => $marketId
 		])->findOne();
 		if (empty($result)) {
 			return false;
