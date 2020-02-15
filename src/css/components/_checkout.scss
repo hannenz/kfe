@@ -356,7 +356,8 @@
 	padding: 0;
 	transition: 600ms ease-out;
 	opacity: 0;
-	background-color: gainsboro;
+	background-color: #d7cafd;
+	background-color: lighten($primary-color, 54%);
 
 	&[open] {
 		opacity: 1;

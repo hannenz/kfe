@@ -6,51 +6,41 @@
  * @version 2020-02-14
  */
 
-var Dialog = function(title, message, options) {
+var Dialog = function(id, options) {
 
-	this.dlg = document.createElement('dialog');
-	var header = document.createElement('header');
-	var body = document.createElement('div');
-	var actionArea = document.createElement('div');
-
-	this.dlg.className = 'dialog';
-
-	header.className = 'dialog__header';
-	header.innerHTML = title;
-
-	body.innerHTML = message;
-	body.className = 'dialog__body';
-
-	actionArea.className = 'dialog__action-area';
-	this.dlg.style.left = '50%';
-	this.dlg.style.top = '50%';
-	this.dlg.style.transform = 'translate(-50%, -50%)';
-
-	options.actions.forEach(function(action) {
-		var btn = document.createElement('button');
-		btn.innerText = action.text;
-		btn.className = 'button';
-		btn.addEventListener('click', action.click);
-		actionArea.appendChild(btn);
-		btn.focus();
-	});
-
-	this.dlg.appendChild(header);
-	this.dlg.appendChild(body);
-	this.dlg.appendChild(actionArea);
-
-	document.body.appendChild(this.dlg);
+	this.dlg = document.getElementById(id);
+	if (!this.dlg) {
+		return;
+	}
 
 	dialogPolyfill.registerDialog(this.dlg);
-
-	this.open();
 };
 
-Dialog.prototype.open = function() {
+
+/**
+ * Run the dialog, e.g. wait until the inner form has been submitted
+ *
+ * @return Promise
+ */
+Dialog.prototype.run = function() {
+	this.form = this.dlg.querySelector('form');
+	this.form.reset();
+	this.form.querySelector('input').focus();
 	this.dlg.showModal();
+
+	var promise = new Promise(function(resolve, reject) {
+		this.form.onsubmit = function(ev) {
+			ev.preventDefault();
+			resolve({
+				action: ev.explicitOriginalTarget.value,
+				data: new FormData(this.form)
+			});
+		}.bind(this);
+	}.bind(this));
+
+	return promise
 };
 
 Dialog.prototype.close = function() {
 	this.dlg.close();
-	document.body.removeChild(this.dlg);
 }

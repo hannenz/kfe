@@ -128,66 +128,52 @@ function Checkout() {
 		self.resurrect();
 		self.createTableFromCart();
 
-		var manualEntryDlg = document.getElementById('manual-entry-dlg');
-		var manualEntryCancelBtn = manualEntryDlg.querySelector('.cancel');
-		dialogPolyfill.registerDialog(manualEntryDlg);
+		var manualEntryDlg = new Dialog('manual-entry-dlg');
 		var manualEntryBtn = document.getElementById('manual-entry-btn');
 		manualEntryBtn.addEventListener('click', function() {
-			this.disabled = true;
-			// focus first input
-			manualEntryDlg.querySelector('input').focus();
-			document.forms.manual_entry_form.reset();
-			manualEntryDlg.showModal();
-		});
 
-		manualEntryCancelBtn.addEventListener('click', function() {
-			manualEntryBtn.disabled = false;
-			manualEntryDlg.close();
-			self.codeInput.focus();
-		});
+			manualEntryDlg.run()
+			.then(function(response) {
 
-
-		document.forms.manual_entry_form.addEventListener('submit', function(ev) {
-			ev.preventDefault();
-
-			var manualEntrySellerNrInput = document.getElementById('manual-entry-seller-nr');
-			var manualEntryValueInput = document.getElementById('manual-entry-value');
-
-			var sellerNr = manualEntrySellerNrInput.value;
-			var value = parseInt(manualEntryValueInput.value);
-
-			if (value == 0 || value % 50 != 0) {
-				alert ("Invalid value!");
-				return;
-			}
-
-			// Validate server-side
-			var sid = window.location.search.match(/sid=([a-z0-9]+)/)[1];
-			var url = '/admin/cmt_applauncher.php?sid=' + sid + '&launch=149&action=validateManualEntry&sellerNr=' + sellerNr + '&marketId=' + self.marketId;;
-
-			fetch(url)
-				.then(response => response.json())
-				.then(data => {
-					if (data.success) {
-						var item = new CartItem().newFromValues(self.marketId, self.checkoutId, sellerNr, value);
-						self.cart.addItem(item);
-						self.createTableFromCart();
-						self.persist();
-						document.forms.manual_entry_form.reset();
-						manualEntrySellerNrInput.focus();
+				switch (response.action) {
+					case 'reject':
 						manualEntryDlg.close();
-						manualEntryBtn.disabled = false;
-						self.codeInput.focus();
-					}
-					else {
-						alert ("Server side validation failed!");
-					}
-				})
-				.catch(error => {
-					alert(error);
-				});
+						break;
 
-			return false;
+					default: 
+						var sellerNr = response.data.get('manual_entry_seller_nr'); //manualEntrySellerNrInput.value;
+						var value = parseInt(response.data.get('manual_entry_value')); //parseInt(manualEntryValueInput.value);
+
+						if (value == 0 || value % 50 != 0) {
+							alert ("Invalid value!");
+							return;
+						}
+
+						// Validate server-side
+						var sid = window.location.search.match(/sid=([a-z0-9]+)/)[1];
+						var url = '/admin/cmt_applauncher.php?sid=' + sid + '&launch=149&action=validateManualEntry&sellerNr=' + sellerNr + '&marketId=' + self.marketId;;
+
+						fetch(url)
+							.then(response => response.json())
+							.then(data => {
+								if (data.success) {
+									var item = new CartItem().newFromValues(self.marketId, self.checkoutId, sellerNr, value);
+									self.cart.addItem(item);
+									self.createTableFromCart();
+									self.persist();
+									manualEntryBtn.disabled = false;
+									self.codeInput.focus();
+									manualEntryDlg.close();
+								}
+								else {
+									alert ("Server side validation failed!");
+								}
+							})
+							.catch(error => {
+								alert(error);
+							});
+				}
+			});
 		});
 	};
 
@@ -211,7 +197,7 @@ function Checkout() {
 				break;
 
 			case 27: // Escape
-				self.closeDialog();
+				// self.closeDialog();
 				break;
 
 			case 65: // Q
@@ -788,52 +774,6 @@ function Checkout() {
 		el.classList.add(type);
 	};
 
-	/*
-	this.dialog = function(title, mssg, options) {
-		var overlay = document.createElement('div');
-		overlay.className = 'dialog-overlay';
-		overlay.id = 'dialog';
-
-		var dialog = document.createElement('div');
-		dialog.className = 'dialog';
-
-		var dlgHeader = document.createElement('header');
-		dlgHeader.className = 'dialog__header';
-		dlgHeader.innerHTML = title;
-
-		var dlgBody = document.createElement('div');
-		dlgBody.className = 'dialog__body';
-		dlgBody.innerHTML = mssg;
-
-		var dlgActionArea = document.createElement('footer');
-		dlgActionArea.className = 'dialog__action-area';
-
-		console.log(options.actions);
-		options.actions.forEach(function(action) {
-			var btn = document.createElement('button');
-			btn.innerText = action.text;
-			btn.className = 'button';
-			btn.addEventListener('click', action.click);
-			dlgActionArea.appendChild(btn);
-			btn.focus();
-			console.log(document.activeElement);
-		});
-
-		dialog.appendChild(dlgHeader);
-		dialog.appendChild(dlgBody);
-		dialog.appendChild(dlgActionArea);
-
-		overlay.appendChild(dialog);
-		document.body.appendChild(overlay);
-		self.hasDialog = true;
-	};
-
-	this.closeDialog = function() {
-		var dlg = document.getElementById('dialog');
-		document.body.removeChild(dlg);
-		self.hasDialog = false;
-	};
-	*/
 
 	this.updateCue = function() {
 

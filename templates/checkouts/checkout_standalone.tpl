@@ -20,7 +20,6 @@
 
 	<section class="main-content">
 
-		<form id="manual-entry-form" name="manual_entry_form"></form>
 		<form class="checkout" id="checkout" autocomplete="off">
 			<input type="hidden" value="{VAR:marketId}" name="marketId" id="marketId" />
 			<input type="hidden" value="{VAR:checkoutId}" name="checkoutId" id="checkoutId" />
@@ -53,33 +52,9 @@
 						<input id="checkout-code-input" class="checkout-code" type="text" name="code" value="" autofocus />
 					</div>
 				</div>
+
 				<button id="manual-entry-btn" class="button">Manuelle Eingabe</button>
-				<dialog id="manual-entry-dlg" class="dialog">
-					<header class="dialog__header">
-						Manuelle Eingabe
-					</header>
-					<div class="dialog__body">
-						<div class="stack">
-							<div class="form-field">
-								<label for="manual-entry-seller-nr">Verkäufer-Nr</label>
-								<input form="manual-entry-form" name="manual_entry_seller_nr" id="manual-entry-seller-nr" pattern="[0-9]{3}" list="sellers" />
-								<datalist id="sellers">
-									{LOOP VAR(sellers)}
-										<option value="{VAR:seller_nr}">{VAR:seller_nr}</option>
-									{ENDLOOP VAR}
-								</datalist>
-							</div>
-							<div class="form-field">
-								<label for="manual-entry-value">Betrag (in Cent)</label>
-								<input form="manual-entry-form" name="manual_entry_value" id="manual-entry-value" pattern="[0-9]+" autocomplete="off" />
-							</div>
-						</div>
-					</div>
-					<div class="dialog__action-area">
-						<button class="button cancel">Abbrechen</button>
-						<button form="manual-entry-form" id="manual-entry-submit-btn" class="button" type="submit">OK</button>
-					</div>
-				</dialog>
+
 
 				<div class="checkout__button-panel">
 
@@ -121,13 +96,36 @@
 				</div>
 			</div>
 		</form>
-		<script>
-			document.addEventListener('DOMContentLoaded', function() {
-				var chk = new Checkout();
-				chk.init();
-			});
-		</script>
 	</section>
+
+
+
+	<dialog id="manual-entry-dlg" class="dialog">
+		<form name="manual_entry" id="manual-entry">
+			<header class="dialog__header">Manuelle Eingabe</header>
+			<div class="dialog__body">
+				<div class="stack">
+					<div class="form-field">
+						<label for="manual-entry-seller-nr">Verkäufer-Nr</label>
+						<input name="manual_entry_seller_nr" id="manual-entry-seller-nr" pattern="[0-9]{3}" list="sellers" />
+						<datalist id="sellers">
+							{LOOP VAR(sellers)}
+								<option value="{VAR:seller_nr}">{VAR:seller_nr}</option>
+							{ENDLOOP VAR}
+						</datalist>
+					</div>
+					<div class="form-field">
+						<label for="manual-entry-value">Betrag (in Cent)</label>
+						<input name="manual_entry_value" id="manual-entry-value" pattern="[0-9]+" autocomplete="off" />
+					</div>
+				</div>
+			</div>
+			<div class="dialog__action-area">
+				<button class="button" name="dialogAction" value="reject">Abbrechen</button>
+				<button class="button" name="dialogAction" value="submit" type="accept">OK</button>
+			</div>
+		</form>
+	</dialog>
 
 	<dialog id="change-custom-dlg" class="dialog">
 		<form name="change_custom" id="change-custom">
@@ -139,13 +137,23 @@
 				</div>
 			</div>
 			<div class="dialog__action-area">
-				<button class="button" form="change-custom">Abbrechen</button>
-				<button class="button" type="submit" form="change-custom">OK</button>
+				<button class="button" name="dialogAction" value="reject">Abbrechen</button>
+				<button class="button" name="dialogAction" value="submit" type="accept">OK</button>
 			</div>
 		</form>
 	</dialog>
 
+
+
 	<script src="/dist/js/checkout.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			var chk = new Checkout();
+			chk.init();
+		});
+	</script>
+
+
 </body>
 </html>
 
