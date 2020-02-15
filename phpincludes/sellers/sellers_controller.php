@@ -348,7 +348,7 @@ class SellersController extends Controller {
 	/**
 	 * login
 	 */
-	protected function actionlogin() {
+	protected function actionLogin() {
 
 		try {
 
@@ -363,7 +363,6 @@ class SellersController extends Controller {
 				if (empty($seller)) {
 					throw new Exception('errorLoginFailed');
 				}
-
 
 				if (!$this->Seller->authenticate($seller['seller_nr'], $this->postvars['seller_email'], $market['id'])) {
 					throw new Exception('errorLoginFailed');

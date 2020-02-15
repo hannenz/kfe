@@ -127,7 +127,8 @@ var settings = {
 			// they will be copied as is to `{prefix}/js/vendor/`, 
 			// e.g. 'node_modules/flickity/dist/flickity.pkgd.min.js',
 			'node_modules/quagga/dist/quagga.min.js',
-			'node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.js'
+			'node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.js',
+			'node_modules/dialog-polyfill/dist/dialog-polyfill.js'
 		],
 		dest:	pkg.project_settings.prefix + 'js/vendor/'
 	},
@@ -138,7 +139,9 @@ var settings = {
 			// Add single vendor files here,
 			// they will be copied as is to `{prefix}/css/vendor/`, 
 			// e.g. 'node_modules/flickity/dist/flickity.min.css'
-			'node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.css'
+			'node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.css',
+			'node_modules/dialog-polyfill/dist/dialog-polyfill.css'
+
 		],
 		dest:	pkg.project_settings.prefix + 'css/vendor/'
 	},

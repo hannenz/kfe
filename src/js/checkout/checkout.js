@@ -128,6 +128,25 @@ function Checkout() {
 		self.resurrect();
 		self.createTableFromCart();
 
+		var manualEntryDlg = document.getElementById('manual-entry-dlg');
+		var manualEntryCancelBtn = manualEntryDlg.querySelector('.cancel');
+		dialogPolyfill.registerDialog(manualEntryDlg);
+		var manualEntryBtn = document.getElementById('manual-entry-btn');
+		manualEntryBtn.addEventListener('click', function() {
+			this.disabled = true;
+			// focus first input
+			manualEntryDlg.querySelector('input').focus();
+			document.forms.manual_entry_form.reset();
+			manualEntryDlg.showModal();
+		});
+
+		manualEntryCancelBtn.addEventListener('click', function() {
+			manualEntryBtn.disabled = false;
+			manualEntryDlg.close();
+			self.codeInput.focus();
+		});
+
+
 		document.forms.manual_entry_form.addEventListener('submit', function(ev) {
 			ev.preventDefault();
 
@@ -137,15 +156,36 @@ function Checkout() {
 			var sellerNr = manualEntrySellerNrInput.value;
 			var value = parseInt(manualEntryValueInput.value);
 
-			// var ci = new CartItem();
+			if (value == 0 || value % 50 != 0) {
+				alert ("Invalid value!");
+				return;
+			}
 
-			var item = new CartItem().newFromValues(self.marketId, self.checkoutId, sellerNr, value);
-			self.cart.addItem(item);
-			self.createTableFromCart();
-			self.persist();
+			// Validate server-side
+			var sid = window.location.search.match(/sid=([a-z0-9]+)/)[1];
+			var url = '/admin/cmt_applauncher.php?sid=' + sid + '&launch=149&action=validateManualEntry&sellerNr=' + sellerNr + '&marketId=' + self.marketId;;
 
-			document.forms.manual_entry_form.reset();
-			manualEntrySellerNrInput.focus();
+			fetch(url)
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						var item = new CartItem().newFromValues(self.marketId, self.checkoutId, sellerNr, value);
+						self.cart.addItem(item);
+						self.createTableFromCart();
+						self.persist();
+						document.forms.manual_entry_form.reset();
+						manualEntrySellerNrInput.focus();
+						manualEntryDlg.close();
+						manualEntryBtn.disabled = false;
+						self.codeInput.focus();
+					}
+					else {
+						alert ("Server side validation failed!");
+					}
+				})
+				.catch(error => {
+					alert(error);
+				});
 
 			return false;
 		});
@@ -161,7 +201,9 @@ function Checkout() {
 		switch (ev.keyCode) {
 
 			case 8: // Backspace
-				self.actionCancelLast();
+				// if (ev.target.id != 'manual-entry-seller-nr' && ev.target.id != 'manual-entry-value') {
+				// 	self.actionCancelLast();
+				// }
 				break;
 
 			case 13: // Return
@@ -219,9 +261,29 @@ function Checkout() {
 				break;
 
 			case 'change-custom':
-				var value = window.prompt("Herausgeben auf ...");
-				value = value.replace(/[^\d]/g, '');
-				self.change(parseInt(value));
+
+				var dlg = document.getElementById('change-custom-dlg');
+				var form = document.forms.change_custom;
+
+				form.reset();
+				form.querySelector('input').focus();
+				dialogPolyfill.registerDialog(dlg);
+				dlg.showModal();
+
+				var changeCustomValue = document.getElementById('change-custom-value');
+
+				form.addEventListener('submit', function(ev) {
+					ev.preventDefault();
+
+					dlg.close();
+					self.codeInput.focus();
+
+					var value = changeCustomValue.value.replace(/[^\d]/g, '');
+					self.change(parseInt(value));
+
+					return false;
+				});
+
 				break;
 
 			case 'cancel-last':
@@ -373,22 +435,22 @@ function Checkout() {
 		if (self.cart.items[i]) {
 
 			item = self.cart.items[i];
-			self.dialog('Position stornieren?', "#" + (i + 1)  + "<br>Verkäufer-Nr: " + item.sellerNr + "<br>Betrag: <b>" + (item.value / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) + "</b>", {
+			var dlg = new Dialog('Position stornieren?', "#" + (i + 1)  + "<br>Verkäufer-Nr: " + item.sellerNr + "<br>Betrag: <b>" + (item.value / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) + "</b>", {
 				actions: [
 					{
 						text: "Nein",
 						click: function() {
-							self.closeDialog();
+							dlg.close();
 						}
 					},
 					{
 						text: "Ja",
 						click: function() {
 							self.cart.removeItem(i);
-							self.closeDialog();
 							self.createTableFromCart();
 							self.codeInput.focus();
 							self.persist();
+							dlg.close();
 						}
 					}
 				]
@@ -649,6 +711,7 @@ function Checkout() {
 			console.log("Cart has been submitted yet, aborting");
 			return;
 		}
+		console.log(cart.items);
 
 		var data = new FormData();
 		data.append('action',  'add');
@@ -674,6 +737,7 @@ function Checkout() {
 
 				// Try to find this cart in the cue and if found, remove it
 				// self.carts.forEach(function(cueCart, i) {
+				console.log(response.cartTimestamp);
 				for (var i = 0; i < self.carts.length; i++) {
 					if (parseInt(self.carts[i].timestamp) == parseInt(response.cartTimestamp) &&
 						parseInt(self.checkoutId) == parseInt(response.cartCheckoutId)) {
@@ -724,6 +788,7 @@ function Checkout() {
 		el.classList.add(type);
 	};
 
+	/*
 	this.dialog = function(title, mssg, options) {
 		var overlay = document.createElement('div');
 		overlay.className = 'dialog-overlay';
@@ -768,6 +833,7 @@ function Checkout() {
 		document.body.removeChild(dlg);
 		self.hasDialog = false;
 	};
+	*/
 
 	this.updateCue = function() {
 

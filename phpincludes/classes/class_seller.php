@@ -74,18 +74,40 @@ class Seller extends Model {
 
 
 	/**
-	 * Get a seller by its seller nr
+	 * Get a seller by its seller nr (and market_id)
 	 *
 	 * @param int sellerNr
 	 * @param int marketId
 	 * @return Array
 	 */
 	public function findBySellerNr($sellerNr, $marketId) {
-		return $this->filter([
-			'seller_nr' => $sellerNr,
-			'seller_market_id' => $marketId
-		])->findOne();
+		$query = sprintf('SELECT * FROM %s WHERE seller_nr = %u AND (seller_market_id = 0 OR seller_market_id = %u)',
+			$this->tableName,
+			$sellerNr,
+			$marketId
+		);
+
+		$result = array_shift($this->query($query));
+		return $result;
 	}
+
+
+
+	/**
+	 * Get a seller's id from sellerNr & marketId
+	 *
+	 * @param int sellerNr
+	 * @param int marketId
+	 * @return int
+	 */
+	public function getSellerId($sellerNr, $marketId) {
+		$seller = $this->findBySellerNr($sellerNr, $marketId);
+		if (empty($seller)) {
+			return 0;
+		}
+		return $seller['id'];
+	}
+
 
 
 	/**
@@ -251,14 +273,19 @@ class Seller extends Model {
 	public function authenticate($sellerNr, $sellerEmail, $marketId) {
 
 		// First we check if the seller_nr / email combination is valid
-		$result = $this->filter([
-			'seller_nr' => $sellerNr,
-			'seller_email' => $sellerEmail,
-			'seller_market_id' => $marketId
-		])->findOne();
+		$query = sprintf("SELECT * FROM %s WHERE seller_nr = %u AND seller_email = '%s' AND (seller_market_id = 0 OR seller_market_id = %u) LIMIT 1",
+			$this->tableName,
+			$sellerNr,
+			$sellerEmail,
+			$marketId
+		);
+		$result = array_shift($this->query($query));
 		if (empty($result)) {
 			return false;
 		}
+
+		// TODO: The following checks are obsolete after refactoring the query
+		// above? They dont harm either, though.
 
 		// seller_market_id == 0 means: Is valid for ALL markets (employees)
 		if ($result['seller_market_id'] == 0) {
@@ -513,6 +540,5 @@ class Seller extends Model {
 
 		return $sales;
 	}
-
 }
 ?>

@@ -3,6 +3,7 @@ namespace KFE;
 
 use KFE\Cart;
 use KFE\Item;
+use KFE\Seller;
 use Contentomat\Contentomat;
 use Contentomat\Controller;
 use Contentomat\PsrAutoloader;
@@ -19,11 +20,21 @@ use \Exception;
  */
 class CartsController extends Controller {
 
+
 	/**
 	 * @var \KFE\Cart
 	 */
-
 	protected $Cart;
+
+	/**
+	 * @var \KFE\Item
+	 */
+	protected $Item;
+
+	/**
+	 * @var \KFE\Seller
+	 */
+	protected $Seller;
 
 
 	/**
@@ -33,7 +44,9 @@ class CartsController extends Controller {
 	 * @return void
 	 */
 	public function init() {
-		$this->Cart = new Cart;
+		$this->Cart = new Cart();
+		$this->Item = new Item();
+		$this->Seller = new Seller();
 		$this->templatesPath = PATHTOWEBROOT . "templates/carts/";
 	}
 	
@@ -75,9 +88,10 @@ class CartsController extends Controller {
 
 				foreach ($items as $item) {
 					$itemData = [
-						'item_datetime' => $item['ts'],
+						'item_datetime' => strftime('%Y-%m-%d %H:%M:%S', ((int)$item['ts'] / 1000)),
 						'item_market_id' => $item['marketId'],
-						'item_seller_id' => $item['sellerId'],
+						'item_seller_id' => $this->Seller->getSellerId($item['sellerNr'], $item['marketId']),
+						'item_seller_nr' => $item['sellerNr'],
 						'item_checkout_id' => $item['checkoutId'],
 						'item_code' => $item['code'],
 						'item_value' => $item['value'],
@@ -97,10 +111,10 @@ class CartsController extends Controller {
 			'cartId' => $cartId,
 			// We return the original cart's timestamp and checkout id, so that
 			// we can identify this cart client side (remove it from carts cue)
-			'cartTimestamp' => $data['cart_timestamp'],
+			'cartTimestamp' => $_REQUEST['timestamp'], //$data['cart_timestamp'],
 			'cartCheckoutId' => $data['cart_checkout_id']
 		];
-		die (json_encode($this->content));
+		// die (json_encode($this->content));
 	}
 
 }

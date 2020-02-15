@@ -11,8 +11,10 @@
 	<link rel="shortcut icon" href="/favicon.png" />
 
 	<link rel="stylesheet" type="text/css" href="/dist/css/main.css" />
+	<link rel="stylesheet" type="text/css" href="/dist/css/vendor/dialog-polyfill.css" />
 
 	<script src="/dist/js/vendor/quagga.min.js"></script>
+	<script src="/dist/js/vendor/dialog-polyfill.js"></script>
 </head>
 <body class="checkout-page">
 
@@ -51,22 +53,33 @@
 						<input id="checkout-code-input" class="checkout-code" type="text" name="code" value="" autofocus />
 					</div>
 				</div>
-				<details>
-					<summary>Manuelle Eingabe</summary>
-					<div name="manualEntryForm">
-						<div class="form-field">
-							<label for="manual-entry-seller-nr">Verkäufer-Nr</label>
-							<input form="manual-entry-form" name="manual_entry_seller_nr" id="manual-entry-seller-nr" pattern="[0-9]+" />
-						</div>
-						<div class="form-field">
-							<label for="manual-entry-value">Betrag</label>
-							<input form="manual-entry-form" name="manual_entry_value" id="manual-entry-value" pattern="[0-9]+" />
-						</div>
-						<div class="form-field form-field--submit">
-							<button form="manual-entry-form" id="manual-entry-submit-btn" type="submit">OK</button>
+				<button id="manual-entry-btn" class="button">Manuelle Eingabe</button>
+				<dialog id="manual-entry-dlg" class="dialog">
+					<header class="dialog__header">
+						Manuelle Eingabe
+					</header>
+					<div class="dialog__body">
+						<div class="stack">
+							<div class="form-field">
+								<label for="manual-entry-seller-nr">Verkäufer-Nr</label>
+								<input form="manual-entry-form" name="manual_entry_seller_nr" id="manual-entry-seller-nr" pattern="[0-9]{3}" list="sellers" />
+								<datalist id="sellers">
+									{LOOP VAR(sellers)}
+										<option value="{VAR:seller_nr}">{VAR:seller_nr}</option>
+									{ENDLOOP VAR}
+								</datalist>
+							</div>
+							<div class="form-field">
+								<label for="manual-entry-value">Betrag (in Cent)</label>
+								<input form="manual-entry-form" name="manual_entry_value" id="manual-entry-value" pattern="[0-9]+" autocomplete="off" />
+							</div>
 						</div>
 					</div>
-				</details>
+					<div class="dialog__action-area">
+						<button class="button cancel">Abbrechen</button>
+						<button form="manual-entry-form" id="manual-entry-submit-btn" class="button" type="submit">OK</button>
+					</div>
+				</dialog>
 
 				<div class="checkout__button-panel">
 
@@ -115,6 +128,22 @@
 			});
 		</script>
 	</section>
+
+	<dialog id="change-custom-dlg" class="dialog">
+		<form name="change_custom" id="change-custom">
+			<header class="dialog__header">Herausgeben auf &hellip;</header>
+			<div class="dialog__body">
+				<div class="form-field">
+					<label for="change-custom-value"> Cent</label>
+					<input form="change-custom" id="change-custom-value" name="change-custom-value" value="" pattern="[0-9]+" autofocus />
+				</div>
+			</div>
+			<div class="dialog__action-area">
+				<button class="button" form="change-custom">Abbrechen</button>
+				<button class="button" type="submit" form="change-custom">OK</button>
+			</div>
+		</form>
+	</dialog>
 
 	<script src="/dist/js/checkout.js"></script>
 </body>

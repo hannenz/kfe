@@ -2,7 +2,7 @@
 namespace KFE;
 
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
-//error_reporting(0);
+ini_set('display_errors', true);
 
 use \Contentomat\Parser;
 use \Contentomat\PsrAutoloader;
@@ -10,6 +10,7 @@ use \Contentomat\ApplicationController;
 use \KFE\Market;
 use \KFE\Seller;
 use \KFE\Cart;
+use \KFE\Item;
 
 
 class MarketBackendController extends ApplicationController {
@@ -36,6 +37,11 @@ class MarketBackendController extends ApplicationController {
 	protected $Cart;
 
 	/**
+	 * @var KFE\Item
+	 */
+	protected $Item;
+
+	/**
 	 * Abzug für Spende in Prozent
 	 *
 	 * @var float;
@@ -49,12 +55,15 @@ class MarketBackendController extends ApplicationController {
 		$this->Market = new Market();
 		$this->Seller = new Seller();
 		$this->Cart = new Cart();
+		$this->Item = new Item();
 		// $this->Parser = new \Contentomat\Parser;
 
 		if (isset($this->getvars['marketId'])) {
-			$this->marketId = $this->getvars['marketId'];
-			if (is_array($this->marketId)) {
-				$this->marketId = array_shift($this->marketId);
+			if (is_array($this->getvars['marketId'])) {
+				$this->marketId = (int)array_shift($this->getvars['marketId']);
+			}
+			else {
+				$this->marketId = (int)$this->getvars['marketId'];;
 			}
 		}
 
@@ -84,6 +93,7 @@ class MarketBackendController extends ApplicationController {
 		if (empty($this->marketId)) {
 			return;
 		}
+
 
 		$market = $this->Market->findById($this->marketId);
 		$sellers = $this->Seller->filter(['seller_market_id', $this->marketId])->findAll();
@@ -123,6 +133,7 @@ class MarketBackendController extends ApplicationController {
 
 		$MyParser->setParserVar('sellers', $sellers);
 		$MyParser->setParserVar('marketId', $market['id']);
+		echo '<pre>'; var_dump($market); echo '</pre>'; die();
 		$MyParser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
 
 		$this->content = $MyParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/evaluation.tpl');

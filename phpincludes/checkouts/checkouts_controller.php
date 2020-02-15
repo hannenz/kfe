@@ -2,6 +2,7 @@
 namespace KFE;
 
 use KFE\Market;
+use KFE\Seller;
 use Contentomat\Contentomat;
 use Contentomat\ApplicationController;
 use Contentomat\PsrAutoloader;
@@ -38,6 +39,10 @@ class CheckoutsController extends ApplicationController {
 	 */
 	protected $Market;
 
+	/**
+	 * @var \KFE\Seller
+	 */
+	protected $Seller;
 
 	/**
 	 * @var \KFE\Cart
@@ -53,6 +58,7 @@ class CheckoutsController extends ApplicationController {
 	 */
 	public function init() {
 		$this->Market = new Market();
+		$this->Seller = new Seller();
 		$this->Cart = new Cart();
 
 		$this->marketId = (int)$_REQUEST['marketId'];
@@ -83,6 +89,14 @@ class CheckoutsController extends ApplicationController {
 				if (empty($market)) {
 					throw new Exception("No data found for market #{$this->marketId}");
 				}
+
+				$sellers = $this->Seller->filter([
+					'seller_market_id' => $market['id'],
+					'seller_is_activated' => true
+				])
+				->order(['seller_nr' => 'ASC'])
+				->findAll();
+				$this->parser->setParserVar('sellers', $sellers);
 
 				$this->parser->setMultipleParserVars($market);
 				$this->parser->setMultipleParserVars([
@@ -131,7 +145,24 @@ class CheckoutsController extends ApplicationController {
 		// die (json_encode($this->content));
 	}
 
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 */
+	public function actionValidateManualEntry() {
+		$this->isJson = true;
+		$this->isAjax = true;
+
+		$seller = $this->Seller->findBySellerNr((int)$this->getvars['sellerNr'], (int)$this->getvars['marketId']);
+		$this->content = [
+			'success' => !empty($seller)
+		];
+
+	}
 }
+
 
 $al = new PsrAutoloader();
 $al->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");

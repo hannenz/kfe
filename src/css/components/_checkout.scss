@@ -334,6 +334,7 @@
 	}
 }
 
+
 .cue {
 	.indicator {
 		// display: inline-block;
@@ -341,3 +342,80 @@
 		// color: #fff;
 	}
 }
+
+.dialog, .dialog > form {
+	display: flex;
+	flex-direction: column;
+}
+
+.dialog {
+
+	border: 0;
+	min-width: 400px;
+	min-height: 300px;
+	padding: 0;
+	transition: 600ms ease-out;
+	opacity: 0;
+	background-color: gainsboro;
+
+	&[open] {
+		opacity: 1;
+	}
+	
+	> form {
+		flex: 1;
+	}
+
+	&__header {
+		padding: 1rem;
+		background-color: $primary-color;
+		color: #fff;
+		padding: 1rem;
+	}
+
+	&__body {
+		padding: 1rem;
+		flex: 1 0 auto;
+	}
+
+	&__action-area {
+		display: flex;
+		justify-content: flex-start;
+		padding: 1rem;
+		border-top: 1px solid rgba(0, 0, 0, 0.25);
+
+		button {
+			min-width: 5rem;
+		}
+
+		button:last-child {
+			margin-left: auto;
+		}
+	}
+}
+
+.dialog + .backdrop,
+dialog::backdrop {
+	background-color: rgba(0, 0, 0, 0.7);
+}
+
+dialog label {
+	display: block;
+}
+
+dialog input {
+	padding: 8px;
+	border: 0;
+	background: #fff;
+	border-radius: 0;
+	box-shadow: none;
+	appearance: none;
+	width: 100%;
+	font-size: 26px;
+	font-weight: l;
+}
+
+.stack > * + * {
+	margin-top: 1rem;
+}
+

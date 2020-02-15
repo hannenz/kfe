@@ -1,0 +1,84 @@
+@font-face { font-family: 'Gaegu'; font-style: normal; font-weight: 400; src: url('/dist/fonts/gaegu-regular-webfont.woff2') format('woff2'); }
+@font-face { font-family: 'Gaegu'; font-style: normal; font-weight: 600; src: url('/dist/fonts/gaegu-bold-webfont.woff2') format('woff2'); }
+@font-face { font-family: 'Gaegu'; font-style: normal; font-weight: 200; src: url('/dist/fonts/gaegu-light-webfont.woff2') format('woff2'); }
+@font-face { font-family: 'Source Sans Pro'; font-style: normal; font-weight: 200; src: url('/dist/fonts/sourcesanspro-light-webfont.woff2') format('woff2'); }
+@font-face { font-family: 'Source Sans Pro'; font-style: italic; font-weight: 200; src: url('/dist/fonts/sourcesanspro-lightit-webfont.woff2') format('woff2'); }
+@font-face { font-family: 'Source Sans Pro'; font-style: normal; font-weight: 400; src: url('/dist/fonts/sourcesanspro-regular-webfont.woff2') format('woff2'); }
+@font-face { font-family: 'Source Sans Pro'; font-style: italic; font-weight: 400; src: url('/dist/fonts/sourcesanspro-it-webfont.woff2') format('woff2'); }
+@font-face { font-family: 'Source Sans Pro'; font-style: normal; font-weight: 500; src: url('/dist/fonts/sourcesanspro-semibold-webfont.woff2') format('woff2'); }
+@font-face { font-family: 'Source Sans Pro'; font-style: normal; font-weight: 600; src: url('/dist/fonts/sourcesanspro-bold-webfont.woff2') format('woff2'); }
+
+:root {
+	--green: #b3dc2f;
+	--purple: #51369b;
+	--black: #231f20;
+	--text-color: var(--black);
+
+	--vu: 1.5rem;
+	--content-width: 40rem ;
+}
+
+*, *::before, *::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	min-height: 100%;
+	font-size: 30px;
+	line-height: 1.44;
+	color: var(--text-color);
+	font-family: 'Source Sans Pro';
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+
+	--h: 75vh;
+	background-image: linear-gradient(
+		165deg,
+		var(--purple) 0,
+		var(--purple) var(--h),
+		var(--green) var(--h),
+		var(--green) 100%
+	);
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.outer-wrapper {
+	margin: 1rem;
+}
+
+.main-header {
+	font-family: Gaegu;
+	width: var(--content-width);
+	max-width: var(--content-width);
+	margin: 0rem auto;
+	color: var(--green);
+}
+
+.main-header h1 {
+	line-height: 0.9;
+}
+
+.main-header span {
+	color: #fff;
+}
+
+.main-content {
+	width: 100%;
+	max-width: var(--content-width);
+	background-color: #fff;
+	padding: 1.5rem;
+	margin: 3rem auto;
+	min-height: 70vh;
+	box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.stack > * + * {
+	margin-top: var(--vu);
+}

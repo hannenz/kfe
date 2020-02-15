@@ -3,12 +3,15 @@ namespace KFE;
 
 use Contentomat\Model;
 use Contentomat\CmtPage;
+use \KFE\Item;
 use \Exception;
 
 class Cart extends Model {
 
 	public function init() {
 		$this->tableName = 'kfe_carts';
+
+		$this->Item = new Item();
 	}
 
 	/**
@@ -51,7 +54,10 @@ class Cart extends Model {
 	 * @return void
 	 */
 	public function afterRead($cart) {
-		$cart['items'] = json_decode($cart['cart_items'], true);
+		// $cart['items'] = json_decode($cart['cart_items'], true);
+		$cart['items'] = $this->Item->filter([
+			'item_cart_id' => $cart['id']
+		])->findAll();
 		return $cart;
 	}
 }
