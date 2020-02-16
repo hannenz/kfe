@@ -143,6 +143,30 @@
 		</form>
 	</dialog>
 
+	<dialog id="cancel-item-dlg" class="dialog">
+		<form name="cancel_item" id="cancel-item">
+			<header class="dialog__header">Storno</header>
+			<div class="dialog__body">
+			</div>
+			<div class="dialog__action-area">
+				<button class="button" name="dialogAction" value="reject">Abbrechen</button>
+				<button class="button" name="dialogAction" value="submit" type="accept">OK</button>
+			</div>
+		</form>
+	</dialog>
+
+	<dialog id="cancel-cart-dlg" class="dialog">
+		<form name="cancel_cart" id="cancel-cart">
+			<header class="dialog__header">Storno</header>
+			<div class="dialog__body">
+				Soll der gesamte Vorgang storniert werden?
+			</div>
+			<div class="dialog__action-area">
+				<button class="button" name="dialogAction" value="reject">Abbrechen</button>
+				<button class="button" name="dialogAction" value="submit" type="accept">OK</button>
+			</div>
+		</form>
+	</dialog>
 
 
 	<script src="/dist/js/checkout.js"></script>

@@ -420,3 +420,7 @@ dialog input {
 	margin-top: 1rem;
 }
 
+
+.form-field.error {
+	outline: 2px solid var(--error-color);
+}

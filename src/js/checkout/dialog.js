@@ -24,8 +24,17 @@ var Dialog = function(id, options) {
  */
 Dialog.prototype.run = function() {
 	this.form = this.dlg.querySelector('form');
+	if (!this.form) {
+		return;
+	}
+
 	this.form.reset();
-	this.form.querySelector('input').focus();
+
+	var input = this.form.querySelector('input');
+	if (input) {
+		input.focus();
+	}
+
 	this.dlg.showModal();
 
 	var promise = new Promise(function(resolve, reject) {
@@ -43,4 +52,8 @@ Dialog.prototype.run = function() {
 
 Dialog.prototype.close = function() {
 	this.dlg.close();
-}
+};
+
+Dialog.prototype.setBody = function(bodyHTML) {
+	this.dlg.querySelector('.dialog__body').innerHTML = bodyHTML;
+};

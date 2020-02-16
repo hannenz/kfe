@@ -128,6 +128,57 @@ function Checkout() {
 		self.resurrect();
 		self.createTableFromCart();
 
+
+
+
+		// Validate manual entry form
+		document.forms.manual_entry.addEventListener('submit', function(ev) {
+			var sellerNrInput = document.getElementById('manual-entry-seller-nr');
+			var valueInput = document.getElementById('manual-entry-value'); 
+			var sellerNr = sellerNrInput.value;
+			var value = parseInt(valueInput.value);
+
+			var hasErrors = false;
+			sellerNrInput.closest('.form-field').classList.remove('error');
+			valueInput.closest('.form-field').classList.remove('error');
+
+			if (value == 0 || value % 50 != 0) {
+				valueInput.closest('.form-field').classList.add('error');
+				hasErrors = true;
+			}
+
+
+			// Validate server-side
+			var sid = window.location.search.match(/sid=([a-z0-9]+)/)[1];
+			var url = '/admin/cmt_applauncher.php?sid=' + sid + '&launch=149&action=validateManualEntry&sellerNr=' + sellerNr + '&marketId=' + self.marketId;;
+
+			fetch(url)
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						if (!hasErrors) {
+							var item = new CartItem().newFromValues(self.marketId, self.checkoutId, sellerNr, value);
+							self.cart.addItem(item);
+							self.createTableFromCart();
+							self.persist();
+							manualEntryBtn.disabled = false;
+							self.codeInput.focus();
+							manualEntryDlg.close();
+							self.codeInput.focus();
+						}
+					}
+					else {
+						sellerNrInput.closest('.form-field').classList.add('error');
+					}
+				})
+				.catch(error => {
+					alert(error);
+				});
+
+			console.log(!hasErrors);
+			return (!hasErrors);
+		});
+
 		var manualEntryDlg = new Dialog('manual-entry-dlg');
 		var manualEntryBtn = document.getElementById('manual-entry-btn');
 		manualEntryBtn.addEventListener('click', function() {
@@ -141,37 +192,6 @@ function Checkout() {
 						break;
 
 					default: 
-						var sellerNr = response.data.get('manual_entry_seller_nr'); //manualEntrySellerNrInput.value;
-						var value = parseInt(response.data.get('manual_entry_value')); //parseInt(manualEntryValueInput.value);
-
-						if (value == 0 || value % 50 != 0) {
-							alert ("Invalid value!");
-							return;
-						}
-
-						// Validate server-side
-						var sid = window.location.search.match(/sid=([a-z0-9]+)/)[1];
-						var url = '/admin/cmt_applauncher.php?sid=' + sid + '&launch=149&action=validateManualEntry&sellerNr=' + sellerNr + '&marketId=' + self.marketId;;
-
-						fetch(url)
-							.then(response => response.json())
-							.then(data => {
-								if (data.success) {
-									var item = new CartItem().newFromValues(self.marketId, self.checkoutId, sellerNr, value);
-									self.cart.addItem(item);
-									self.createTableFromCart();
-									self.persist();
-									manualEntryBtn.disabled = false;
-									self.codeInput.focus();
-									manualEntryDlg.close();
-								}
-								else {
-									alert ("Server side validation failed!");
-								}
-							})
-							.catch(error => {
-								alert(error);
-							});
 				}
 			});
 		});
@@ -421,25 +441,19 @@ function Checkout() {
 		if (self.cart.items[i]) {
 
 			item = self.cart.items[i];
-			var dlg = new Dialog('Position stornieren?', "#" + (i + 1)  + "<br>Verkäufer-Nr: " + item.sellerNr + "<br>Betrag: <b>" + (item.value / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) + "</b>", {
-				actions: [
-					{
-						text: "Nein",
-						click: function() {
-							dlg.close();
-						}
-					},
-					{
-						text: "Ja",
-						click: function() {
-							self.cart.removeItem(i);
-							self.createTableFromCart();
-							self.codeInput.focus();
-							self.persist();
-							dlg.close();
-						}
-					}
-				]
+
+			var dlg = new Dialog('cancel-item-dlg');
+			dlg.setBody('Soll die Position #' + i + ' wirklich storniert werden?<br>Verkäufer-Nr: ' + item.sellerNr + ', Betrag: ' + item.value + '');
+			dlg.run()
+			.then(function(response) {
+				if (response.action != 'reject') {
+					self.cart.removeItem(i);
+					self.createTableFromCart();
+					self.codeInput.focus();
+					self.persist();
+				}
+				dlg.close();
+				self.codeInput.focus();
 			});
 		}
 	}
