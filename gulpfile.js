@@ -128,7 +128,8 @@ var settings = {
 			// e.g. 'node_modules/flickity/dist/flickity.pkgd.min.js',
 			'node_modules/quagga/dist/quagga.min.js',
 			'node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.js',
-			'node_modules/dialog-polyfill/dist/dialog-polyfill.js'
+			'node_modules/dialog-polyfill/dist/dialog-polyfill.js',
+			'node_modules/sprintf-js/dist/sprintf.min.js'
 		],
 		dest:	pkg.project_settings.prefix + 'js/vendor/'
 	},

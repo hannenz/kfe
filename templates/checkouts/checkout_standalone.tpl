@@ -15,6 +15,7 @@
 
 	<script src="/dist/js/vendor/quagga.min.js"></script>
 	<script src="/dist/js/vendor/dialog-polyfill.js"></script>
+	<script src="/dist/js/vendor/sprintf.min.js"></script>
 </head>
 <body class="checkout-page">
 
@@ -180,4 +181,3 @@
 
 </body>
 </html>
-

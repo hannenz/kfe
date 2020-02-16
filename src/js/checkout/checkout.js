@@ -139,11 +139,11 @@ function Checkout() {
 			var value = parseInt(valueInput.value);
 
 			var hasErrors = false;
-			sellerNrInput.closest('.form-field').classList.remove('error');
-			valueInput.closest('.form-field').classList.remove('error');
+			sellerNrInput.closest('.form-field').classList.remove('form-field--error');
+			valueInput.closest('.form-field').classList.remove('form-field--error');
 
 			if (value == 0 || value % 50 != 0) {
-				valueInput.closest('.form-field').classList.add('error');
+				valueInput.closest('.form-field').classList.add('form-field--error');
 				hasErrors = true;
 			}
 
@@ -168,7 +168,7 @@ function Checkout() {
 						}
 					}
 					else {
-						sellerNrInput.closest('.form-field').classList.add('error');
+						sellerNrInput.closest('.form-field').classList.add('form-field--error');
 					}
 				})
 				.catch(error => {
@@ -319,11 +319,17 @@ function Checkout() {
 			return;
 		}
 
-		if (window.confirm("Sind Sie sicher, dass sie den gesamten Vorgang stornieren möchten?")) {
-			self.cart.clear();
-			self.persist();
-			self.createTableFromCart();
-		}
+		new Dialog('cancel-cart-dlg')
+		.run()
+		.then(function(response) {
+			if (response.action != 'reject') {
+				self.cart.clear();
+				self.persist();
+				self.createTableFromCart();
+			}
+			response.dlg.close();
+			self.codeInput.focus();
+		});
 	}
 
 	this.actionCommit = function() {
@@ -441,9 +447,12 @@ function Checkout() {
 		if (self.cart.items[i]) {
 
 			item = self.cart.items[i];
+			var valueFmt = sprintf('%.2f', item.value / 100);
 
 			var dlg = new Dialog('cancel-item-dlg');
-			dlg.setBody('Soll die Position #' + i + ' wirklich storniert werden?<br>Verkäufer-Nr: ' + item.sellerNr + ', Betrag: ' + item.value + '');
+			dlg.setBody(`Soll die Position #${i} wirklich storniert werden?<br>` + 
+			`Verkäufer-Nr: ${item.sellerNr}<br>` + 
+			`Betrag: ${valueFmt} &euro;`);
 			dlg.run()
 			.then(function(response) {
 				if (response.action != 'reject') {

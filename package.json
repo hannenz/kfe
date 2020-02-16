@@ -15,21 +15,21 @@
   "copyright": "Johannes Braun",
   "devDependencies": {
     "browser-sync": "^2.26.7",
-    "del": "^5.0.0",
-    "git-rev-sync": "^1.12.0",
+    "del": "^5.1.0",
+    "git-rev-sync": "^2.0.0",
     "gulp": "github:gulpjs/gulp#v4.0.0",
-    "gulp-autoprefixer": "^6.1.0",
+    "gulp-autoprefixer": "^7.0.1",
     "gulp-buster": "^1.1.0",
     "gulp-concat": "^2.6.1",
-    "gulp-favicons": "^2.3.1",
+    "gulp-favicons": "^2.4.0",
     "gulp-header": "^2.0.9",
     "gulp-image-resize": "^0.13.1",
-    "gulp-imagemin": "^6.0.0",
-    "gulp-jsvalidate": "^4.0.0",
-    "gulp-load-plugins": "^2.0.0",
+    "gulp-imagemin": "^7.1.0",
+    "gulp-jsvalidate": "^5.0.0",
+    "gulp-load-plugins": "^2.0.2",
     "gulp-newer": "^1.4.0",
     "gulp-plumber": "^1.2.1",
-    "gulp-rename": "^1.4.0",
+    "gulp-rename": "^2.0.0",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-strip-debug": "^3.0.0",
@@ -41,7 +41,8 @@
   "dependencies": {
     "dialog-polyfill": "^0.5.0",
     "jquery.appendgrid": "^1.7.1",
-    "quagga": "^0.12.1"
+    "quagga": "^0.12.1",
+    "sprintf-js": "^1.1.2"
   },
   "project_settings": {
     "prefix": "./dist/"
