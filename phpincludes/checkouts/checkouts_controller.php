@@ -90,12 +90,13 @@ class CheckoutsController extends ApplicationController {
 					throw new Exception("No data found for market #{$this->marketId}");
 				}
 
-				$sellers = $this->Seller->filter([
-					'seller_market_id' => $market['id'],
-					'seller_is_activated' => true
-				])
-				->order(['seller_nr' => 'ASC'])
-				->findAll();
+				$sellers = $this->Seller->findByMarket($market['id']);
+				// $sellers = $this->Seller->filter([
+				// 	'seller_market_id' => $market['id'],
+				// 	'seller_is_activated' => true
+				// ])
+				// ->order(['seller_nr' => 'ASC'])
+				// ->findAll();
 				$this->parser->setParserVar('sellers', $sellers);
 
 				$this->parser->setMultipleParserVars($market);

@@ -104,26 +104,24 @@
 	<dialog id="manual-entry-dlg" class="dialog">
 		<form name="manual_entry" id="manual-entry">
 			<header class="dialog__header">Manuelle Eingabe</header>
-			<div class="dialog__body">
-				<div class="stack">
-					<div class="form-field">
-						<label for="manual-entry-seller-nr">Verkäufer-Nr</label>
-						<input name="manual_entry_seller_nr" id="manual-entry-seller-nr" pattern="[0-9]{3}" list="sellers" />
-						<datalist id="sellers">
-							{LOOP VAR(sellers)}
-								<option value="{VAR:seller_nr}">{VAR:seller_nr}</option>
-							{ENDLOOP VAR}
-						</datalist>
-					</div>
-					<div class="form-field">
-						<label for="manual-entry-value">Betrag (in Cent)</label>
-						<input name="manual_entry_value" id="manual-entry-value" pattern="[0-9]+" autocomplete="off" />
-					</div>
+			<div class="dialog__body stack">
+				<div class="form-field">
+					<label for="manual-entry-seller-nr">Verkäufer-Nr</label>
+					<input name="manual_entry_seller_nr" id="manual-entry-seller-nr" pattern="[0-9]{3}" list="sellers" />
+					<datalist id="sellers">
+						{LOOP VAR(sellers)}
+							<option value="{VAR:seller_nr}">{VAR:seller_nr}</option>
+						{ENDLOOP VAR}
+					</datalist>
+				</div>
+				<div class="form-field">
+					<label for="manual-entry-value">Betrag (in Cent)</label>
+					<input name="manual_entry_value" id="manual-entry-value" pattern="[0-9]+" autocomplete="off" />
 				</div>
 			</div>
 			<div class="dialog__action-area">
-				<button class="button" name="dialogAction" value="reject">Abbrechen</button>
-				<button class="button" name="dialogAction" value="submit" type="accept">OK</button>
+				<button class="button" name="dialogAction" value="reject" type="reset">Abbrechen</button>
+				<button class="button" name="dialogAction" value="accept" type="submit">OK</button>
 			</div>
 		</form>
 	</dialog>
@@ -131,15 +129,16 @@
 	<dialog id="change-custom-dlg" class="dialog">
 		<form name="change_custom" id="change-custom">
 			<header class="dialog__header">Herausgeben auf &hellip;</header>
-			<div class="dialog__body">
-				<div class="form-field">
-					<label for="change-custom-value"> Cent</label>
-					<input form="change-custom" id="change-custom-value" name="change-custom-value" value="" pattern="[0-9]+" autofocus />
+				<div class="dialog__body stack">
+					<div class="form-field">
+						<label for="change-custom-value">Betrag in Cent</label>
+						<input name="change_custom_value" id="change-custom-value" pattern="[0-9]+" />
+					</div>
 				</div>
-			</div>
-			<div class="dialog__action-area">
-				<button class="button" name="dialogAction" value="reject">Abbrechen</button>
-				<button class="button" name="dialogAction" value="submit" type="accept">OK</button>
+				<div class="dialog__action-area">
+					<button class="button" name="dialogAction" value="reject">Abbrechen</button>
+					<button class="button" name="dialogAction" value="submit" type="accept">OK</button>
+				</div>
 			</div>
 		</form>
 	</dialog>

@@ -383,7 +383,7 @@
 		display: flex;
 		justify-content: flex-start;
 		padding: 1rem;
-		border-top: 1px solid rgba(0, 0, 0, 0.25);
+		border-top: 1px solid lighten($primary-color, 45%);
 
 		button {
 			min-width: 5rem;
@@ -406,7 +406,7 @@ dialog label {
 
 dialog input {
 	padding: 8px;
-	border: 0;
+	border: 1px solid lighten($primary-color, 45%);
 	background: #fff;
 	border-radius: 0;
 	box-shadow: none;

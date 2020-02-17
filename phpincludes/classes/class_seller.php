@@ -109,6 +109,22 @@ class Seller extends Model {
 	}
 
 
+	/**
+	 * Returns all sellers for a given market, including employees (marletid = 0)
+	 * 
+	 * @param int 		$marketid
+	 * @return Array
+	 * @access public
+	 */
+	public function findByMarket($marketId) {
+		$query = sprintf("SELECT * FROM %s WHERE seller_market_id = 0 OR seller_market_id = %u AND seller_is_activated = 1 ORDER BY seller_nr ASC",
+			$this->tableName,
+			$marketId
+		);
+		return $this->query($query);
+	}
+
+
 
 	/**
 	 * Validate that both entered email adresses match

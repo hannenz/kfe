@@ -15,18 +15,15 @@ function Checkout() {
 	this.cashierId = document.getElementById('cashierId').value;
 
 	// This is the carts cue
-	this.carts = [];
+	this.cue = new CartsCue();
 
 	// This is a single cart
-	this.cart = Object.create(Cart);
-	this.cart.init(this.marketId, this.checkoutId, this.cashierId);
+	this.cart = new Cart(this.marketId, this.checkoutId, this.cashierId);
 	this.cart.clear();
 
 	this.totalInput = document.getElementById('checkout-total');
 	this.changeInput = document.getElementById('checkout-change-value');
 	this.codeInput = document.getElementById('checkout-code-input');
-	this.cue = document.getElementById('js-cue');
-	this.cueLabel = document.getElementById('js-cue-label');
 	this.submitCartsBtn = document.getElementById('submit-carts-btn');
 
 	/**
@@ -43,84 +40,34 @@ function Checkout() {
 	 */
 	this.setup = function() {
 
-		// If camera is available, setup camera barcode scanner
-		navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-		navigator.getMedia({video: true}, function() {
-			console.log("We have a camera, so go ahead!");
-			this.cameraBarcodeScanner = new CameraBarcodeScanner();
-			this.cameraBarcodeScanner.setup(document.getElementById('cam'),  function(result) {
-				var item = self.getItemFromCode(result.codeResult.code);
-				self.cart.addItem(item);
-				self.persist();
-			});
-		}, function() {
-			console.log("No camera available, never mind …");
-		});
-
-
-		window.addEventListener('online', function() {
-			document.body.classList.add('is-online');
-			window.setTimeout(self.submitCarts, 3000);
-		});
-
-		window.addEventListener('offline', function() {
-			document.body.classList.remove('is-online');
-		});
-		document.body.classList.toggle('is-online', window.onLine);
-
-		document.addEventListener('keyup', self.onKeyUp);
-
 		console.log("Checkout::setup");
 
-		window.onbeforeunload = function(e) {
-			var mssg = 'Seite wirklich verlassen?';
-			e.preventDefault();
-			(e || window.event).returnValue =  mssg;
-			return mssg;
-		};
+		this.setupBarcodeScanner();
+		// this.setupCameraBarcodeScanner();
+		this.setupOnlineOffline();
+		this.setupBeforeUnload();
+
+
+		/////////////////////////////
+		//  Setup Event Listeners  //
+		/////////////////////////////
+		
+		// TODO: See if we really don't need it, then we can remove self.onKeyUp
+		// function as well
+		// document.addEventListener('keyup', self.onKeyUp);
 
 		document.forms.checkout.addEventListener('submit', function(e) {
 			e.preventDefault();
 			return false;
 		});
 
-		self.codeInput.addEventListener('blur', function(ev) {
-			if (self.hasDialog) {
-				setTimeout(function() {
-					self.codeInput.focus();
-				}, 10);
-			}
+		var buttons = document.querySelectorAll('.button-panel > .button');
+		buttons.forEach(function(btn) {
+			btn.addEventListener('click', self.onPanelButtonClicked);
 		});
 
-		self.setupBarcodeScanner();
-
-		self.camDiv = document.getElementById('cam');
-
-		var chkbx = document.getElementById('js-toggle-camera-scanner');
-		if (chkbx) {
-			chkbx.addEventListener('change', function(e) {
-
-				if (this.checked) {
-					console.log("Starting camera scanner");
-					// self.camDiv.style.display = 'block';
-					self.cameraBarcodeScanner.turnOn();
-				}
-				else {
-					console.log("Stopping camera scanner");
-					self.cameraBarcodeScanner.turnOff();
-					// self.camDiv.style.display = 'none';
-				}
-			});
-		}
-
-
-		var buttons = document.querySelectorAll('.button-panel > .button');
-		for (var i = 0; i < buttons.length; i++) {
-			var btn = buttons[i];
-			btn.addEventListener('click', self.onPanelButtonClicked);
-		}
-
 		this.submitCartsBtn.addEventListener('click', this.submitCarts);
+
 
 		// Periodically try to submit carts to server
 		// window.setInterval(self.submitCarts, 5000);
@@ -128,71 +75,82 @@ function Checkout() {
 		self.resurrect();
 		self.createTableFromCart();
 
+		this.setupManualEntry();
+	};
 
 
 
-		// Validate manual entry form
-		document.forms.manual_entry.addEventListener('submit', function(ev) {
-			var sellerNrInput = document.getElementById('manual-entry-seller-nr');
-			var valueInput = document.getElementById('manual-entry-value'); 
-			var sellerNr = sellerNrInput.value;
+	/**
+	 * Warn user when trying to leave page
+	 */
+	this.setupBeforeUnload = function() {
+		if (!window.location.href.match(/localhost/)) {
+			window.onbeforeunload = function(e) {
+				var mssg = 'Seite wirklich verlassen?';
+				e.preventDefault();
+				(e || window.event).returnValue =  mssg;
+				return mssg;
+			};
+		}
+	};
+
+
+	/**
+	 * Setup entry dialog to manually enter cart items 
+	 */
+	this.setupManualEntry = function() {
+		self.validSellerNrs = [];
+		document.querySelectorAll('#sellers > option').forEach(function(item) {
+			self.validSellerNrs.push(parseInt(item.value));
+		});
+
+		var sellerNrInput = document.getElementById('manual-entry-seller-nr');
+		var valueInput = document.getElementById('manual-entry-value'); 
+
+		document.forms.manual_entry.addEventListener('input', function(ev) {
+			var form = this;
+
+			var sellerNr = parseInt(sellerNrInput.value);
 			var value = parseInt(valueInput.value);
 
 			var hasErrors = false;
 			sellerNrInput.closest('.form-field').classList.remove('form-field--error');
 			valueInput.closest('.form-field').classList.remove('form-field--error');
 
+			if (self.validSellerNrs.indexOf(sellerNr) == -1) {
+				sellerNrInput.closest('.form-field').classList.add('form-field--error');
+				hasErrors = true;
+			}
+
 			if (value == 0 || value % 50 != 0) {
 				valueInput.closest('.form-field').classList.add('form-field--error');
 				hasErrors = true;
 			}
 
-
-			// Validate server-side
-			var sid = window.location.search.match(/sid=([a-z0-9]+)/)[1];
-			var url = '/admin/cmt_applauncher.php?sid=' + sid + '&launch=149&action=validateManualEntry&sellerNr=' + sellerNr + '&marketId=' + self.marketId;;
-
-			fetch(url)
-				.then(response => response.json())
-				.then(data => {
-					if (data.success) {
-						if (!hasErrors) {
-							var item = new CartItem().newFromValues(self.marketId, self.checkoutId, sellerNr, value);
-							self.cart.addItem(item);
-							self.createTableFromCart();
-							self.persist();
-							manualEntryBtn.disabled = false;
-							self.codeInput.focus();
-							manualEntryDlg.close();
-							self.codeInput.focus();
-						}
-					}
-					else {
-						sellerNrInput.closest('.form-field').classList.add('form-field--error');
-					}
-				})
-				.catch(error => {
-					alert(error);
-				});
-
-			console.log(!hasErrors);
-			return (!hasErrors);
+			this.querySelector('button[type=submit]').disabled = hasErrors;
 		});
 
 		var manualEntryDlg = new Dialog('manual-entry-dlg');
 		var manualEntryBtn = document.getElementById('manual-entry-btn');
 		manualEntryBtn.addEventListener('click', function() {
-
+			manualEntryDlg.dialog.querySelector('button[type=submit]').disabled = true;
 			manualEntryDlg.run()
 			.then(function(response) {
+				console.log(response);
 
 				switch (response.action) {
 					case 'reject':
-						manualEntryDlg.close();
 						break;
 
 					default: 
+						var item = new CartItem().newFromValues(self.marketId, self.checkoutId, response.data.get('manual_entry_seller_nr'), response.data.get('manual_entry_value'));
+						self.cart.addItem(item);
+						self.createTableFromCart();
+						self.persist();
 				}
+				response.dialog.close();
+				self.codeInput.focus();
+				manualEntryBtn.disabled = false;
 			});
 		});
 	};
@@ -243,19 +201,18 @@ function Checkout() {
 			case 61:
 				self.submitCarts();
 				break;
-			case 85:
-				self.showCarts();
-				break;
 
 
 			case 999:
 				self.commitCart();
-				self.cancelCart();
+				// self.cancelCart();
 				self.createTableFromCart();
 				self.updateTotalTurnover();
 				break;
 		}
 	};
+
+
 
 	this.onPanelButtonClicked = function(ev) {
 		ev.preventDefault();
@@ -268,28 +225,18 @@ function Checkout() {
 
 			case 'change-custom':
 
-				var dlg = document.getElementById('change-custom-dlg');
-				var form = document.forms.change_custom;
-
-				form.reset();
-				form.querySelector('input').focus();
-				dialogPolyfill.registerDialog(dlg);
-				dlg.showModal();
-
 				var changeCustomValue = document.getElementById('change-custom-value');
-
-				form.addEventListener('submit', function(ev) {
-					ev.preventDefault();
-
-					dlg.close();
+				new Dialog('change-custom-dlg')
+				.run()
+				.then(function(response) {
+					if (response.action != 'reject') {
+						var value = response.data.get('change_custom_value');
+						value = parseInt(value.replace(/[^\d]/g, ''));
+						self.change(isNaN(value) ? 0 : value);
+					}
+					response.dialog.close();
 					self.codeInput.focus();
-
-					var value = changeCustomValue.value.replace(/[^\d]/g, '');
-					self.change(parseInt(value));
-
-					return false;
 				});
-
 				break;
 
 			case 'cancel-last':
@@ -327,10 +274,12 @@ function Checkout() {
 				self.persist();
 				self.createTableFromCart();
 			}
-			response.dlg.close();
+			console.log('Closing dialog');
+			response.dialog.close();
 			self.codeInput.focus();
 		});
 	}
+
 
 	this.actionCommit = function() {
 		self.commitCart();
@@ -338,6 +287,7 @@ function Checkout() {
 		self.createTableFromCart();
 		self.updateTotalTurnover();
 	}
+
 
 	this.actionCancelLast = function() {
 		if (self.cart.items.length == 0) {
@@ -364,7 +314,41 @@ function Checkout() {
 	}
 
 
+
+	this.setupCameraBarcodeScanner = function() {
+		// If camera is available, setup camera barcode scanner
+		navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+		navigator.getMedia({video: true}, function() {
+			console.log("We have a camera, so go ahead!");
+			this.cameraBarcodeScanner = new CameraBarcodeScanner();
+			this.cameraBarcodeScanner.setup(document.getElementById('cam'),  function(result) {
+				var item = new CartItem().newFromCode(result.codeResult.code, self.checkoutId);
+				self.cart.addItem(item);
+				self.persist();
+			});
+		}, function() {
+			console.log("No camera available, never mind …");
+		});
+
+		// var chkbx = document.getElementById('js-toggle-camera-scanner');
+		// if (chkbx) {
+		// 	chkbx.addEventListener('change', function(e) {
+        //
+		// 		if (this.checked) {
+		// 			console.log("Starting camera scanner");
+		// 			self.cameraBarcodeScanner.turnOn();
+		// 		}
+		// 		else {
+		// 			console.log("Stopping camera scanner");
+		// 			self.cameraBarcodeScanner.turnOff();
+		// 		}
+		// 	});
+		// }
+	};
+
+
 	this.setupBarcodeScanner = function() {
+
 		self.codeInput.focus();
 		self.codeInput.addEventListener('keydown', function(ev) {
 			if (ev.keyCode == 13) {
@@ -380,7 +364,7 @@ function Checkout() {
 
 			if (this.value.length >= 24) {
 				var code = this.value;
-				var item = self.getItemFromCode(code);
+				var item = new CartItem().newFromCode(code, self.checkoutId);
 				if (item != null) {
 					self.cart.addItem(item);
 					self.createTableFromCart();
@@ -396,46 +380,61 @@ function Checkout() {
 		});
 	};
 
-	this.getItemFromCode = function(code) {
 
-		var marketId = parseInt(code.substring(0, 4));
-		var marketDate = code.substring(4, 12);
-		var sellerId = parseInt(code.substring(12, 16));
-		var sellerNr = parseInt(code.substring(16, 19));
-		var value = parseInt(code.substring(19));
 
-		if (Number.isNaN(marketId)) {
-			console.log("Invalid code", code);
-			return null;
-		}
-		if (!marketDate.match(/^\d{4}\d{2}\d{2}$/)) {
-			console.log("Invalid code", code);
-			return null;
-		}
-		if (Number.isNaN(sellerId)) {
-			console.log("Invalid code", code);
-			return null;
-		}
-		if (Number.isNaN(sellerNr)) {
-			console.log("Invalid code", code);
-			return null;
-		}
-		if (Number.isNaN(value)) {
-			console.log("Invalid code", code);
-			return null;
-		}
+	this.setupOnlineOffline = function() {
+		window.addEventListener('online', function() {
+			document.body.classList.add('is-online');
+			window.setTimeout(self.submitCarts, 3000);
+		});
 
-		var item = {
-			marketId: marketId,
-			sellerId: sellerId,
-			sellerNr: sellerNr,
-			value: value,
-			ts: Date.now(),
-			checkoutId: this.checkoutId,
-			code: code
-		}
-		return item;
-	}
+		window.addEventListener('offline', function() {
+			document.body.classList.remove('is-online');
+		});
+		document.body.classList.toggle('is-online', window.onLine);
+	};
+
+
+	// this.getItemFromCode = function(code) {
+    //
+	// 	var marketId = parseInt(code.substring(0, 4));
+	// 	var marketDate = code.substring(4, 12);
+	// 	var sellerId = parseInt(code.substring(12, 16));
+	// 	var sellerNr = parseInt(code.substring(16, 19));
+	// 	var value = parseInt(code.substring(19));
+    //
+	// 	if (Number.isNaN(marketId)) {
+	// 		console.log("Invalid code", code);
+	// 		return null;
+	// 	}
+	// 	if (!marketDate.match(/^\d{4}\d{2}\d{2}$/)) {
+	// 		console.log("Invalid code", code);
+	// 		return null;
+	// 	}
+	// 	if (Number.isNaN(sellerId)) {
+	// 		console.log("Invalid code", code);
+	// 		return null;
+	// 	}
+	// 	if (Number.isNaN(sellerNr)) {
+	// 		console.log("Invalid code", code);
+	// 		return null;
+	// 	}
+	// 	if (Number.isNaN(value)) {
+	// 		console.log("Invalid code", code);
+	// 		return null;
+	// 	}
+    //
+	// 	var item = {
+	// 		marketId: marketId,
+	// 		sellerId: sellerId,
+	// 		sellerNr: sellerNr,
+	// 		value: value,
+	// 		ts: Date.now(),
+	// 		checkoutId: this.checkoutId,
+	// 		code: code
+	// 	}
+	// 	return item;
+	// }
 
 
 	this.cancelLast = function() {
@@ -605,13 +604,14 @@ function Checkout() {
 		// The cart needs to be cloned before pushed to the stack,
 		// this is a simple method to clone a Javascript object:
 		// var clone = JSON.parse(JSON.stringify(self.cart));
-		var cartData = self.cart.getData();
-
-		self.carts.push(cartData);
+		self.cue.addCart(self.cart);
+		// var cartData = self.cart.getData();
+		// var _cart = new Cart().setData(cartData); 
+		// self.carts.push(_cart);
 
 		if (navigator.onLine) {
 			self.statusMessage("Bon wird übermittelt");
-			self.submitCart(cartData);
+			self.submitCart(self.cart);
 		}
 
 		self.cart.clear();
@@ -623,41 +623,12 @@ function Checkout() {
 
 
 	this.updateTotalTurnover = function() {
-		var totalTurnover = self.calcTotalTurnover() / 100;
+		var totalTurnover = self.cue.calcTotalTurnover() / 100;
 		document.getElementById('js-total-turnover').innerText = totalTurnover.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
-		document.getElementById('js-total-carts').innerText = self.carts.length;
-		document.getElementById('js-total-carts-submitted').innerText = self.countSubmittedCarts();
+		document.getElementById('js-total-carts').innerText = self.cue.getLength();
+		document.getElementById('js-total-carts-submitted').innerText = self.cue.countSubmittedCarts();
 	};
 
-
-	this.countSubmittedCarts = function() {
-		var n = 0;
-		this.carts.forEach(function(cart) {
-			if (cart.submitted) {
-				n++;
-			}
-		});
-		return n;
-	}
-
-
-
-	/**
-	 * This will delete the current cart and reset, e.g.
-	 * preapre for a new one
-	 */
-	this.cancelCart = function() {
-		// console.log("Cancelling cart");
-		self.cart.timestamp = Date.now();
-		self.cart.marketId = self.marketId;
-		self.cart.checkoutId = self.checkoutId;
-		self.cart.cashierId = self.cashierId;
-		self.cart.items = [];
-		self.cart.submitted = false;
-		self.cart.submittedTimestamp = null;
-
-		self.persist();
-	}
 
 
 
@@ -668,7 +639,7 @@ function Checkout() {
 		// window.localStorage.setItem('checkoutId', self.checkoutId);
 		// window.localStorage.setItem('marketId', self.marketId);
 		window.localStorage.setItem('cart', JSON.stringify(self.cart.getData()));
-		window.localStorage.setItem('carts', JSON.stringify(self.carts));
+		window.localStorage.setItem('carts', JSON.stringify(self.cue.carts));
 	};
 
 
@@ -677,36 +648,21 @@ function Checkout() {
 	 * Restore current cart and cart cue from localStorage
 	 */
 	this.resurrect = function() {
-		// var checkoutId, marketId, cart;
 
 		if ((cart = window.localStorage.getItem('cart')) != null) {
-			self.cart.setData(JSON.parse(cart));
+			self.cart = new Cart().setData(JSON.parse(cart));
 			// self.createTableFromCart();
 		}
 
+		self.cue.clear();
 		if ((carts = window.localStorage.getItem('carts')) != null) {
-			self.carts = JSON.parse(carts);
+			JSON.parse(carts).forEach(function(cartData) {
+				self.cue.addCart(new Cart().setData(cartData));
+			});
 			self.updateTotalTurnover();
 		}
 	};
 
-
-	this.calcTotalTurnover = function() {
-		var turnover = 0;
-		for (var i = 0; i < self.carts.length; i++) {
-			for (var j = 0; j < self.carts[i].items.length; j++) {
-				turnover += self.carts[i].items[j].value;
-			}
-		}
-		return turnover;
-	};
-
-
-	this.submitCarts = function() {
-		self.carts.forEach(function(cart, i) {
-			self.submitCart(cart);
-		});
-	};
 
 
 	/**
@@ -716,76 +672,38 @@ function Checkout() {
 	 * @return void
 	 */
 	this.submitCart = function(cart) {
-		if (cart.submitted) {
-			console.log("Cart has been submitted yet, aborting");
-			return;
-		}
-		console.log(cart.items);
-
-		var data = new FormData();
-		data.append('action',  'add');
-		data.append('marketId', cart.marketId);
-		data.append('checkoutId', cart.checkoutId);
-		data.append('cashierId', cart.cashierId);
-		data.append('timestamp', cart.timestamp);
-		data.append('items', JSON.stringify(cart.items));
-		var total = 0;
-		cart.items.forEach(function(item) {
-			total += item.value;
-		});
-		data.append('total', total);
-
-		var xhr = new XMLHttpRequest();
-		xhr.addEventListener('load', function() {
-			var response = JSON.parse(this.responseText);
-			if (response.success) {
-				// cart.submitted = true;
-				// console.log(response.cartId);
-				self.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId, 'success');
-				document.body.classList.remove('is-busy');
-
-				// Try to find this cart in the cue and if found, remove it
-				// self.carts.forEach(function(cueCart, i) {
-				console.log(response.cartTimestamp);
-				for (var i = 0; i < self.carts.length; i++) {
-					if (parseInt(self.carts[i].timestamp) == parseInt(response.cartTimestamp) &&
-						parseInt(self.checkoutId) == parseInt(response.cartCheckoutId)) {
-						console.log("Found cart in cue, un-cueing it!", i);
-						self.carts[i].submitted = true;
-						self.carts[i].submittedTimestamp = new Date();
-						self.carts[i].id = response.cartId
-
-						self.updateTotalTurnover();
-
-						// self.carts.splice(i, 1);
-						self.persist();
-						break;
-					}
-				}
-			}
-
-		});
-		xhr.addEventListener('error', function() {
-			self.statusMessage('Übermittlung gescheitert!', 'error');
-
-		});
-		xhr.open('POST', '/de/9/carts.html');
-		xhr.send(data);
 
 		document.body.classList.add('is-busy');
-	};
 
+		cart.submit().then(function(response) {
 
-	this.showCarts = function() {
-		console.log("Showing carts");
-		var containerEl = document.createElement('ul');
+			document.body.classList.remove('is-busy');
 
-		self.carts.forEach(function(cart) {
-			console.log(cart.timestamp);
-			var itemEl = document.createElement('li');
+			self.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId, 'success');
 
+			// Try to find this cart in the cue and if found, remove it 
+			for (var i = 0; i < self.cue.length; i++) {
+
+				if (
+					parseInt(self.cue[i].timestamp)  == parseInt(response.cartTimestamp) &&
+					parseInt(self.cue[i].checkoutId) == parseInt(response.cartCheckoutId)
+				) {
+					console.log("Found cart in cue, un-cueing it!", i);
+					self.cue[i].submitted = true;
+					self.cue[i].submittedTimestamp = new Date();
+					self.cue[i].id = response.cartId
+
+					self.updateTotalTurnover();
+					self.persist();
+					break;
+				}
+			}
+		})
+		.catch(function(mssg) {
+			self.statusMessage(mssg, 'error');
 		});
 	};
+
 
 
 	this.statusMessage = function(mssg, type) {
@@ -796,11 +714,4 @@ function Checkout() {
 		el.innerHTML = mssg;
 		el.classList.add(type);
 	};
-
-
-	this.updateCue = function() {
-
-		self.cueLabel.innerText = self.carts.length + " Vorgänge in der Warteschlange";
-		
-	}
 };

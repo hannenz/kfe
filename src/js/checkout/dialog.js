@@ -57,12 +57,13 @@ Dialog.prototype.run = function() {
 
 	this.form.reset();
 
+	this.dialog.showModal();
+
 	var input = this.form.querySelector('input');
 	if (input) {
 		input.focus();
 	}
 
-	this.dialog.showModal();
 
 	var promise = new Promise(function(resolve, reject) {
 		this.form.onsubmit = function(ev) {

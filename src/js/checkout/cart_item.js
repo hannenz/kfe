@@ -6,8 +6,6 @@
  * @version 2019-10-08
  */
 var CartItem = function() {
-
-
 	var marketId = null;
 	var sellerId = null;
 	var sellerNr = null;
@@ -30,7 +28,7 @@ CartItem.prototype.newFromCode = function(code, checkoutId) {
 	if (Number.isNaN(marketId)) {
 		console.log("Invalid code", code);
 		return null;
-}
+	}
 	if (!marketDate.match(/^\d{4}\d{2}\d{2}$/)) {
 		console.log("Invalid code", code);
 		return null;
@@ -71,12 +69,12 @@ CartItem.prototype.newFromCode = function(code, checkoutId) {
  */
 CartItem.prototype.newFromValues = function(marketId, checkoutId, sellerNr, value) {
 
-	this.marketId = marketId;
+	this.marketId = parseInt(marketId);
 	this.sellerId = null;
-	this.sellerNr = sellerNr;
-	this.value = value;
+	this.sellerNr = parseInt(sellerNr);
+	this.value = parseInt(value);
 	this.ts = Date.now();
-	this.checkoutId = checkoutId;
+	this.checkoutId = parseInt(checkoutId);
 	this.code = '';
 	
 	return this;
