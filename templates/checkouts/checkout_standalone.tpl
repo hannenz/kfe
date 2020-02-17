@@ -107,7 +107,7 @@
 			<div class="dialog__body stack">
 				<div class="form-field">
 					<label for="manual-entry-seller-nr">Verkäufer-Nr</label>
-					<input name="manual_entry_seller_nr" id="manual-entry-seller-nr" pattern="[0-9]{3}" list="sellers" />
+					<input name="manual_entry_seller_nr" id="manual-entry-seller-nr" pattern="[0-9]{2,3}" list="sellers" />
 					<datalist id="sellers">
 						{LOOP VAR(sellers)}
 							<option value="{VAR:seller_nr}">{VAR:seller_nr}</option>

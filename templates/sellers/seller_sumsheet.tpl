@@ -21,9 +21,9 @@
 		<tbody>
 			{LOOP VAR(sales)}
 			<tr>
-				<td style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px; border-top-width: 0.25px; border-top-style: solid; border-top-color: #a0a0a0;">{VAR:dateTimeFmt}</td>
-				<td style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px; border-top-width: 0.25px; border-top-style: solid; border-top-color: #a0a0a0;">{VAR:checkoutId}</td>
-				<td style="font-size: 10px; text-align: right;vertical-align: top; line-height: 22px; border-top-width: 0.25px; border-top-style: solid; border-top-color: #a0a0a0;">{VAR:valueEuroFmt} &euro;</td>
+				<td style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px; border-top-width: 0.25px; border-top-style: solid; border-top-color: #a0a0a0;">{DATEFMT:"{VAR:item_datetime}":"%d.%m.%Y %H:%M:%S":de_DE.UTF-8}</td>
+				<td style="font-size: 10px; text-align: left; vertical-align: top; line-height: 22px; border-top-width: 0.25px; border-top-style: solid; border-top-color: #a0a0a0;">{VAR:item_checkout_id}</td>
+				<td style="font-size: 10px; text-align: right;vertical-align: top; line-height: 22px; border-top-width: 0.25px; border-top-style: solid; border-top-color: #a0a0a0;">{VAR:valueFmt} &euro;</td>
 			</tr>
 			{ENDLOOP VAR}
 		</tbody>

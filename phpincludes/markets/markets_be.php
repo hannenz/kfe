@@ -94,6 +94,69 @@ class MarketBackendController extends ApplicationController {
 			return;
 		}
 
+		$market = $this->Market->findById($this->marketId);
+
+		$items = $this->Item->filter(['item_market_id' => $this->marketId])->findAll();
+		$turnoverTotal = 0;
+		$turnoverSellers = 0;
+		$turnoverEmployees = 0;
+		$bountyTotal = 0;
+		$bountySellers = 0;
+		$bountyEmployees = 0;
+		$turnoverCheckout = [];
+		$itemsTotal = 0;
+		$itemsSellers = 0;
+		$itemsEmployees = 0;
+		foreach ($items as $item) {
+
+			$turnoverTotal += $item['item_value'];
+			$turnoverCheckout[$item['item_checkout_id']] += $item['item_value'];
+			$itemsTotal++;
+
+			if ($item['item_seller_nr'] <= 300) {
+				$turnoverSellers += $item['item_value'];
+
+				$discountValue = ($item['item_value'] * $this->discount / 100); 
+				$bountyTotal += $discountValue;
+				$bountySellers += $discountValue;
+
+				$itemsSellers++;
+			}
+			else {
+				$turnoverEmployees += $item['item_value'];
+
+				$itemsEmployees++;
+			}
+		}
+		$MyParser = new \Contentomat\Parser();
+
+		$MyParser->setMultipleParserVars([
+			'turnoverTotal' => $turnoverTotal / 100,
+			'turnoverSellers' => $turnoverSellers / 100,
+			'turnoverEmployees' => $turnoverEmployees / 100,
+			'bountyTotal' => $bountyTotal / 100,
+			'bountySellers' => $bountySellers / 100,
+			'bountyEmployees' => $bountyEmployees / 100,
+			'turnoverCheckout1' => $turnoverCheckout[1] / 100,
+			'turnoverCheckout2' => $turnoverCheckout[2] / 100,
+			'turnoverCheckout3' => $turnoverCheckout[3] / 100,
+			'itemsTotal' => $itemsTotal,
+			'itemsSellers' => $itemsSellers,
+			'itemsEmployees' => $itemsEmployees
+		]);
+		$MyParser->setMultipleParserVars($market);
+		$MyParser->setParserVar('sellers', $sellers);
+		$MyParser->setParserVar('marketId', $market['id']);
+		// $MyParser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
+
+		$this->content = $MyParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/evaluation.tpl');
+		return ; 
+
+
+		/*********
+		*  old  *
+		*********/
+		
 
 		$market = $this->Market->findById($this->marketId);
 		$sellers = $this->Seller->filter(['seller_market_id', $this->marketId])->findAll();
@@ -133,7 +196,6 @@ class MarketBackendController extends ApplicationController {
 
 		$MyParser->setParserVar('sellers', $sellers);
 		$MyParser->setParserVar('marketId', $market['id']);
-		echo '<pre>'; var_dump($market); echo '</pre>'; die();
 		$MyParser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
 
 		$this->content = $MyParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/evaluation.tpl');

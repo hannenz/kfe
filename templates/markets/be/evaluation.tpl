@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="/dist/css/market_be.css" />
 <div class="market-evaluation">
-	<h1>Auswertung für Markt #{VAR:market_id} am {DATEFMT:"{VAR:market_begin}":%d.%m.%Y:de_DE.UTF-8}</h1>
+	<h1>Auswertung für Markt #{VAR:marketId} am {DATEFMT:"{VAR:market_begin}":%d.%m.%Y:de_DE.UTF-8}</h1>
 
 	<div class="figures">
 		<figure class="chart chart--pie">
@@ -63,7 +63,7 @@
 		
 	</div>
 	<div>
-		<a class="button cmtButton" href="{SELFURL}&action=sumsheets&market_id={VAR:market_id}">Summenblätter</a> 
+		<a class="button cmtButton" href="{SELFURL}&action=sumsheets&market_id={VAR:marketId}">Summenblätter</a> 
 	</div>
 </div>
 <script>
@@ -80,7 +80,6 @@
 		if (values.length == 3) {
 			var perc3 = values[2] / total * 100;
 		}
-		console.log(perc1, perc2, perc3);
 
 		var NS = 'http://www.w3.org/2000/svg';
 		var svg = document.createElementNS(NS, 'svg');

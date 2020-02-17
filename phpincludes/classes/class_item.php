@@ -15,6 +15,7 @@ class Item extends Model {
 
 	public function init() {
 		$this->setTableName('kfe_items');
+		setlocale(LC_NUMERIC, 'de_DE.UTF-8');
 	}
 
 
@@ -27,6 +28,13 @@ class Item extends Model {
 	 */
 	public function add($data) {
 		return $this->save($data);
+	}
+
+
+
+	protected function afterRead($item) {
+		$item['valueFmt'] = sprintf('%.2f', $item['item_value'] / 100);
+		return $item;
 	}
 	
 }

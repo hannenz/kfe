@@ -40,42 +40,34 @@ function Checkout() {
 	 */
 	this.setup = function() {
 
-		console.log("Checkout::setup");
-
 		this.setupBarcodeScanner();
-		// this.setupCameraBarcodeScanner();
+		this.setupCameraBarcodeScanner();
 		this.setupOnlineOffline();
 		this.setupBeforeUnload();
 
-
-		/////////////////////////////
-		//  Setup Event Listeners  //
-		/////////////////////////////
-		
 		// TODO: See if we really don't need it, then we can remove self.onKeyUp
 		// function as well
 		// document.addEventListener('keyup', self.onKeyUp);
 
-		document.forms.checkout.addEventListener('submit', function(e) {
-			e.preventDefault();
+		document.forms.checkout.addEventListener('submit', function(ev) {
+			ev.preventDefault();
 			return false;
 		});
 
+		this.setupButtons();
+		this.setupManualEntry();
+
+		self.resurrect();
+		self.createTableFromCart();
+	};
+
+
+	this.setupButtons = function() {
+		this.submitCartsBtn.addEventListener('click', this.submitCarts);
 		var buttons = document.querySelectorAll('.button-panel > .button');
 		buttons.forEach(function(btn) {
 			btn.addEventListener('click', self.onPanelButtonClicked);
 		});
-
-		this.submitCartsBtn.addEventListener('click', this.submitCarts);
-
-
-		// Periodically try to submit carts to server
-		// window.setInterval(self.submitCarts, 5000);
-
-		self.resurrect();
-		self.createTableFromCart();
-
-		this.setupManualEntry();
 	};
 
 
@@ -136,7 +128,6 @@ function Checkout() {
 			manualEntryDlg.dialog.querySelector('button[type=submit]').disabled = true;
 			manualEntryDlg.run()
 			.then(function(response) {
-				console.log(response);
 
 				switch (response.action) {
 					case 'reject':
@@ -160,7 +151,6 @@ function Checkout() {
 		ev.preventDefault();
 		ev.stopPropagation();
 
-		// console.log(ev.keyCode);
 
 		switch (ev.keyCode) {
 
@@ -202,7 +192,6 @@ function Checkout() {
 				self.submitCarts();
 				break;
 
-
 			case 999:
 				self.commitCart();
 				// self.cancelCart();
@@ -217,7 +206,6 @@ function Checkout() {
 	this.onPanelButtonClicked = function(ev) {
 		ev.preventDefault();
 		var action = this.dataset.action;
-		// console.log(action);
 		switch (action) {
 			case 'change':
 				self.change(this.dataset.value);
@@ -256,7 +244,6 @@ function Checkout() {
 				break;
 		}
 
-		self.codeInput.focus();
 		return false;
 	};
 
@@ -274,18 +261,9 @@ function Checkout() {
 				self.persist();
 				self.createTableFromCart();
 			}
-			console.log('Closing dialog');
 			response.dialog.close();
 			self.codeInput.focus();
 		});
-	}
-
-
-	this.actionCommit = function() {
-		self.commitCart();
-		self.cart.clear();
-		self.createTableFromCart();
-		self.updateTotalTurnover();
 	}
 
 
@@ -302,6 +280,13 @@ function Checkout() {
 	}
 
 
+	this.actionCommit = function() {
+		self.commitCart();
+		self.cart.clear();
+		self.createTableFromCart();
+		self.updateTotalTurnover();
+	}
+
 
 	/**
 	 * Calc and display change money for a given value
@@ -312,7 +297,6 @@ function Checkout() {
 	this.change = function(value) {
 		self.changeInput.value = ((value - (self.cart.getTotal())) / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
 	}
-
 
 
 	this.setupCameraBarcodeScanner = function() {
@@ -395,63 +379,18 @@ function Checkout() {
 	};
 
 
-	// this.getItemFromCode = function(code) {
-    //
-	// 	var marketId = parseInt(code.substring(0, 4));
-	// 	var marketDate = code.substring(4, 12);
-	// 	var sellerId = parseInt(code.substring(12, 16));
-	// 	var sellerNr = parseInt(code.substring(16, 19));
-	// 	var value = parseInt(code.substring(19));
-    //
-	// 	if (Number.isNaN(marketId)) {
-	// 		console.log("Invalid code", code);
-	// 		return null;
-	// 	}
-	// 	if (!marketDate.match(/^\d{4}\d{2}\d{2}$/)) {
-	// 		console.log("Invalid code", code);
-	// 		return null;
-	// 	}
-	// 	if (Number.isNaN(sellerId)) {
-	// 		console.log("Invalid code", code);
-	// 		return null;
-	// 	}
-	// 	if (Number.isNaN(sellerNr)) {
-	// 		console.log("Invalid code", code);
-	// 		return null;
-	// 	}
-	// 	if (Number.isNaN(value)) {
-	// 		console.log("Invalid code", code);
-	// 		return null;
-	// 	}
-    //
-	// 	var item = {
-	// 		marketId: marketId,
-	// 		sellerId: sellerId,
-	// 		sellerNr: sellerNr,
-	// 		value: value,
-	// 		ts: Date.now(),
-	// 		checkoutId: this.checkoutId,
-	// 		code: code
-	// 	}
-	// 	return item;
-	// }
-
-
-	this.cancelLast = function() {
-	};
-
 
 	this.cancelItem = function(i) {
 
 		if (self.cart.items[i]) {
 
 			item = self.cart.items[i];
-			var valueFmt = sprintf('%.2f', item.value / 100);
+			var valueFmt = (item.value / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
 
 			var dlg = new Dialog('cancel-item-dlg');
-			dlg.setBody(`Soll die Position #${i} wirklich storniert werden?<br>` + 
-			`Verkäufer-Nr: ${item.sellerNr}<br>` + 
-			`Betrag: ${valueFmt} &euro;`);
+			dlg.setBody(`<p>Soll die Position #${i + 1} wirklich storniert werden?</p>` + 
+			`<table><tr><td>Verkäufer-Nr:</td><td><b>${item.sellerNr}</b></td></tr>` + 
+			`<tr><td>Betrag:</td><td><b>${valueFmt}</b></td></tr></table>`);
 			dlg.run()
 			.then(function(response) {
 				if (response.action != 'reject') {
@@ -464,15 +403,8 @@ function Checkout() {
 				self.codeInput.focus();
 			});
 		}
-	}
+	};
 
-
-	// this.addToCart = function(item) {
-	// 	self.cart.addItem(item);
-	// 	self.createTableFromCart();
-	// 	self.persist();
-	// 	// Play a sound
-	// }
 
 	this.createTableFromCart = function() {
 		var table = document.getElementById('js-cart');
@@ -500,7 +432,6 @@ function Checkout() {
 		row.appendChild(th);
 
 		table.appendChild(row);
-
 
 		var total = 0;
 		for (var i = 0; i < self.cart.items.length; i++) {
@@ -573,8 +504,6 @@ function Checkout() {
 			document.querySelector('[data-action=commit]').removeAttribute('disabled');
 		}
 
-
-
 		document.querySelectorAll('[data-action^=change]').forEach(function(btn) {
 			if (btn.dataset.value < total || total == 0) {
 				btn.setAttribute('disabled', true);
@@ -583,8 +512,6 @@ function Checkout() {
 				btn.removeAttribute('disabled');
 			}
 		});
-
-
 	}
 
 
@@ -593,21 +520,13 @@ function Checkout() {
 	 * carts. If we are online the cart is also submitted to the server
 	 */
 	this.commitCart = function() {
-		console.log("Committing cart");
 
 		if (self.cart.items.length == 0) {
 			console.log("Cart is empty, aborting commit");
 			return;
 		}
 
-
-		// The cart needs to be cloned before pushed to the stack,
-		// this is a simple method to clone a Javascript object:
-		// var clone = JSON.parse(JSON.stringify(self.cart));
 		self.cue.addCart(self.cart);
-		// var cartData = self.cart.getData();
-		// var _cart = new Cart().setData(cartData); 
-		// self.carts.push(_cart);
 
 		if (navigator.onLine) {
 			self.statusMessage("Bon wird übermittelt");
@@ -615,11 +534,9 @@ function Checkout() {
 		}
 
 		self.cart.clear();
-
 		self.updateTotalTurnover();
 		self.persist();
 	};
-
 
 
 	this.updateTotalTurnover = function() {
@@ -628,8 +545,6 @@ function Checkout() {
 		document.getElementById('js-total-carts').innerText = self.cue.getLength();
 		document.getElementById('js-total-carts-submitted').innerText = self.cue.countSubmittedCarts();
 	};
-
-
 
 
 	/**
@@ -641,7 +556,6 @@ function Checkout() {
 		window.localStorage.setItem('cart', JSON.stringify(self.cart.getData()));
 		window.localStorage.setItem('carts', JSON.stringify(self.cue.carts));
 	};
-
 
 
 	/**
@@ -678,20 +592,16 @@ function Checkout() {
 		cart.submit().then(function(response) {
 
 			document.body.classList.remove('is-busy');
-
 			self.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId, 'success');
 
 			// Try to find this cart in the cue and if found, remove it 
-			for (var i = 0; i < self.cue.length; i++) {
-
-				if (
-					parseInt(self.cue[i].timestamp)  == parseInt(response.cartTimestamp) &&
-					parseInt(self.cue[i].checkoutId) == parseInt(response.cartCheckoutId)
-				) {
+			for (var i = 0; i < self.cue.carts.length; i++) {
+				if (parseInt(self.cue.carts[i].timestamp)  == parseInt(response.cartTimestamp) &&
+					parseInt(self.cue.carts[i].checkoutId) == parseInt(response.cartCheckoutId)) {
 					console.log("Found cart in cue, un-cueing it!", i);
-					self.cue[i].submitted = true;
-					self.cue[i].submittedTimestamp = new Date();
-					self.cue[i].id = response.cartId
+					self.cue.carts[i].submitted = true;
+					self.cue.carts[i].submittedTimestamp = new Date();
+					self.cue.carts[i].id = response.cartId
 
 					self.updateTotalTurnover();
 					self.persist();

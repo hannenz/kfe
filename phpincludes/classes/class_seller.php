@@ -9,6 +9,7 @@ use Contentomat\FileHandler;
 use \Exception;
 use \KFE\Market;
 use \KFE\Cart;
+use \KFE\Item;
 use \KFE\SellerSumsheet;
 
 class RegistrationValidationException extends Exception { }
@@ -53,6 +54,13 @@ class Seller extends Model {
 	protected $FileHandler;
 
 
+	/**
+	 * @var KFE\Item
+	 */
+	protected $Item;
+
+
+
 	public function init() {
 		$this->Mail = new Mail();
 		$this->FieldHandler = new FieldHandler();
@@ -61,6 +69,7 @@ class Seller extends Model {
 		$this->Session = $this->Cmt->getSession();
 		$this->tableName = 'kfe_sellers';
 		$this->Cart = new Cart();
+		$this->Item = new Item();
 		$this->setValidationRules([
 			'seller_firstname' => ['not-empty' => '/^.+$/'],
 			'seller_lastname' => ['not-empty' => '/^.+$/'],
@@ -483,16 +492,45 @@ class Seller extends Model {
 			$market = $this->Market->findById($marketId);
 		}
 
-		$sellers = $this->filter($conditions)->order(['seller_nr' => 'ASC'])->findAll();
+		$sellers = $this->findByMarket($marketId);
+
 		foreach ($sellers as &$seller) {
-			$seller = $this->calculateTotals($seller);
+
+			// Get the seller's sales (items)
+			$seller['sales'] = $this->Item->filter([
+				'item_seller_id' => $seller['id']
+			])->findAll();
+
+			$seller['salesTotal'] = 0;
+			foreach ($seller['sales'] as $item) {
+				$seller['salesTotal'] += $item['item_value'];
+			}
+			$seller['salesTotalEuro'] = $seller['salesTotal'] / 100;
+			$seller['salesTotalEuroFmt'] = sprintf('%.2f', $seller['salesTotalEuro']);
+			$seller['discountPercent'] = ($this->isEmployee($seller['seller_nr']) ? 0 : 20);
+			$seller['discountValue'] = $seller['salesTotal'] * $seller['discountPercent'] / 100;
+			$seller['discountValueEuro'] = $seller['discountValue'] / 100;
+			$seller['discountValueEuroFmt'] = sprintf('%.2f', $seller['discountValueEuro']);
+			$seller['grossValue'] = $seller['salesTotal'] - $seller['discountValue'];
+			$seller['grossValueEuro'] = $seller['grossValue'] / 100;
+			$seller['grossValueEuroFmt'] = sprintf('%.2f', $seller['grossValueEuro']);
+			$seller['itemsCount'] = count($seller['sales']);
 		}
+
+		// $sellers = $this->filter($conditions)->order(['seller_nr' => 'ASC'])->findAll();
+		// foreach ($sellers as &$seller) {
+		// 	$seller = $this->calculateTotals($seller);
+		// }
+		// echo '<pre>'; var_dump($sellers); echo '</pre>'; die();
 		$filename = sprintf('Auswertung-%s.pdf', strftime('%Y-%m-%d-%H%M'));
 		$this->SellerSumsheet = new SellerSumsheet($sellers, $market, $filename);
 		$this->SellerSumsheet->create($options['skipEmpty']);
 	}
 
 
+	/**
+	 * Deprecated
+	 */
 	public function calculateTotals($seller) {
 		$seller['sales'] = $this->getSales($seller['id']);
 		$seller['salesTotal'] = 0;
@@ -515,6 +553,8 @@ class Seller extends Model {
 
 
 	/**
+	 * Deprecated
+	 *
 	 * Get a seller's sale
 	 *
 	 * @param int 		Seller ID
