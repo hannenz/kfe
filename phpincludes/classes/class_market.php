@@ -2,6 +2,7 @@
 namespace KFE;
 
 use KFE\Seller;
+use KFE\Item;
 use Contentomat\Model;
 use Contentomat\CmtPage;
 
@@ -27,11 +28,24 @@ class Market extends Model {
 	 */
 	protected $Seller;
 
+	/**
+	 * @var KFE\Item
+	 */
+	protected $Item;
+
+	/**
+	 * Abzug für Spende in Prozent
+	 *
+	 * @var float;
+	 */
+	protected $discount = 20.0;
+
 
 	public function init() {
 		$this->tableName = 'kfe_markets';
 		$this->CmtPage = new CmtPage();
 		$this->Seller = new Seller();
+		$this->Item = new Item();
 	}
 
 	public function getMarketsWithOpenNumberAssignment() {
@@ -206,6 +220,70 @@ class Market extends Model {
 	public function setDetailPageId($detailPageId) {
 	    $this->detailPageId = $detailPageId;
 	    return $this;
+	}
+
+
+	/**
+	 * Gather evaluation data
+	 * Returns an array of data that can be passed to parser
+	 * or via JSON to client (server-sent-event)
+	 *
+	 * @param int 		$marketId
+	 * @return Array
+	 */
+	public function evaluate($marketId) {
+		$market = $this->findById($marketId);
+
+		$items = $this->Item->filter(['item_market_id' => $marketId])->findAll();
+		$turnoverTotal = 0;
+		$turnoverSellers = 0;
+		$turnoverEmployees = 0;
+		$bountyTotal = 0;
+		$bountySellers = 0;
+		$bountyEmployees = 0;
+		$turnoverCheckout = [];
+		$itemsTotal = 0;
+		$itemsSellers = 0;
+		$itemsEmployees = 0;
+
+		foreach ($items as $item) {
+
+			$turnoverTotal += $item['item_value'];
+			$turnoverCheckout[$item['item_checkout_id']] += $item['item_value'];
+			$itemsTotal++;
+
+			if ($this->Seller->isEmployee($item['item_seller_nr'])) {
+				$turnoverEmployees += $item['item_value'];
+
+				$itemsEmployees++;
+			}
+			else {
+				$turnoverSellers += $item['item_value'];
+
+				$discountValue = ($item['item_value'] * $this->discount / 100); 
+				$bountyTotal += $discountValue;
+				$bountySellers += $discountValue;
+
+				$itemsSellers++;
+			}
+		}
+
+		$data = [
+			'turnoverTotal' => $turnoverTotal / 100,
+			'turnoverSellers' => $turnoverSellers / 100,
+			'turnoverEmployees' => $turnoverEmployees / 100,
+			'bountyTotal' => $bountyTotal / 100,
+			'bountySellers' => $bountySellers / 100,
+			'bountyEmployees' => $bountyEmployees / 100,
+			'turnoverCheckout1' => $turnoverCheckout[1] / 100,
+			'turnoverCheckout2' => $turnoverCheckout[2] / 100,
+			'turnoverCheckout3' => $turnoverCheckout[3] / 100,
+			'itemsTotal' => $itemsTotal,
+			'itemsSellers' => $itemsSellers,
+			'itemsEmployees' => $itemsEmployees
+		];
+
+		return $data;
 	}
 }
 ?>

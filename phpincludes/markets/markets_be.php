@@ -4,6 +4,7 @@ namespace KFE;
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 ini_set('display_errors', true);
 
+use \Contentomat\Logger;
 use \Contentomat\Parser;
 use \Contentomat\PsrAutoloader;
 use \Contentomat\ApplicationController;
@@ -41,17 +42,12 @@ class MarketBackendController extends ApplicationController {
 	 */
 	protected $Item;
 
-	/**
-	 * Abzug für Spende in Prozent
-	 *
-	 * @var float;
-	 */
-	protected $discount = 20.0;
-
 
 
 	public function init() {
-		// setlocale(LC_ALL, 'de_DE.UTF-8');
+		setlocale(LC_ALL, 'de_DE.UTF-8');
+		Logger::setTarget(LOG_TARGET_FILE);
+		Logger::log('markets_be controller init');
 		$this->Market = new Market();
 		$this->Seller = new Seller();
 		$this->Cart = new Cart();
@@ -94,111 +90,55 @@ class MarketBackendController extends ApplicationController {
 			return;
 		}
 
-		$market = $this->Market->findById($this->marketId);
+		$data = $this->Market->evaluate($this->marketId);
 
-		$items = $this->Item->filter(['item_market_id' => $this->marketId])->findAll();
-		$turnoverTotal = 0;
-		$turnoverSellers = 0;
-		$turnoverEmployees = 0;
-		$bountyTotal = 0;
-		$bountySellers = 0;
-		$bountyEmployees = 0;
-		$turnoverCheckout = [];
-		$itemsTotal = 0;
-		$itemsSellers = 0;
-		$itemsEmployees = 0;
-		foreach ($items as $item) {
-
-			$turnoverTotal += $item['item_value'];
-			$turnoverCheckout[$item['item_checkout_id']] += $item['item_value'];
-			$itemsTotal++;
-
-			if ($item['item_seller_nr'] <= 300) {
-				$turnoverSellers += $item['item_value'];
-
-				$discountValue = ($item['item_value'] * $this->discount / 100); 
-				$bountyTotal += $discountValue;
-				$bountySellers += $discountValue;
-
-				$itemsSellers++;
-			}
-			else {
-				$turnoverEmployees += $item['item_value'];
-
-				$itemsEmployees++;
-			}
-		}
 		$MyParser = new \Contentomat\Parser();
 
-		$MyParser->setMultipleParserVars([
-			'turnoverTotal' => $turnoverTotal / 100,
-			'turnoverSellers' => $turnoverSellers / 100,
-			'turnoverEmployees' => $turnoverEmployees / 100,
-			'bountyTotal' => $bountyTotal / 100,
-			'bountySellers' => $bountySellers / 100,
-			'bountyEmployees' => $bountyEmployees / 100,
-			'turnoverCheckout1' => $turnoverCheckout[1] / 100,
-			'turnoverCheckout2' => $turnoverCheckout[2] / 100,
-			'turnoverCheckout3' => $turnoverCheckout[3] / 100,
-			'itemsTotal' => $itemsTotal,
-			'itemsSellers' => $itemsSellers,
-			'itemsEmployees' => $itemsEmployees
-		]);
+		$MyParser->setMultipleParserVars($data);
 		$MyParser->setMultipleParserVars($market);
 		$MyParser->setParserVar('sellers', $sellers);
 		$MyParser->setParserVar('marketId', $market['id']);
 		// $MyParser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
 
+		$MyParser->setParserVar('loopUrl', sprintf('https://%s/admin/cmt_applauncher.php?sid=%s&cmtApplicationID=%u&action=evaluateLoop&marketId=%u',
+			$_SERVER['SERVER_NAME'],
+			SID,
+			$this->applicationID,
+			$this->marketId
+		));
+
 		$this->content = $MyParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/evaluation.tpl');
-		return ; 
+	}
+	
 
+	/**
+	 * Loop evaluation and send event (Server-sent event for browser)
+	 */
+	public function actionEvaluateLoop() {
 
-		/*********
-		*  old  *
-		*********/
-		
-
-		$market = $this->Market->findById($this->marketId);
-		$sellers = $this->Seller->filter(['seller_market_id', $this->marketId])->findAll();
-
-		foreach ($sellers as $n => $seller) {
-
-			$sellers[$n]['items'] = [];
-			$sellers[$n]['total'] = 0;
-			$sellers[$n]['itemsCount'] = 0;
-			$discount = (!$this->Seller->isEmployee($seller['seller_nr'])) ? $this->discount : 0;
-
-			// Get all carts from the seller's market 
-			$carts = $this->Cart->filter(['cart_market_id' => $this->marketId])->findAll();
-			foreach ($carts as $cart) {
-				foreach ($cart['items'] as &$item) {
-					if ($item['sellerNr'] == $seller['seller_nr']) {
-
-						$vf = (float)$item['value'] / 100;
-
-						$item['valueEuro'] = $vf;
-						$item['valueFmt'] = sprintf('%.2f', $vf);
-						$item['datetime'] = strftime('%d.%m.%Y %H:%M:%S', (int)$item['ts']);
-
-						array_push($sellers[$n]['items'], $item);
-						$sellers[$n]['total'] += $vf;
-						$sellers[$n]['itemsCount']++;
-					}
-				}
-
-				$sellers[$n]['discount'] = $discount;
-				$sellers[$n]['discountValue'] = $sellers[$n]['total'] * ($discount / 100);
-				$sellers[$n]['totalNet'] = $sellers[$n]['total'] * ((100 - $discount) / 100);
-			}
+		if (empty($this->marketId)) {
+			return;
 		}
 
-		$MyParser = new \Contentomat\Parser();
+		$delay = 2;
+		if (!empty($this->getvars['delay'])) {
+			$delay = (int)$this->getvars['delay'];
+		}
+		Logger::log(sprintf('Entering actionEvaluateLoop, marketId: %u, delay: %u s', $this->marketId, $delay));
 
-		$MyParser->setParserVar('sellers', $sellers);
-		$MyParser->setParserVar('marketId', $market['id']);
-		$MyParser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
+		header('Cache-Control: no-cache');
+		header("Content-Type: text/event-stream\n\n");
 
-		$this->content = $MyParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/evaluation.tpl');
+		while (true) {
+			Logger::log('Sending an event');
+			$data = $this->Market->evaluate($this->marketId);
+			echo "event: ping\n";
+			echo 'data: ' . json_encode($data);
+			echo "\n\n";
+			ob_end_flush();
+			flush();
+			sleep ($delay);
+		}
 	}
 }
 
