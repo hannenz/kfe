@@ -591,7 +591,7 @@ function Checkout() {
 
 		cart.submit().then(function(response) {
 
-			document.body.classList.remove('is-busy');
+			// document.body.classList.remove('is-busy');
 			self.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId, 'success');
 
 			// Try to find this cart in the cue and if found, remove it 
@@ -611,6 +611,7 @@ function Checkout() {
 		})
 		.catch(function(mssg) {
 			self.statusMessage(mssg, 'error');
+			new Logger().log('Submitting cart failed: ' + mssg + ', data: ' + JSON.stringify(cart.getData()));
 		});
 	};
 

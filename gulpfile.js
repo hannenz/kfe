@@ -45,8 +45,8 @@ const banner = [
 
 
 //array of gulp task names that should be included in "gulp build" task
-var build_dev  = ['clean:dist', 'js-dev', 'jsvendor', 'js-checkout', 'css-dev', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
-var build_prod = ['clean:dist', 'js-prod', 'jsvendor', 'js-checkout', 'css-prod', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
+var build_dev  = ['clean:dist', 'js-dev', 'jsvendor', 'js-checkout', 'js-evaluation', 'css-dev', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
+var build_prod = ['clean:dist', 'js-prod', 'jsvendor', 'js-checkout', 'js-evaluation', 'css-prod', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
 
 
 
@@ -118,6 +118,14 @@ var settings = {
 		],
 		dest: pkg.project_settings.prefix + 'js/',
 		destFile: 'checkout.js'
+	},
+
+	jsevaluation: {
+		src: [
+			'src/js/evaluation/*.js',
+		],
+		dest: pkg.project_settings.prefix + 'js/',
+		destFile: 'evaluation.js'
 	},
 
 	jsvendor: {
@@ -266,6 +274,21 @@ gulp.task('js-checkout', function(done) {
 	done();
 });
 
+gulp.task('js-evaluation', function(done) {
+	return gulp
+		.src(settings.jsevaluation.src)
+		.pipe($.jsvalidate().on('error', function(jsvalidate) { console.log(jsvalidate.message); this.emit('end') }))
+		.pipe($.concat(settings.jsevaluation.destFile))
+		// .pipe($.stripdebug())
+		// .pipe($.uglify().on('error', function(uglify) { console.log(uglify.message); this.emit('end') }))
+		.pipe($.header(banner, { pkg: pkg }))
+		.pipe(gulp.dest(settings.jsevaluation.dest))
+		.pipe($.browserSync.stream())
+	;
+	done();
+});
+
+
 
 
 /*
@@ -349,6 +372,7 @@ gulp.task('default', gulp.series('css-dev', function() {
 	gulp.watch(settings.css.src, gulp.series('css-dev'));
 	gulp.watch(settings.js.src, gulp.series('js-dev'));
 	gulp.watch(settings.jscheckout.src, gulp.series('js-checkout'));
+	gulp.watch(settings.jsevaluation.src, gulp.series('js-evaluation'));
 
 }));
 

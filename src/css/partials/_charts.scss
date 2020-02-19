@@ -12,29 +12,38 @@
 }
 
 .figures {
-	display: grid;
-	// grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-	grid-template-columns: repeat(auto-fill, minmax(200px, 4fr));
-	grid-gap: 48px 24px; 
-	align-self: stretch;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+
+	> figure {
+		min-width: 200px;
+		max-width: 300px;
+		width: 20vw;
+		flex: 1;
+	}
 }
 
 .pie-chart {
-	width: 100px;
-	height: 100px;
+	width: 10vw;
+	height: 10vw;
 	transform: rotate(-90deg);
-	background: var(--color1);
+	// background: var(--color1);
+
 	border-radius: 50%;
+
 	circle {
 		fill: var(--color1);
-		stroke: var(--color2);
-		stroke-width: 32;
-		// stroke-dasharray: 50 100;
 	}
 
 	circle + circle {
-		stroke: var(--color3);
 		fill: none;
+		stroke: var(--color2);
+		stroke-width: 32;
+	}
+
+	circle + circle + circle {
+		stroke: var(--color3);
 	}
 }
 

@@ -68,6 +68,7 @@ class CartsController extends Controller {
 		$this->isJson = true;
 
 		$success = true;
+		$message = '';
 
 		try {
 
@@ -103,11 +104,13 @@ class CartsController extends Controller {
 		}
 		catch (Exception $e) {
 			$success = false;
+			$message = $e->getMessage();
 			$cartId = 0;
 		}
 
 		$this->content = [
 			'success' => $success,
+			'message' => $message,
 			'cartId' => $cartId,
 			// We return the original cart's timestamp and checkout id, so that
 			// we can identify this cart client side (remove it from carts cue)

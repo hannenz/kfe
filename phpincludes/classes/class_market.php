@@ -232,7 +232,6 @@ class Market extends Model {
 	 * @return Array
 	 */
 	public function evaluate($marketId) {
-		$market = $this->findById($marketId);
 
 		$items = $this->Item->filter(['item_market_id' => $marketId])->findAll();
 		$turnoverTotal = 0;

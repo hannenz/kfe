@@ -90,6 +90,7 @@ class MarketBackendController extends ApplicationController {
 			return;
 		}
 
+		$market = $this->Market->findById($this->marketId);
 		$data = $this->Market->evaluate($this->marketId);
 
 		$MyParser = new \Contentomat\Parser();
@@ -97,7 +98,7 @@ class MarketBackendController extends ApplicationController {
 		$MyParser->setMultipleParserVars($data);
 		$MyParser->setMultipleParserVars($market);
 		$MyParser->setParserVar('sellers', $sellers);
-		$MyParser->setParserVar('marketId', $market['id']);
+		$MyParser->setParserVar('marketId', $this->marketId);
 		// $MyParser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
 
 		$MyParser->setParserVar('loopUrl', sprintf('https://%s/admin/cmt_applauncher.php?sid=%s&cmtApplicationID=%u&action=evaluateLoop&marketId=%u',
@@ -124,13 +125,13 @@ class MarketBackendController extends ApplicationController {
 		if (!empty($this->getvars['delay'])) {
 			$delay = (int)$this->getvars['delay'];
 		}
-		Logger::log(sprintf('Entering actionEvaluateLoop, marketId: %u, delay: %u s', $this->marketId, $delay));
+		// Logger::log(sprintf('Entering actionEvaluateLoop, marketId: %u, delay: %u s', $this->marketId, $delay));
 
 		header('Cache-Control: no-cache');
 		header("Content-Type: text/event-stream\n\n");
 
 		while (true) {
-			Logger::log('Sending an event');
+			// Logger::log('Sending an event');
 			$data = $this->Market->evaluate($this->marketId);
 			echo "event: ping\n";
 			echo 'data: ' . json_encode($data);

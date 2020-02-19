@@ -86,6 +86,8 @@ Cart.prototype.setData = function(data) {
  */
 Cart.prototype.submit = function() {
 
+	this.log();
+
 	return new Promise(function(resolve, reject) {
 
 		if (this.submitted) {
@@ -100,6 +102,8 @@ Cart.prototype.submit = function() {
 		data.append('cashierId', this.cashierId);
 		data.append('timestamp', this.timestamp);
 		data.append('items', JSON.stringify(this.items));
+
+
 		var total = 0;
 		this.items.forEach(function(item) {
 			total += item.value;
@@ -118,8 +122,20 @@ Cart.prototype.submit = function() {
 			}
 		});
 		xhr.addEventListener('error', function() {
-			reject('Übermittlung gescheitert!');
+			reject('XHR request failed');
 		});
 		xhr.send(data);
 	}.bind(this));
+};
+
+
+/**
+ * Safety log
+ * Every submission will be logged in local storage
+ * just in case anything goes wrong we have some kind of backup here
+ */
+Cart.prototype.log = function() {
+	this.items.forEach(function(item) {
+		new Logger().log(JSON.stringify(item));
+	});
 };

@@ -52,19 +52,18 @@
 	}
 
 	.busy {
-		margin-right: 6px;
-
-		svg {
-			visibility: hidden;
-			width: 26px;
-			height: 26px;
-		}
-		path {
-			fill: var(--grey-5);
-		}
+		color: var(--grey-5);
+		margin-right: 16px;
+		visibility: hidden;
+		background-color: var(--grey-3);
+		border-radius: 50%;
+		width: 24px;
+		height: 24px;
+		line-height: 24px;
+		text-align: center;
 	}
 
-	.is-busy .busy svg {
+	&.is-busy .busy {
 		visibility: visible;
 		animation: rotate 1250ms infinite linear;
 	}

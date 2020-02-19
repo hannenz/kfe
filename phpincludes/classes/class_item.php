@@ -8,6 +8,7 @@
  */
 namespace KFE;
 
+use \Contentomat\Logger;
 use \Contentomat\Model;
 
 
@@ -27,6 +28,15 @@ class Item extends Model {
 	 * @throws Exception
 	 */
 	public function add($data) {
+		// As kind of simple backup, we log every item that gets added.
+		// So if anything goes wrong with the db we are still covered in some
+		// way.
+		Logger::log(sprintf('Code: %s, MarketId: %u, SellerNr: %u, Value: %u',
+			!empty($data['code']) ? $data['item_code'] : '-------- manual --------',
+			$data['item_market_id'],
+			$data['item_seller_nr'],
+			$data['item_value']
+		));
 		return $this->save($data);
 	}
 
