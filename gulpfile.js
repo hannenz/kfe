@@ -9,18 +9,28 @@
  */
 'use strict';
 
+// Read command line paramters (arguments)
+const argv = require('yargs').argv;
+
+// Check if we want a prodcution build
+// Call like `gulp build --production` (or a single task instead of `build`)
+const isProduction = (argv.production !== undefined);
+
 // package vars
 const pkg = require('./package.json');
+const fs = require('fs');
 
 // gulp
 const gulp = require('gulp');
+const {series} = require('gulp');
 
 // Load all plugins in 'devDependencies' into the variable $
 const $ = require('gulp-load-plugins')({
 	pattern: ['*'],
 	scope: ['devDependencies'],
 	rename: {
-		'gulp-strip-debug': 'stripdebug'
+		'gulp-strip-debug': 'stripdebug',
+		'fancy-log' : 'log'
 	}
 });
 
@@ -44,9 +54,9 @@ const banner = [
 
 
 
-//array of gulp task names that should be included in "gulp build" task
-var build_dev  = ['clean:dist', 'js-dev', 'jsvendor', 'js-checkout', 'js-evaluation', 'css-dev', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
-var build_prod = ['clean:dist', 'js-prod', 'jsvendor', 'js-checkout', 'js-evaluation', 'css-prod', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
+// //array of gulp task names that should be included in "gulp build" task
+// var build_dev  = ['clean:dist', 'js-dev', 'jsvendor', 'js-checkout', 'js-evaluation', 'css-dev', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
+// var build_prod = ['clean:dist', 'js-prod', 'jsvendor', 'js-checkout', 'js-evaluation', 'css-prod', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
 
 
 
@@ -71,8 +81,6 @@ var settings = {
 		https: {
 			key: require('os').homedir() + '/server.key',
 			cert: require('os').homedir() + '/server.crt'
-			// key: '/etc/ssl/private/ssl-cert-snakeoil.key',
-			// cert: '/etc/ssl/certs/ssl-cert-snakeoil.pem'
 		}
 	},
 
@@ -196,168 +204,157 @@ var settings = {
 
 
 // Clean dist before building
-gulp.task('clean:dist', function() {
+function cleanDist() {
 	return $.del([
 		pkg.project_settings.prefix + '/'
 	]);
-})
+}
 
 /*
- *  Task: process SASS 
+ *  Task: Compile SASS to CSS
  */
-gulp.task('css-dev', function(done) {
-	return gulp
-		.src(settings.css.srcMain)
-		.pipe($.plumber({ errorHandler: onError}))
-		.pipe($.sourcemaps.init())
-		.pipe($.sass(settings.css.options.sass).on('error', $.sass.logError))
-		.pipe($.autoprefixer(settings.css.options.autoprefixer))
-		.pipe($.sourcemaps.write('./'))
-		.pipe(gulp.dest(settings.css.dest))
-		.pipe($.browserSync.stream())
-	;	
-	done();
-});
+function css() {
 
-gulp.task('css-prod', function(done) {
-	return gulp
-		.src(settings.css.srcMain)
-		.pipe($.plumber({ errorHandler: onError }))
-		.pipe($.sass(settings.css.optionsProd.sass).on('error', $.sass.logError))
-		.pipe($.autoprefixer(settings.css.options.autoprefixer))
-		.pipe($.header(banner, { pkg: pkg }))
-		.pipe(gulp.dest(settings.css.dest))
+	$.log("Building CSS" + ((isProduction) ? " [production build]" : " [development build]"));
+
+	var stream = 
+		gulp.src(settings.css.srcMain)
+		.pipe($.plumber({ errorHandler: onError}))
 	;
-});
+
+	if (!isProduction) {
+		stream = stream.pipe($.sourcemaps.init());
+	}
+
+	var options = (isProduction) ? settings.css.optionsProd.sass : settings.css.options.sass;
+	$.log(options);
+	stream = stream
+		.pipe($.sass(options).on('error', $.sass.logError))
+		.pipe($.autoprefixer(settings.css.options.autoprefixer))
+	;
+
+	if (!isProduction) {
+		stream = stream.pipe($.sourcemaps.write('./'))
+	}
+	else {
+		// stream = stream.pipe($.minifycss())
+		stream = stream.pipe($.header(banner, { pkg: pkg }))
+	}
+
+	stream = stream.pipe(gulp.dest(settings.css.dest))
+		.pipe($.browserSync.stream());
+
+	return stream;
+}
+
 
 /*
  * Task: Concat and uglify Javascript
  */
-gulp.task('js-dev', function(done) {
-	return gulp
-		.src(settings.js.src)
-		.pipe($.jsvalidate().on('error', function(jsvalidate) { console.log(jsvalidate.message); this.emit('end') }))
-		.pipe($.sourcemaps.init())
-		// .pipe($.concat(settings.js.destFile))
-		.pipe($.uglify().on('error', function(uglify) { console.log(uglify.message); this.emit('end') }))
-		.pipe($.sourcemaps.write('./'))
-		.pipe(gulp.dest(settings.js.dest))
-		.pipe($.browserSync.stream())
-	;
-	done();
-});
+function js() {
+	return doJs(settings.js);
+}
 
-gulp.task('js-prod', function(done) {
-	return gulp
-		.src(settings.js.src)
-		.pipe($.jsvalidate().on('error', function(jsvalidate) { console.log(jsvalidate.message); this.emit('end') }))
-		.pipe($.concat(settings.js.destFile))
-		.pipe($.stripdebug())
-		.pipe($.uglify().on('error', function(uglify) { console.log(uglify.message); this.emit('end') }))
-		.pipe($.header(banner, { pkg: pkg }))
-		.pipe(gulp.dest(settings.js.dest))
-	;
-	done();
-});
 
-gulp.task('js-checkout', function(done) {
-	return gulp
-		.src(settings.jscheckout.src)
-		.pipe($.jsvalidate().on('error', function(jsvalidate) { console.log(jsvalidate.message); this.emit('end') }))
-		.pipe($.concat(settings.jscheckout.destFile))
-		// .pipe($.stripdebug())
+function jsCheckout() {
+	return doJs(settings.jscheckout);
+}
+
+
+function jsEvaluation() {
+	return doJs(settings.jsevaluation);
+}
+
+
+function doJs(settings) {
+
+	$.log("Building Javascript: " + settings.destFile + ((isProduction) ? " [production build]" : " [development build]"));
+
+	var stream = gulp
+		.src(settings.src)
+		.pipe($.jsvalidate().on('error', function(jsvalidate) { console.log(jsvalidate.message); this.emit('end') }));
+
+	if (!isProduction) {
+		stream = stream.pipe($.sourcemaps.init());
+	}
+
+	stream = stream.pipe($.concat(settings.destFile));
+
+	if (isProduction) {
+ 		stream = stream.pipe($.stripdebug())
+		.pipe($.terser())
 		// .pipe($.uglify().on('error', function(uglify) { console.log(uglify.message); this.emit('end') }))
-		.pipe($.header(banner, { pkg: pkg }))
-		.pipe(gulp.dest(settings.jscheckout.dest))
-		.pipe($.browserSync.stream())
-	;
-	done();
-});
+ 		.pipe($.header(banner, { pkg: pkg }));
+	}
+	else {
+		stream = stream.pipe($.sourcemaps.write('./'));
+	}
 
-gulp.task('js-evaluation', function(done) {
-	return gulp
-		.src(settings.jsevaluation.src)
-		.pipe($.jsvalidate().on('error', function(jsvalidate) { console.log(jsvalidate.message); this.emit('end') }))
-		.pipe($.concat(settings.jsevaluation.destFile))
-		// .pipe($.stripdebug())
-		// .pipe($.uglify().on('error', function(uglify) { console.log(uglify.message); this.emit('end') }))
-		.pipe($.header(banner, { pkg: pkg }))
-		.pipe(gulp.dest(settings.jsevaluation.dest))
-		.pipe($.browserSync.stream())
-	;
-	done();
-});
+	stream = stream.pipe(gulp.dest(settings.dest))
+		.pipe($.browserSync.stream());
 
+	return stream;
+}
 
 
 
 /*
  * Task: Uglify vendor Javascripts
  */
-gulp.task('jsvendor', function() {
+function jsVendor() {
 	return gulp.src(settings.jsvendor.src)
-		.pipe(gulp.dest(settings.jsvendor.dest))
-	;
-});
+		.pipe(gulp.dest(settings.jsvendor.dest));
+}
 
 
 
-gulp.task('cssvendor', function() {
+function cssVendor() {
 	return gulp.src(settings.cssvendor.src)
-		.pipe(gulp.dest(settings.cssvendor.dest))
-	;
-});
+		.pipe(gulp.dest(settings.cssvendor.dest));
+}
 
 
-
-gulp.task('fonts', function() {
+function fonts() {
 	return gulp.src(settings.fonts.src)
-		.pipe(gulp.dest(settings.fonts.dest))
-	;
-});
+		.pipe(gulp.dest(settings.fonts.dest));
+}
 
 
 /*
  * Task: create images
  * TODO: Check if optimization is more effectiv when it is done separately for all different image types(png, svg, jpg)
  */
-gulp.task('images', function(done) {
+function images() {
 	// optimize all other images
 	// TODO: It seems that plugin in don't overwrites existing files in destination folder!??
 	return gulp.src(settings.images.src)
 		.pipe($.newer(settings.images.dest))
 		.pipe($.imagemin(settings.images.options, { verbose: true }))
-		.pipe(gulp.dest(settings.images.dest))
-	;
-	done();
-});
+		.pipe(gulp.dest(settings.images.dest));
+}
 
 
 
-gulp.task('icons', function(done) {
+function icons() {
 	return gulp.src(settings.icons.src)
 		.pipe($.newer(settings.icons.dest))
 		.pipe($.imagemin(settings.icons.options))
-		.pipe(gulp.dest(settings.icons.dest))
-	;
-	done();
-});
+		.pipe(gulp.dest(settings.icons.dest));
+}
 
 
 /*
  * Task: create sprites(SVG): optimize and concat SVG icons
  */
-gulp.task('sprite', function(done) {
+function sprite() {
 	return gulp.src(settings.sprite.src)
 		.pipe($.imagemin(settings.sprite.options))
 		.pipe($.svgstore({
 			inlineSvg: true
 		}))
 		.pipe($.rename(settings.sprite.destFile))
-		.pipe(gulp.dest(settings.sprite.dest))
-	;
-	done();
-});
+		.pipe(gulp.dest(settings.sprite.dest));
+}
 
 
 
@@ -365,22 +362,22 @@ gulp.task('sprite', function(done) {
  * Default TASK: Watch SASS and JAVASCRIPT files for changes,
  * build CSS file and inject into browser
  */
-gulp.task('default', gulp.series('css-dev', function() {
+function gulpDefault(done) {
 
 	$.browserSync.init(settings.browserSync);
 
-	gulp.watch(settings.css.src, gulp.series('css-dev'));
-	gulp.watch(settings.js.src, gulp.series('js-dev'));
-	gulp.watch(settings.jscheckout.src, gulp.series('js-checkout'));
-	gulp.watch(settings.jsevaluation.src, gulp.series('js-evaluation'));
-
-}));
+	gulp.watch(settings.css.src, css);
+	gulp.watch(settings.js.src, js);
+	gulp.watch(settings.jscheckout.src, jsCheckout);
+	gulp.watch(settings.jsevaluation.src, jsEvaluation);
+	done();
+}
 
 
 /**
  * Generate favicons
  */
-gulp.task('favicons', function(done) {
+function favicon() {
 	return gulp.src(settings.favicons.src)
 		.pipe($.favicons({
 			appName: pkg.name,
@@ -410,16 +407,27 @@ gulp.task('favicons', function(done) {
 				favicons: true
 			}
 		}))
-		.pipe(gulp.dest(settings.favicons.dest))
-	;
-	done();
-});
+		.pipe(gulp.dest(settings.favicons.dest));
+}
 
 var exec = require('child_process').exec;
 
 /*
  * Task: Build all
  */
-gulp.task('build-dev', gulp.series(build_dev));
-gulp.task('build-prod', gulp.series(build_prod));
+exports.build = series(cleanDist, js, jsVendor, jsCheckout, jsEvaluation, css, cssVendor, images, sprite, icons, fonts, favicon);
+
+exports.default = gulpDefault;
+exports.cleanDist = cleanDist;
+exports.css = css;
+exports.js = js;
+exports.jsVendor = jsVendor;
+exports.jsCheckout = jsCheckout;
+exports.jsEvaluation = jsEvaluation;
+exports.cssVendor = cssVendor;
+exports.fonts = fonts;
+exports.images = images;
+exports.icons = icons;
+exports.sprite = sprite;
+exports.favicon = favicon;
 
