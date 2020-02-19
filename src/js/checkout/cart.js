@@ -5,7 +5,15 @@
  * @package kfe
  * @version 2019-10-08
  */
+
+
+/**
+ * Class that represents a single cart ("Vorgang", "Bon")
+ *
+ * @class Cart
+ */
 var Cart = function(marketId, checkoutId, cashierId) {
+	console.log('Creating a new cart');
 	this.marketId = parseInt(marketId);
 	this.checkoutId = parseInt(checkoutId);
 	this.cashierId = parseInt(cashierId);
@@ -17,25 +25,51 @@ var Cart = function(marketId, checkoutId, cashierId) {
 }
 
 
+/**
+ * Clear the cart
+ *
+ * @return Object 		Cart (self)
+ */
 Cart.prototype.clear = function() {
+	console.log('Clearing cart');
 	this.timestamp = Date.now();
 	this.submitted = false;
 	this.submittedTimestamp = null;
 	this.id = null;
 	this.items = [];
+
+	return this;
 };
 
 
+/**
+ * Add an item to the cart
+ *
+ * @param Object 		An item object
+ * @return Object 		Cart (self)
+ */
 Cart.prototype.addItem = function(item) {
 	this.items.push(item);
+	return this;
 };
 
 
+/**
+ * Get an item from the cart
+ *
+ * @param int 			Index of the item to get
+ * @return Object 		Cart (self)
+ */
 Cart.prototype.getItem = function(i) {
 	return this.items[i];
 };
 
 
+/**
+ * Get the total of the cart (in Cent)
+ *
+ * @return int 			The cart's total
+ */
 Cart.prototype.getTotal = function() {
 	var total = 0;
 	this.items.forEach(function(item) {
@@ -45,13 +79,25 @@ Cart.prototype.getTotal = function() {
 };
 
 
+/**
+ * Removes an item from the cart
+ *
+ * @param int 			index of the item to remove
+ * @return Object 		Cart (self)
+ */
 Cart.prototype.removeItem = function(i) {
 	if (this.items[i]) {
 		this.items.splice(i, 1);
 	}
+	return this;
 };
 
 
+/**
+ * Get a data representation of the cart
+ *
+ * @return Object
+ */
 Cart.prototype.getData = function() {
 	return {
 		marketId: this.marketId,
@@ -65,6 +111,13 @@ Cart.prototype.getData = function() {
 	};
 };
 
+
+/**
+ * Set the cart's properties from a data representation
+ *
+ * @param Object 		data object 
+ * @return Object 		Cart (self)
+ */
 Cart.prototype.setData = function(data) {
 	this.marketId = parseInt(data.marketId);
 	this.checkoutId = parseInt(data.checkoutId);
@@ -80,7 +133,7 @@ Cart.prototype.setData = function(data) {
 
 
 /**
- * Submit a cart to the server
+ * Submit the cart to the server
  *
  * @return Promise, resolves to JSON data of submitted cart
  */
@@ -91,7 +144,7 @@ Cart.prototype.submit = function() {
 	return new Promise(function(resolve, reject) {
 
 		if (this.submitted) {
-			console.log("submtited, slkip ...");
+			console.log("cart has been submitted already, skip ...");
 			reject("Cart has been submitted yet, aborting");
 		}
 
@@ -115,6 +168,7 @@ Cart.prototype.submit = function() {
 		xhr.addEventListener('load', function() {
 			var response = JSON.parse(xhr.responseText);
 			if (response.success) {
+				console.log(response);
 				resolve(response);
 			}
 			else {

@@ -1,11 +1,12 @@
 /**
  * src/js/checkout.js
  *
+ * Main checkout javascript
+ *
  * @author Johannes Braun <johannes.braun@hannenz.de
  * @version 2019-07-15
  * @package kfe
  */
-
 function Checkout() {
 
 	var self = this;
@@ -579,6 +580,7 @@ function Checkout() {
 
 
 
+
 	/**
 	 * Submit a cart to the server
 	 *
@@ -591,22 +593,12 @@ function Checkout() {
 
 		cart.submit().then(function(response) {
 
-			// document.body.classList.remove('is-busy');
+			document.body.classList.remove('is-busy');
 			self.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId, 'success');
 
-			// Try to find this cart in the cue and if found, remove it 
-			for (var i = 0; i < self.cue.carts.length; i++) {
-				if (parseInt(self.cue.carts[i].timestamp)  == parseInt(response.cartTimestamp) &&
-					parseInt(self.cue.carts[i].checkoutId) == parseInt(response.cartCheckoutId)) {
-					console.log("Found cart in cue, un-cueing it!", i);
-					self.cue.carts[i].submitted = true;
-					self.cue.carts[i].submittedTimestamp = new Date();
-					self.cue.carts[i].id = response.cartId
-
-					self.updateTotalTurnover();
-					self.persist();
-					break;
-				}
+			if (self.cue.markSubmitted(response.cartId, response.cartTimestamp, response.cartCheckoutId)) {
+				self.updateTotalTurnover();
+				self.persist();
 			}
 		})
 		.catch(function(mssg) {

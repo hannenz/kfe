@@ -36,18 +36,37 @@ CartsCue.prototype.submitCarts = function() {
 
 /**
  * Add a cart to the carts cue
- * Always adds a clone
  *
  * @param Cart
  */
 CartsCue.prototype.addCart = function(cart) {
-	this.carts.push(cart);
-}
+	this.carts.push(cart.getData());
+};
 
 
 CartsCue.prototype.getLength = function() {
 	return this.carts.length;
+};
+
+CartsCue.prototype.markSubmitted = function(id, timestamp, checkoutId) {
+	var flag = false;
+	for (var i = 0; i < this.carts.length; i++) {
+		if (parseInt(this.carts[i].timestamp)  == parseInt(timestamp) &&
+			parseInt(this.carts[i].checkoutId) == parseInt(checkoutId)) {
+
+			console.log("Found cart in cue, un-cueing it!", i);
+
+			this.carts[i].submitted = true;
+			this.carts[i].submittedTimestamp = new Date();
+			this.carts[i].id = id;
+
+			flag = true;
+			break;
+		}
+	}
+	return flag;
 }
+
 
 
 CartsCue.prototype.countSubmittedCarts = function() {
