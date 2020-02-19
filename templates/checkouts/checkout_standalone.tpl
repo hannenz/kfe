@@ -60,6 +60,8 @@
 				<div class="checkout__button-panel">
 
 					<div class="button-panel">
+						<button class="button" data-action="edit-cart">Edit</button>
+						<!-- <button class="button" data&#45;action="show&#45;last">show last</button> -->
 						<button class="button" data-action="cancel-last">Storno<br>Letzte</button>
 						<button class="button" data-action="cancel">Storno Gesamt</button>
 						<button class="button" data-action="change" data-value="500">5,00</button>
@@ -160,6 +162,19 @@
 			<header class="dialog__header">Storno</header>
 			<div class="dialog__body">
 				Soll der gesamte Vorgang storniert werden?
+			</div>
+			<div class="dialog__action-area">
+				<button class="button" name="dialogAction" value="reject">Abbrechen</button>
+				<button class="button" name="dialogAction" value="submit" type="accept">OK</button>
+			</div>
+		</form>
+	</dialog>
+
+	<dialog id="edit-cart-dlg" class="dialog">
+		<form name="cancel_cart" id="cancel-cart">
+			<header class="dialog__header">Vorgang berbeiten</header>
+			<div class="dialog__body">
+
 			</div>
 			<div class="dialog__action-area">
 				<button class="button" name="dialogAction" value="reject">Abbrechen</button>

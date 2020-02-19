@@ -77,3 +77,37 @@ CartsCue.prototype.countSubmittedCarts = function() {
 	return n;
 };
 
+
+
+/**
+ * Get the last (latest) cart in the cue
+ *
+ * @return Object 	cart
+ */
+CartsCue.prototype.getLast = function() {
+	if (this.carts.length == 0) {
+		return null;
+	}
+
+	return new Cart().setData(this.carts[this.carts.length - 1]);
+};
+
+
+/**
+ * Get a specific cart in the cue
+ *
+ * @param int 		id
+ * @return Object 	cart
+ */
+CartsCue.prototype.getCartById = function(id) {
+	console.log('Looking for cart with id ' + id);
+	var cart = null;
+	for (var i = 0; i < this.carts.length; i++) {
+		if (this.carts[i].id == id) {
+			cart = new Cart().setData(this.carts[i]);
+			console.log('found', cart);
+		}
+	}
+
+	return cart;
+};

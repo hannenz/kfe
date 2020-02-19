@@ -24,6 +24,10 @@ var Checkout = function() {
 	this.changeInput = document.getElementById('checkout-change-value');
 	this.codeInput = document.getElementById('checkout-code-input');
 	this.submitCartsBtn = document.getElementById('submit-carts-btn');
+
+
+	this.flag = false;
+	this.tmp = null;
 };
 
 /**
@@ -235,6 +239,64 @@ Checkout.prototype.onPanelButtonClicked = function(ev) {
 
 		case 'commit':
 			this.actionCommit();
+			break;
+
+		case 'show-last':
+			if (this.flag = !this.flag) {
+				this.tmp = this.cart.getData();
+				this.cart.clear();
+				this.cart.setData(this.cue.getLast());
+				this.createTableFromCart();
+				btn.innerText = 'return';
+			}
+			else {
+				this.cart.clear();
+				this.cart.setData(this.tmp);
+				this.createTableFromCart();
+				btn.innerText = 'Show last';
+			}
+			this.codeInput.focus();
+			break;
+
+		case 'edit-cart':
+
+			if (!this.flag) {
+				var dlg = new Dialog('edit-cart-dlg');
+				var html = '<select name="id">';
+				this.cue.carts.slice().reverse().forEach(cartData => {
+					var cart = new Cart().setData(cartData);
+					var total = (cart.getTotal() / 100).toLocaleString('de', { style: 'currency', currency: 'EUR' });
+					var n = cart.items.length;
+					var datetime = new Date(cart.timestamp).toLocaleString();
+					if (!isNaN(cart.id)) {
+						html += `<option value="${cart.id}">[#${cart.id}] ${datetime}: ${total}, ${n} Positionen</option>`
+					}
+				});
+				html += '</select>';
+				dlg.setBody(html);
+				dlg.run().then(function(response) {
+					var id = response.data.get('id');
+					if (response.action != 'reject') {
+						this.flag = true;
+						document.body.classList.add('is-editing-old-cart');
+						this.tmp = this.cart.getData();
+						this.cart.clear();
+						this.cart.setData(this.cue.getCartById(id));
+						this.createTableFromCart();
+						btn.innerText = 'return';
+					}
+					response.dialog.close();
+				}.bind(this));
+			}
+			else {
+				this.cart.clear();
+				this.cart.setData(this.tmp);
+				this.createTableFromCart();
+				btn.innerText = 'Edit';
+				this.flag = false;
+				document.body.classList.remove('is-editing-old-cart');
+			}
+			this.codeInput.focus();
 			break;
 
 		default:
@@ -457,7 +519,7 @@ Checkout.prototype.createTableFromCart = function() {
 		btn.innerHTML = '&times; stornieren';
 		btn.className = 'cancel-link';
 		btn.addEventListener('click', function(ev) {
-			var tr = this.parentNode.parentNode;
+			var tr = ev.target.parentNode.parentNode;
 			var children = tr.parentNode.childNodes;
 			for (n = 0; n < children.length; n++) {
 				if (children[n] == tr) {
@@ -469,7 +531,7 @@ Checkout.prototype.createTableFromCart = function() {
 				// console.log("Cancel button has been clicked");
 				this.cancelItem(n - 1);
 			}
-		});
+		}.bind(this));
 
 		table.appendChild(row);
 		total += item.value;
