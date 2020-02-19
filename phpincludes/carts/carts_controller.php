@@ -70,6 +70,8 @@ class CartsController extends Controller {
 		$success = true;
 		$message = '';
 
+		Logger::log('Adding cart with timestamp: ' . $_REQUEST['timestamp']);
+
 		try {
 
 			$items = (array)json_decode($_REQUEST['items'], true);
