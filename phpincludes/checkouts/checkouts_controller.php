@@ -120,6 +120,8 @@ class CheckoutsController extends ApplicationController {
 		}
 
 		$markets = $this->Market->findAll();
+		$upcomingMarket = $this->Market->getNextUpcoming();
+		$this->parser->setParserVar('upcomingMarketId', $upcomingMarket['id']);
 		$this->parser->setParserVar('markets', $markets);
 		$this->content = $this->parser->parseTemplate("default.tpl");
 	}

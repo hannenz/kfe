@@ -122,7 +122,7 @@
 				</div>
 			</div>
 			<div class="dialog__action-area">
-				<button class="button" name="dialogAction" value="reject" type="reset">Abbrechen</button>
+				<button class="button" name="dialogAction" value="reject">Abbrechen</button>
 				<button class="button" name="dialogAction" value="accept" type="submit">OK</button>
 			</div>
 		</form>

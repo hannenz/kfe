@@ -29,7 +29,7 @@
 			<!-- <input type="number" value="{VAR:marketId}" name="marketId" id="marketId" /> -->
 			<select name="marketId" id="marketId">
 				{LOOP VAR(markets)}
-				<option value="{VAR:id}">{DATEFMT:"{VAR:market_begin}":"%d.%m.%Y"}</option>
+				<option value="{VAR:id}" {IF("{VAR:id}" == "{VAR:upcomingMarketId}")}selected{ENDIF}>{DATEFMT:"{VAR:market_begin}":"%d.%m.%Y"}</option>
 				{ENDLOOP VAR}
 			</select>
 		</div>

@@ -134,6 +134,7 @@ Checkout.prototype.setupManualEntry = function() {
 		manualEntryDlg.dialog.querySelector('button[type=submit]').disabled = true;
 		manualEntryDlg.run()
 		.then(function(response) {
+			console.log(response);
 
 			switch (response.action) {
 				case 'reject':
@@ -269,7 +270,7 @@ Checkout.prototype.onPanelButtonClicked = function(ev) {
 					var n = cart.items.length;
 					var datetime = new Date(cart.timestamp).toLocaleString();
 					if (!isNaN(cart.id)) {
-						html += `<option value="${cart.id}">[#${cart.id}] ${datetime}: ${total}, ${n} Positionen</option>`
+						html += `<option value="${cart.id}">[#${cart.id}] ${datetime}: ${n} Positionen: ${total}</option>`
 					}
 				});
 				html += '</select>';
@@ -296,6 +297,7 @@ Checkout.prototype.onPanelButtonClicked = function(ev) {
 				this.flag = false;
 				document.body.classList.remove('is-editing-old-cart');
 			}
+
 			this.codeInput.focus();
 			break;
 

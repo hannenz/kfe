@@ -57,14 +57,18 @@ class Market extends Model {
 
 	/**
 	 * Get upcoming markets
+	 * A market is "upcoming" as long as it is not over yet
+	 * (market_end is the relevant datetime)
 	 *
 	 * @param int 		$limit 	optional
 	 * @return Array
 	 */
 	public function getUpcoming($limit = null) {
 
+		// A market is of interest as long as it is not over yet (running),
+		// so we check for market_end
 		$this->filter([
-			'market_begin > ' => strftime('%Y-%m-%d %H:%M')
+			'market_end > ' => strftime('%Y-%m-%d %H:%M')
 		])->order([
 			'market_begin' => 'ASC'
 		]);
