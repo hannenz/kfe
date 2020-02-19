@@ -210,6 +210,7 @@ function Checkout() {
 		switch (action) {
 			case 'change':
 				self.change(this.dataset.value);
+				self.codeInput.focus();
 				break;
 
 			case 'change-custom':
@@ -286,6 +287,7 @@ function Checkout() {
 		self.cart.clear();
 		self.createTableFromCart();
 		self.updateTotalTurnover();
+		self.codeInput.focus();
 	}
 
 

@@ -4,6 +4,7 @@ namespace KFE;
 use KFE\Cart;
 use KFE\Item;
 use KFE\Seller;
+use Contentomat\Logger;
 use Contentomat\Contentomat;
 use Contentomat\Controller;
 use Contentomat\PsrAutoloader;
