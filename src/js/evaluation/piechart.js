@@ -19,11 +19,14 @@
  * @param DOMNode 	DOM Node of the element to pie-i-fy
  */
 var PieChart = function(el) {
+	this.circles = [];
+
 	var values = el.dataset.values.split(/\s/);
 	if (values.length < 1) {
 		return;
 	}
-	var colors = el.dataset.colors.split(/\s/);
+
+	colors = el.dataset.colors.split(/\s/);
 	if (values.length != colors.length) {
 		return;
 	}
@@ -43,52 +46,62 @@ var PieChart = function(el) {
 		var perc = values[i] / total * 100;
 
 		circle = document.createElementNS(NS, 'circle');
-		circle.setAttribute('r', 10);
-		circle.setAttribute('cx', 16);
-		circle.setAttribute('cy', 16);
-		circle.setAttribute('stroke-dasharray', perc + ' 100');
-		circle.setAttribute('stroke-dashoffset', offset);
-		circle.setAttribute('fill', 'transparent');
-		circle.setAttribute('stroke', colors[i]);
-		circle.setAttribute('stroke-width', 6);
-		circle.setAttribute('data-value', values[i]);
-		circle.setAttribute('data-color', colors[i]);
+		this.updateCircle(circle, perc, offset, colors[i]);
+		this.circles.push(circle);
+
+		// circle.setAttribute('data-value', values[i]);
+		// circle.setAttribute('data-color', colors[i]);
 		svg.appendChild(circle);
-		offset += values[i];
+
+		offset += perc;
 	}
 
-	// var perc1 = values[0] / total * 100;
-	// var perc2 = values[1] / total * 100;
-    //
-	// circle = document.createElementNS(NS, 'circle');
-	// circle.setAttribute('r', 16);
-	// circle.setAttribute('cx', 16);
-	// circle.setAttribute('cy', 16);
-	// circle.setAttribute('fill', colors[0]);
-	// svg.appendChild(circle);
-    //
-	// var offset = 0;
-    //
-	// for (var i = 1; i < values.length; i++) {
-	// 	perc1 = values[i - 1]  / total * 100;
-	// 	perc2 = values[i]  / total * 100;
-	// 	offset += perc1;
-    //
-	// 	circle = document.createElementNS(NS, 'circle');
-	// 	circle.setAttribute('r', 16);
-	// 	circle.setAttribute('cx', 16);
-	// 	circle.setAttribute('cy', 16);
-	// 	circle.setAttribute('stroke-dasharray', perc2 + ' 100');
-	// 	circle.setAttribute('stroke-dashoffset', -offset);
-	// 	circle.setAttribute('fill', 'transparent');
-	// 	circle.setAttribute('stroke', colors[i]);
-	// 	circle.setAttribute('stroke-width', 32);
-	// 	svg.appendChild(circle);
-	// }
-    //
 	svg.classList.add('pie-chart');
-	svg.setAttribute('viewBox', '0 0 32 32');
+	svg.setAttribute('viewBox', '0 0 40 40');
+	svg.setAttribute('width', '40');
+	svg.setAttribute('height', '40');
 	el.innerHTML = '';
 	el.appendChild(svg);
+
+	var observer = new MutationObserver(this.onAttributeChange.bind(this));
+	observer.observe(el, { attributes: true });
+};
+
+
+PieChart.prototype.updateCircle = function(circle, perc, offset, color) {
+	circle.setAttribute('r', 16);
+	circle.setAttribute('cx', 20);
+	circle.setAttribute('cy', 20);
+
+	circle.setAttribute('stroke-dasharray', perc + ' 100');
+	circle.setAttribute('stroke-dashoffset', -offset);
+	circle.setAttribute('fill', 'transparent');
+	if (color) {
+		circle.setAttribute('stroke', color);
+	}
+	circle.setAttribute('stroke-width', 8);
+}
+
+PieChart.prototype.onAttributeChange = function(mutationsList, observer) {
+	for (var mutation of mutationsList) {
+		if (mutation.type == 'attributes') {
+			var values = mutation.target.dataset.values.split(/\s/);
+			if (values.length < 1 || values.length != this.circles.length) {
+				return;
+			}
+
+			var total = 0;
+			values.forEach(function(v) {
+				total += parseFloat(v);
+			});
+
+			var offset = 0;
+			for (var i = 0; i < values.length; i++) {
+				var perc = values[i] / total * 100;
+				this.updateCircle(this.circles[i], perc, offset);
+				offset += perc;
+			}
+		}
+	}
 };
 

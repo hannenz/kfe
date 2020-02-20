@@ -236,6 +236,7 @@ class Market extends Model {
 	 * @return Array
 	 */
 	public function evaluate($marketId) {
+		setlocale(LC_NUMERIC, 'C');
 
 		$items = $this->Item->filter(['item_market_id' => $marketId])->findAll();
 		$turnoverTotal = 0;

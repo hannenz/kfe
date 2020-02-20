@@ -35,6 +35,7 @@
 	circle {
 		fill: var(--color1);
 		fill: none;
+		transition: 150ms;
 	}
 
 	circle + circle {
