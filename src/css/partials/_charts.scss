@@ -30,20 +30,21 @@
 	transform: rotate(-90deg);
 	// background: var(--color1);
 
-	border-radius: 50%;
+	// border-radius: 50%;
 
 	circle {
 		fill: var(--color1);
+		fill: none;
 	}
 
 	circle + circle {
 		fill: none;
-		stroke: var(--color2);
-		stroke-width: 32;
+		// stroke: var(--color2);
+		// stroke-width: 32;
 	}
 
 	circle + circle + circle {
-		stroke: var(--color3);
+		// stroke: var(--color3);
 	}
 }
 

@@ -14,6 +14,11 @@
 	<div class="figures">
 
 		<figure class="chart chart--pie">
+			<h3 class="chart__title">Test</h3>
+			<div id="pie-turnover" class="pie" data-values="10 20 30" data-colors="tomato skyblue purple"> </div>
+		</figure>
+
+		<figure class="chart chart--pie">
 			<h3 class="chart__title">Umsatz</h3>
 			<div id="pie-turnover" class="pie" data-values="{VAR:turnoverSellers} {VAR:turnoverEmployees}" data-colors="tomato skyblue"> </div>
 			<figcaption>
