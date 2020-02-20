@@ -50,7 +50,7 @@
 
 		<figure class="chart chart--pie">
 			<h3 class="chart__title">Kassen</h3>
-			<div id="pie-checkouts" class="pie" data-values="{VAR:turnoverCheckout1} 100 200" data-colors="tomato skyblue purple"></div>
+			<div id="pie-checkouts" class="pie" data-values="{VAR:turnoverCheckout1} {VAR:turnoverCheckout2} {VAR:turnoverCheckout3}" data-colors="tomato skyblue purple"></div>
 
 			<figcaption>
 				<dl>

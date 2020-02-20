@@ -87,7 +87,7 @@
 			/**
 			 * Update the pie cahrts
 			 */
-			updatePieCharts();
+			// updatePieCharts();
 
 
 			/* Indicate that we are still live and receive messages from the

@@ -46,6 +46,11 @@ var PieChart = function(el) {
 		var perc = values[i] / total * 100;
 
 		circle = document.createElementNS(NS, 'circle');
+		circle.setAttribute('r', 16);
+		circle.setAttribute('cx', 20);
+		circle.setAttribute('cy', 20);
+		circle.setAttribute('fill', 'transparent');
+		circle.setAttribute('stroke-width', 8);
 		this.updateCircle(circle, perc, offset, colors[i]);
 		this.circles.push(circle);
 
