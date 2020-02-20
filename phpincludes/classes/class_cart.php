@@ -2,7 +2,6 @@
 namespace KFE;
 
 use Contentomat\Model;
-use Contentomat\CmtPage;
 use \KFE\Item;
 use \Exception;
 
@@ -14,10 +13,13 @@ class Cart extends Model {
 		$this->Item = new Item();
 	}
 
+
+
 	/**
 	 * Add a cart
 	 *
-	 * @return void
+	 * @return int 			The ID of the cart
+	 * @throws Exception
 	 */
 	public function add($data) {
 		$setQuery = $this->db->makeSetQuery($data);
@@ -29,16 +31,47 @@ class Cart extends Model {
 
 		$query = sprintf("INSERT INTO %s SET %s", $this->tableName, $setQuery);
 		if ($this->db->query($query) !== 0) {
-			throw new Exception("Query failed: " . $Query);
+			throw new Exception("Query failed: " . $query);
 		}
 		return $this->db->lastInsertedId();
 	}
+
+
+
+	/**
+	 * When a cart gets edited, we need to:
+	 * - delete all associated items
+	 * - save the new data, including the (new) items
+	 *
+	 * @param int 		The cart's id
+	 * @param Array 	$data
+	 * @return void
+	 * @throws Exception
+	 */
+	public function update($id, $data) {
+
+		$oldCart = $this->findById($id);
+		foreach ($oldCart['items'] as $item) {
+			$this->Item->delete($item['id']);
+		}
+
+		$setQuery = $this->db->makeSetQuery($data);
+		$query = sprintf("UPDATE %s SET %s WHERE id = %u", $this->tableName, $setQuery, $id);
+		$this->query($query);
+	}
 	
+
+	/**
+	 * Delete a cart
+	 *
+	 * @param int 		The cart's id
+	 * @return boolean 	Success
+	 */
 	public function delete($id) {
 		try {
 			$query = sprintf("DELETE FROM %s WHERE id=%u", $this->tableName, (int)$id);
 			if ($this->db->query($query) !== 0) {
-				throw new Exception("Query failed: " . $Query);
+				throw new Exception("Query failed: " . $query);
 			}
 		}
 		catch (Exception $e) {
@@ -46,6 +79,8 @@ class Cart extends Model {
 		}
 		return true;
 	}
+
+
 
 	/**
 	 * Callback to prepare data for output

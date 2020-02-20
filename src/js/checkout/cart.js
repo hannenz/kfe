@@ -131,7 +131,6 @@ Cart.prototype.setData = function(data) {
 };
 
 
-
 /**
  * Submit the cart to the server
  *
@@ -155,13 +154,7 @@ Cart.prototype.submit = function() {
 		data.append('cashierId', this.cashierId);
 		data.append('timestamp', this.timestamp);
 		data.append('items', JSON.stringify(this.items));
-
-
-		var total = 0;
-		this.items.forEach(function(item) {
-			total += item.value;
-		});
-		data.append('total', total);
+		data.append('total', this.getTotal());
 
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', '/de/9/carts.html');
@@ -173,6 +166,51 @@ Cart.prototype.submit = function() {
 			}
 			else {
 				reject('Failed to submit cart');
+			}
+		});
+		xhr.addEventListener('error', function() {
+			reject('XHR request failed');
+		});
+		xhr.send(data);
+	}.bind(this));
+};
+
+/**
+ * Re-Submit the cart to the server
+ *
+ * @return Promise, resolves to JSON data of submitted cart
+ */
+Cart.prototype.resubmit = function() {
+
+	this.log();
+
+	if (!this.submitted || !this.id) {
+		console.log("This cart is not submitted or has no ID yet, aborting");
+		return;
+	}
+
+	return new Promise(function(resolve, reject) {
+
+		var data = new FormData();
+		data.append('action',  'update');
+		data.append('cartId', this.id);
+		data.append('marketId', this.marketId);
+		data.append('checkoutId', this.checkoutId);
+		data.append('cashierId', this.cashierId);
+		data.append('timestamp', this.timestamp);
+		data.append('items', JSON.stringify(this.items));
+		data.append('total', this.getTotal());
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/de/9/carts.html');
+		xhr.addEventListener('load', function() {
+			var response = JSON.parse(xhr.responseText);
+			if (response.success) {
+				console.log(response);
+				resolve(response);
+			}
+			else {
+				reject('Failed to resubmit cart');
 			}
 		});
 		xhr.addEventListener('error', function() {

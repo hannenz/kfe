@@ -41,6 +41,18 @@ class Item extends Model {
 	}
 
 
+	/**
+	 * Delete an item
+	 *
+	 * @param int 		The item's id
+	 * @return void
+	 * @throws Exception
+	 */
+	public function delete($id) {
+		$query = sprintf('DELETE FROM %s WHERE id = %u', $this->tableName, $id);
+		$this->query($query);
+	}
+
 
 	protected function afterRead($item) {
 		$item['valueFmt'] = sprintf('%.2f', $item['item_value'] / 100);

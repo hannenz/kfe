@@ -63,6 +63,8 @@ Checkout.prototype.setup = function() {
 
 	this.resurrect();
 	this.createTableFromCart();
+
+	this.codeInput.focus();
 };
 
 
@@ -639,20 +641,38 @@ Checkout.prototype.submitCart = function(cart) {
 
 	document.body.classList.add('is-busy');
 
-	cart.submit().then(function(response) {
+	if (!this.flag) {
+		// "Normal" submission
+		cart.submit().then(function(response) {
 
-		document.body.classList.remove('is-busy');
-		this.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId, 'success');
+			document.body.classList.remove('is-busy');
+			this.statusMessage('Bon wurde erfolgreich übermittelt, ID: ' + response.cartId, 'success');
 
-		if (this.cue.markSubmitted(response.cartId, response.cartTimestamp, response.cartCheckoutId)) {
+			if (this.cue.markSubmitted(response.cartId, response.cartTimestamp, response.cartCheckoutId)) {
+				this.updateTotalTurnover();
+				this.persist();
+			}
+		}.bind(this))
+		.catch(function(mssg) {
+			this.statusMessage(mssg, 'error');
+			new Logger().log('Submitting cart failed: ' + mssg + ', data: ' + JSON.stringify(cart.getData()));
+		}.bind(this));
+	}
+	else {
+		// Re-submitting (updating) a cart
+		cart.resubmit().then(function(response) {
+
+			document.body.classList.remove('is-busy');
+			this.statusMessage('Bon wurde erfolgreich gespeichert, ID: ' + response.cartId, 'success');
+
 			this.updateTotalTurnover();
 			this.persist();
-		}
-	}.bind(this))
-	.catch(function(mssg) {
-		this.statusMessage(mssg, 'error');
-		new Logger().log('Submitting cart failed: ' + mssg + ', data: ' + JSON.stringify(cart.getData()));
-	}.bind(this));
+		}.bind(this))
+		.catch(function(mssg) {
+			this.statusMessage(mssg, 'error');
+			new Logger().log('Submitting cart failed: ' + mssg + ', data: ' + JSON.stringify(cart.getData()));
+		}.bind(this));
+	}
 };
 
 

@@ -123,6 +123,62 @@ class CartsController extends Controller {
 		// die (json_encode($this->content));
 	}
 
+
+
+	public function actionUpdate() {
+		$this->isAjax = true;
+		$this->isJson = true;
+
+		$success = true;
+		$message = '';
+
+		Logger::log('Editing cart with id: ' . $_REQUEST['cartId']);
+
+		try {
+			$this->cartId = $_REQUEST['cartId'];
+			if (empty($this->cartId)) {
+				throw new Exception('No cartId');
+			}
+
+			$data = [
+				'cart_datetime' => strftime('%F %T', (int)$_REQUEST['timestamp'] / 1000),
+				'cart_submitted_datetime' => strftime('%F %T', time()),
+				'cart_market_id' => (int)$_REQUEST['marketId'],
+				'cart_checkout_id' => (int)$_REQUEST['checkoutId'],
+				'cart_total' => (float)$_REQUEST['total'],
+				'cart_items_count' => count($items),
+				'cart_cashier_id' => (int)$_REQUEST['cashierId']
+			];
+
+			$this->Cart->update($_REQUEST['cartId'], $data);
+
+			// Save items
+			$items = (array)json_decode($_REQUEST['items'], true);
+			foreach ($items as $item) {
+				$itemData = [
+					'item_datetime' => strftime('%Y-%m-%d %H:%M:%S', ((int)$item['ts'] / 1000)),
+					'item_market_id' => $item['marketId'],
+					'item_seller_id' => $this->Seller->getSellerId($item['sellerNr'], $item['marketId']),
+					'item_seller_nr' => $item['sellerNr'],
+					'item_checkout_id' => $item['checkoutId'],
+					'item_code' => $item['code'],
+					'item_value' => $item['value'],
+					'item_cart_id' => $cartId
+				];
+				$this->Item->add($itemData);
+			}
+		}
+		catch (Exception $e) {
+			$success = false;
+			$message = $e->getMessage();
+			$cartId = 0;
+		}
+
+		$this->content = [
+			'success' => $success,
+			'message' => $message,
+		];
+	}
 }
 
 $al = new PsrAutoloader();
