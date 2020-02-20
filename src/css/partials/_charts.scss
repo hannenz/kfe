@@ -77,42 +77,23 @@
 		font-weight: bold;
 		text-align: left;
 		font-feature-settings: 'tnum';
+		width: 80%;
+		margin: 12px auto;
 
-		dl {
-			margin: 0;
-			overflow: hidden;
-
-			:nth-child(3), :nth-child(4) {
-				color: var(--color2);
-			}
-			:nth-child(5), :nth-child(6) {
-				color: var(--color1);
-			}
-			:nth-child(7), :nth-child(8) {
-				color: var(--color3);
+		table {
+			width: 100%;
+			
+			tr.highlight {
+				outline: 1px dashed hotpink;
 			}
 
-			:nth-child(2), :nth-child(2) {
-				font-size: 1.25em;
-				font-weight: bold;
+			td {
+				font-feature-settings: 'tnum';
 			}
-		}
 
-		dt {
-			width: 80px;
-			float: left;
-			clear: left;
-
-			&::after {
-				content: ':';
-			}
-		}
-
-		dd {
-			display: block;
-			float: left;
-			text-align: left;
-			margin: 0;
+			td:last-child {
+				text-align: right;
+			};
 		}
 	}
 } 

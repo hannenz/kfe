@@ -13,69 +13,67 @@
 
 	<div class="figures">
 
-		<!-- <figure class="chart chart&#45;&#45;pie"> -->
-		<!-- 	<h3 class="chart__title">Test</h3> -->
-		<!-- 	<div id="pie&#45;turnover" class="pie" data&#45;values="10 20 30" data&#45;colors="tomato skyblue purple"> </div> -->
-		<!-- </figure> -->
-
 		<figure class="chart chart--pie">
 			<h3 class="chart__title">Umsatz</h3>
-			<div id="pie-turnover" class="pie" data-values="{VAR:turnoverSellers} {VAR:turnoverEmployees}" data-colors="tomato skyblue"> </div>
+			<div id="pie-turnover" class="pie" data-values="{VAR:turnoverSellers} {VAR:turnoverEmployees}" data-colors="#93b527 #447604"> </div>
 			<figcaption>
-				<dl>
-					<dt>Gesamt</dt>
-					<dd id="turnover-total">{PRINTF:"{VAR:turnoverTotal}":%.2f:de_DE}&thinsp;&euro;<br></dd>
-					<dt>Verkäufer</dt>
-					<dd id="turnover-sellers">{PRINTF:"{VAR:turnoverSellers}":%.2f:de_DE}&thinsp;&euro;</dd>
-					<dt>Mitarbeiter</dt>
-					<dd id="turnover-employees">{PRINTF:"{VAR:turnoverEmployees}":%.2f:de_DE}&thinsp;&euro;</dd>
-				</dl>
+				<table>
+					<tr>
+						<td>Gesamt</td>
+						<td id="turnover-total">{PRINTF:"{VAR:turnoverTotal}":%.2f:de_DE}&thinsp;&euro;</td>
+					</tr>
+					<tr data-circle="0">
+						<td>Verkäufer</td>
+						<td id="turnover-sellers">{PRINTF:"{VAR:turnoverSellers}":%.2f:de_DE}&thinsp;&euro;</td>
+					</tr>
+					<tr data-circle="1">
+						<td>Mitarbeiter</td>
+						<td id="turnover-employees">{PRINTF:"{VAR:turnoverEmployees}":%.2f:de_DE}&thinsp;&euro;</td>
+					</tr>
+				</table>
 			</figcaption>
 		</figure>
 
-		<!-- <figure class="chart chart&#45;&#45;pie"> -->
-		<!-- 	<h3 class="chart__title">Spendensumme</h3> -->
-		<!-- 	<div id="pie&#45;bounty" class="pie" data&#45;values="{VAR:bountySellers} {VAR:bountyEmployees}"> </div> -->
-		<!-- 	<figcaption> -->
-		<!-- 		<dl> -->
-		<!-- 			<dt>Gesamt</dt> -->
-		<!-- 			<dd id="bounty&#45;total">{PRINTF:"{VAR:bountyTotal}":%.2f:de_DE}&#38;thinsp;&#38;euro;<br></dd> -->
-		<!-- 			<dt>Verkäufer</dt> -->
-		<!-- 			<dd id="bounty&#45;sellers">{PRINTF:"{VAR:bountySellers}":%.2f:de_DE}&#38;thinsp;&#38;euro;</dd> -->
-		<!-- 			<dt>Mitarbeiter</dt> -->
-		<!-- 			<dd id="bounty&#45;employees">{PRINTF:"{VAR:bountyEmployees}":%.2f:de_DE}&#38;thinsp;&#38;euro;</dd> -->
-		<!-- 		</dl> -->
-		<!-- 	</figcaption> -->
-		<!-- </figure> -->
-
 		<figure class="chart chart--pie">
 			<h3 class="chart__title">Kassen</h3>
-			<div id="pie-checkouts" class="pie" data-values="{VAR:turnoverCheckout1} {VAR:turnoverCheckout2} {VAR:turnoverCheckout3}" data-colors="tomato skyblue purple"></div>
+			<div id="pie-checkouts" class="pie" data-values="{VAR:turnoverCheckout1} {VAR:turnoverCheckout2} {VAR:turnoverCheckout3}" data-colors="#93b527 #447604 #56445d"></div>
 
 			<figcaption>
-				<dl>
-					<dt>Kasse 1</dt>
-					<dd id="checkout-1">{PRINTF:{VAR:turnoverCheckout1}:%.2f:de_DE.UTF-8}&thinsp;&euro;</dd>
-					<dt>Kasse 2</dt>
-					<dd id="checkout-2">{PRINTF:{VAR:turnoverCheckout2}:%.2f:de_DE.UTF-8}&thinsp;&euro;</dd>
-					<dt>Kasse 3</dt>
-					<dd id="checkout-3">{PRINTF:{VAR:turnoverCheckout3}:%.2f:de_DE.UTF-8}&thinsp;&euro;</dd>
-				</dl>
+				<table>
+					<tr data-circle="0">
+						<td>Kasse 1</td>
+						<td id="checkout-1">{PRINTF:{VAR:turnoverCheckout1}:%.2f:de_DE.UTF-8}&thinsp;&euro;</td>
+					</tr>
+					<tr data-circle="1">
+						<td>Kasse 2</td>
+						<td id="checkout-2">{PRINTF:{VAR:turnoverCheckout2}:%.2f:de_DE.UTF-8}&thinsp;&euro;</td>
+					</tr>
+					<tr data-circle="2">
+						<td>Kasse 3</td>
+						<td id="checkout-3">{PRINTF:{VAR:turnoverCheckout3}:%.2f:de_DE.UTF-8}&thinsp;&euro;</td>
+					</tr>
+				</table>
 			</figcaption>
 		</figure>
 
 		<figure class="chart chart--pie">
 			<h3 class="chart__title">Verkaufte Artikel</h3>
-			<div id="pie-items" class="pie" data-values="{VAR:itemsSellers} {VAR:itemsEmployees}" data-colors="tomato skyblue"> </div>
+			<div id="pie-items" class="pie" data-values="{VAR:itemsSellers} {VAR:itemsEmployees}" data-colors="#93b527 #447604"> </div>
 			<figcaption>
-				<dl>
-					<dt>Gesamt</dt>
-					<dd id="items-total">{VAR:itemsTotal}</dd>
-					<dt>Verkäufer</dt>
-					<dd id="items-sellers">{VAR:itemsSellers}</dd>
-					<dt>Mitarbeiter</dt>
-					<dd id="items-employees">{VAR:itemsEmployees}</dd>
-				</dl>
+				<table>
+					<tr>
+						<td>Gesamt</td>
+						<td id="items-total">{VAR:itemsTotal}</td>
+					</tr>
+					<tr data-circle="0">
+						<td>Verkäufer</td>
+						<td id="items-sellers">{VAR:itemsSellers}</td>
+					</tr>
+					<tr data-circle="1">
+						<td>Mitarbeiter</td>
+						<td id="items-employees">{VAR:itemsEmployees}</td>
+					</tr>
+				</table>
 			</figcaption>
 		</figure>
 		
