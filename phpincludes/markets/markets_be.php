@@ -45,35 +45,33 @@ class MarketBackendController extends ApplicationController {
 
 
 	public function init() {
+
 		setlocale(LC_ALL, 'de_DE.UTF-8');
-		Logger::setTarget(LOG_TARGET_FILE);
-		Logger::log('markets_be controller init');
+
 		$this->Market = new Market();
 		$this->Seller = new Seller();
 		$this->Cart = new Cart();
 		$this->Item = new Item();
-		// $this->Parser = new \Contentomat\Parser;
 
-		if (isset($this->getvars['marketId'])) {
-			if (is_array($this->getvars['marketId'])) {
-				$this->marketId = (int)array_shift($this->getvars['marketId']);
+		if (isset($_REQUEST['marketId'])) {
+			if (is_array($_REQUEST['marketId'])) {
+				$this->marketId = (int)array_shift($_REQUEST['marketId']);
 			}
 			else {
-				$this->marketId = (int)$this->getvars['marketId'];;
+				$this->marketId = (int)$_REQUEST['marketId'];
 			}
 		}
-
-		// if (!empty($this->marketId)) {
-		// 	$this->cmtAction = 'evaluate';
-		// }
 
 		$this->handleContentomatVars();
 	}
 
 
 	protected function actionDefault() {
-		$this->parser->setParserVar('marketId', $this->marketId);
-		$this->content = $this->parser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/default.tpl');
+		$MyParser = new \Contentomat\Parser();
+		$MyParser->setParserVar('marketId', $this->marketId);
+		$markets = $this->Market->findAll();
+		$MyParser->setParserVar('markets', $markets);
+		$this->content = $MyParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/default.tpl');
 	}
 
 

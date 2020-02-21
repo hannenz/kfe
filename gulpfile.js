@@ -53,13 +53,6 @@ const banner = [
 ].join("\n");
 
 
-
-// //array of gulp task names that should be included in "gulp build" task
-// var build_dev  = ['clean:dist', 'js-dev', 'jsvendor', 'js-checkout', 'js-evaluation', 'css-dev', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
-// var build_prod = ['clean:dist', 'js-prod', 'jsvendor', 'js-checkout', 'js-evaluation', 'css-prod', 'cssvendor', 'images', 'sprite', 'icons', 'fonts', 'favicons'];
-
-
-
 var svgoOptions = {
 	plugins: [
 		{ cleanupIDs: false },

@@ -1,10 +1,10 @@
 <link rel="stylesheet" type="text/css" href="/dist/css/market_be.css" />
+
 <div class="market-evaluation">
+
 	<input type="hidden" id="js-url" value="{VAR:loopUrl}" style="width: 100%;" />
 
-
 	<h1>Auswertung für den Markt #{VAR:marketId} am {DATEFMT:"{VAR:market_begin}":%d.%m.%Y:de_DE.UTF-8}</h1>
-
 
 	<div class="big-number">
 		<span>Spendensumme</span><br>
@@ -78,12 +78,11 @@
 		</figure>
 		
 	</div>
+
 	<p>
-		<input type="checkbox" id="live-cbx" /><label for="live-cbx">Live Polling</label>
+		<input type="checkbox" id="live-cbx" /><label for="live-cbx">Live Monitor</label>
 	</p>
-	<!-- <div> -->
-	<!-- 	<a class="button cmtButton" href="{SELFURL}&#38;action=sumsheets&#38;market_id={VAR:marketId}">Summenblätter</a>  -->
-	<!-- </div> -->
+
 	<div id="heartbeat">↻</div>
 </div>
 <script src="/dist/js/evaluation.js"></script>

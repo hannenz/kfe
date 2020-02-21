@@ -10,6 +10,17 @@
 
 .market-evaluation {
 
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	> * + * {
+		margin-top: 3rem;
+	}
+
+	h1 {
+		margin: 0;
+	}
+
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -28,6 +39,7 @@
 		padding: 10px;
 		background-color: transparent;
 	}
+
 	.currency {
 		text-align: right;
 		max-width: 6ex;
@@ -36,6 +48,22 @@
 
 	margin-top: 3rem;
 	margin-bottom: 3rem;
+
+	display: flex;
+
+
+	.figures {
+		flex-wrap: wrap;
+		justify-content: center;
+
+		> figure {
+			min-width: 200px;
+			max-width: 300px;
+			width: 20vw;
+			flex: 1;
+		}
+	}
+
 }
 
 .evaluation-seller-data {
@@ -73,7 +101,59 @@
 	line-height: 1.5em;
 	text-align: center;
 	border-radius: 50%;
-	// position: absolute;
-	// top: 6rem;
-	// right: 2rem;
 }
+
+.pie-chart {
+	width: 10vw;
+	height: 10vw;
+	transform: rotate(-90deg);
+
+	circle {
+		fill: var(--color1);
+		fill: none;
+		transition: 150ms;
+	}
+
+	circle + circle {
+		fill: none;
+		// stroke: var(--color2);
+		// stroke-width: 32;
+	}
+
+	circle + circle + circle {
+		// stroke: var(--color3);
+	}
+}
+
+.chart {
+	--color1: yellowgreen;
+	--color2: #655;
+	--color3: mediumturquoise;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+
+	> * + * {
+		margin-top: 1.5rem;
+	}
+
+	// box-shadow: 2px 2px 6px rgba(30, 30, 30, .2);
+	// padding: 1rem;
+
+	&__title {
+		text-align: center;
+		margin: 0;
+	}
+
+	figcaption {
+		margin-top: 12px;
+		font-weight: bold;
+		width: 80%;
+		margin: 12px auto;
+
+	}
+} 
+
