@@ -27,7 +27,8 @@
 	Wir wünschen dir viel Freude und Erfolg beim Verkauf!
 </p>
 <p>
-	Für weitere Rückfragen stehen wir dir gerne unter <a href="mailto:info@kinderflohmarkt-erbach.de">info@kinderflohmarkt-erbach.de</a> oder Tel. 07305&thinsp;/&thinsp;93 99 97 3 zur Verfügung (Nachrichten auf Anrufbeantworter)
+	Für weitere Rückfragen stehen wir dir gerne unter <a href="mailto:info@kinderflohmarkt-erbach.de">info@kinderflohmarkt-erbach.de</a><br>
+	oder Tel. 07305&thinsp;/&thinsp;93&thinsp;99&thinsp;97&thinsp;3 zur Verfügung (Nachrichten auf Anrufbeantworter)
 </p>
 
 <p>
