@@ -2,17 +2,15 @@
 
 [✓] E-Mail Adressen einrichten: Wiebke
 [✓] Archiv: Aufbau der Seite; Texte z. Bsp. Einleitungstext, dann fortlaufend die Märkte als Liste mit nur Datum und charity
-- Karitative Zwecke 10/2019: Links korrekt? Link Palliativ Ulm?
-- Barcodes robuster: Könnte versuchen, das Nummernformat noch einmal zu ändern
-  (weniger Ziffern), 
-- Auswertung
+[✓] Auswertung
+[✓] Startseite: Nummernvergabe ab ... {Datum} - wenn Startdatum Nummernvergabe vorhanden
 
-- Stammkunden über "Eintrag duplizieren", ggf. Feld "Markt" in der Eingabemaske als SELECT Felkd
-- Startseite: Nummernvergabe ab ... {Datum} - wenn Startdatum Nummernvergabe vorhanden
+[ ] Karitative Zwecke 10/2019: Links korrekt? Link Palliativ Ulm?
+[ ] Barcodes robuster: Könnte versuchen, das Nummernformat noch einmal zu ändern (weniger Ziffern), 
+[ ] Stammkunden über "Eintrag duplizieren", ggf. Feld "Markt" in der Eingabemaske als SELECT Felkd
 
-
-[ ] Verkäufer-Nr auf Etikett größer
-[ ] Checkout: Manuelle Code-Eingabe verbessern
+[✓] Verkäufer-Nr auf Etikett größer
+[✓] Checkout: Manuelle Code-Eingabe verbessern
 [ ] Summenblatt: Branding (Hände), "Vielen Dank für Ihre Spende", Hinweis auf Spendenzweck
 
 
@@ -31,23 +29,17 @@ Druck:
 
 ------
 
-
-
 [✓] Backup-Script auf Server (kein Cron möglich!! Tägliches Backup von one.com vorhanden)
-
-[ ] Text wenn keine Nummern mehr da sind: "Für diesen Markt sind leider alle Nummern bereits vergeben"
+[✓] Text wenn keine Nummern mehr da sind: "Für diesen Markt sind leider alle Nummern bereits vergeben"
 [✓] Hände besser sichtbar
 [✓] Link / Button Nummernvergabe größer, prominenter
 [✓] Nummernvergabe auch vorher größer
 [✓] Caritativer Zweck verlinken (-> Archiv)
-[ ] Zweispaltive Liste bei Info
-[ ] Wiebke: {info,nummernvergabe}@kinderflohmarkt-erbach.de einrichten
-
-
+[?] Zweispaltive Liste bei Info
+[✓] Wiebke: {info,nummernvergabe}@kinderflohmarkt-erbach.de einrichten
 [ ] Infos: Link zu Nummernbergabe
-
 [✓] Aktivierung geht nicht ! sellers_controller leitet irgendwie komisch auf /
-[ ] Abgabe- und Abholungs-Daten in Markt Details aufnehme.
+[✓] Abgabe- und Abholungs-Daten in Markt Details aufnehme.
 [✓] Generische Links verwenden für Etiketten=Druck und Nummernvergabe, die dann immer auf den aktuellen Markt weiterleisten / umschreiben.
 [✓] Logout geht nicht? (Bsp. Abmelden, dann Registrierung aufrufen)
 [✓] Registrierungsformular: Verk.-Nr wird bei AJAX-Validierung zurückgesetzt
@@ -55,9 +47,7 @@ Druck:
 [✓] Welcome-Screen: Telefon falsch.
 [✓] Bestätigungs-Mail (Welcome): Link zu Etiketten-Druck
 [?] Eingabe von Verkäufer-Nr. mit führenden Nullen erzeugt Fehler [jobr@2019-09-13: nicht reproduzierbar]
-[✓] Etiketten: Format ok? Muss drauf, was es ist (handschriftlich) ?
-	- 2 Felder: Größe, Artikelbezeichnung
-
+[✓] Etiketten: Format ok? Muss drauf, was es ist (handschriftlich) ?  - 2 Felder: Größe, Artikelbezeichnung
 [✓] Zugang zu Nummernvergabe für Admin um Stammkunden anzulegen
 [✓] Stammkunden + Mitarbeiter: ganzjähriger Zugriff auf Etiketten
 [✓] Mitarbeiter als 300-400 und Etiketten-Druck ist mit Nummer und E-Mail möglich
@@ -67,17 +57,12 @@ Druck:
 [✓] Mitarbeiternummern 300 - 399 (sollen ganzjährig Etiketten drucken können)
 [✓] Wunschnummer eingeben
 [✓] Registrierung: Vor- und Nachname, Telefonnummer (optional für Rückfragen)
-
 [✓] Wegen Hosting: Tel.Nr/Kontakt von Carsten noch einmal 
 [✓] Paket bei one.com buchen?
 [✓] Etiketten: Beträge in 50ct Schritten erlauben
-
-Verkäufer: CSV Export oder PDF Druck mit extra Spalten
-
+[✓] Verkäufer: CSV Export oder PDF Druck mit extra Spalten
 [✓] Sponsorenlogos auf Website
-
-Auswertungsbogen pro Verkäufer
-Verkäufernummer, Datum, Anzahl Positionen + Liste der Positionen, Auszahlungs-Summe abzgl. 20% (Abzug nur bei regulären Verkäufern, nicht Mitarbeiter))
+[✓] Auswertungsbogen pro Verkäufer Verkäufernummer, Datum, Anzahl Positionen + Liste der Positionen, Auszahlungs-Summe abzgl. 20% (Abzug nur bei regulären Verkäufern, nicht Mitarbeiter))
 
 
 Brauchen wir einen Cronjob, der alle nicht-aktivierten Verkäufer nach x Std./Tagen löscht, damit die  Nummern wieder frei werden?
