@@ -51,7 +51,7 @@ Checkout.prototype.setup = function() {
 
 	// TODO: See if we really don't need it, then we can remove this.onKeyUp
 	// function as well
-	// document.addEventListener('keyup', this.onKeyUp);
+	document.addEventListener('keyup', this.onKeyUp);
 
 	document.forms.checkout.addEventListener('submit', function(ev) {
 		ev.preventDefault();
@@ -161,6 +161,7 @@ Checkout.prototype.onKeyUp = function(ev) {
 	ev.preventDefault();
 	ev.stopPropagation();
 
+	console.log(ev.keyCode);
 	switch (ev.keyCode) {
 
 		case 8: // Backspace

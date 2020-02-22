@@ -6,6 +6,7 @@ use KFE\Seller;
 use Contentomat\Contentomat;
 use Contentomat\ApplicationController;
 use Contentomat\PsrAutoloader;
+use Contentomat\Logger;
 use KFE\Cart;
 
 use \Exception;
@@ -50,6 +51,7 @@ class CheckoutsController extends ApplicationController {
 	protected $Cart;
 
 
+
 	/**
 	 * Init
 	 *
@@ -60,11 +62,24 @@ class CheckoutsController extends ApplicationController {
 		$this->Market = new Market();
 		$this->Seller = new Seller();
 		$this->Cart = new Cart();
-
-		$this->marketId = (int)$_REQUEST['marketId'];
-		$this->checkoutId = (int)$_REQUEST['checkoutId'];
-
 		$this->parser->setDefaultTemplateBasePath(PATHTOWEBROOT . "templates/checkouts/");
+
+		if (!empty($_REQUEST['marketId'])) {
+			$this->marketId = (int)$_REQUEST['marketId'];
+		}
+		if (!empty($_REQUEST['checkoutId'])) {
+			$this->checkoutId = (int)$_REQUEST['checkoutId'];
+		}
+
+		if (empty($this->marketId)) {
+			$this->marketId = $this->session->getSessionVar('marketId');
+		}
+		if (empty($this->checkoutId)) {
+			$this->checkoutId = $this->session->getSessionVar('checkoutId');
+		}
+
+		$this->session->setSessionVar('marketId', $this->marketId);
+		$this->session->setSessionVar('checkoutId', $this->checkoutId);
 	}
 	
 	/**
