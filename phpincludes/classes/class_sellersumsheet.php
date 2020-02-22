@@ -83,9 +83,13 @@ class SellerSumsheet extends TCPDF {
 		$this->setY(10);
 		$this->Parser->setMultipleParserVars(array_merge($this->currentSeller, $this->market));
 		$headerHTML = $this->Parser->parseTemplate(PATHTOWEBROOT . "templates/sellers/seller_sumsheet_header.tpl");
-	// sprintf('', strftime('%d.%m.%Y', strtotime($this->market['market_begin'])), $this->currentSeller['seller_nr'], $this->currentSeller['seller_lastname'], $this->currentSeller['seller_firstname']);
-
 		$this->writeHTML($headerHTML);
+	}
+
+	public function Footer() {
+		$this->setY(280);
+		$footerHTML = $this->Parser->parseTemplate(PATHTOWEBROOT . "templates/sellers/seller_sumsheet_footer.tpl");
+		$this->writeHTML($footerHTML);
 	}
 
 

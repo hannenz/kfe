@@ -493,6 +493,7 @@ class Seller extends Model {
 		}
 
 		$sellers = $this->findByMarket($marketId);
+		// $sellers = [ $sellers[192] ];
 
 		foreach ($sellers as &$seller) {
 
