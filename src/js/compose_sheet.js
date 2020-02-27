@@ -9,10 +9,10 @@ function Composer() {
 	var self = this;
 	var inputs; 
 	var button;
-	var emailInput;
-	var sellerNrInput;
-	var marketInput;
-	var sheetInfo;
+	// var emailInput;
+	// var sellerNrInput;
+	// var marketInput;
+	// var sheetInfo;
 
 	this.init = function() {
 		if (document.forms.composeform) {
@@ -27,19 +27,15 @@ function Composer() {
 		inputs = document.querySelectorAll('[name^=amount]');
 		self.update();
 
-		for (var i = 0; i < inputs.length; i++) {
-			inputs[i].addEventListener('change', function(ev) {
-				self.update();
-			});
-		}
+		document.forms.composeform.addEventListener('input', self.update);
 
-		self.emailInput = document.getElementById('sellerEmail');
-		self.sellerNrInput = document.getElementById('sellerNr');
-		self.emailInput.addEventListener('keyup', self.validateSeller);
-		self.marketInput = document.getElementById('marketId');
-		self.sellerNrInput.addEventListener('keyup', self.validateSeller);
+		// self.emailInput = document.getElementById('sellerEmail');
+		// self.sellerNrInput = document.getElementById('sellerNr');
+		// self.emailInput.addEventListener('keyup', self.validateSeller);
+		// self.marketInput = document.getElementById('marketId');
+		// self.sellerNrInput.addEventListener('keyup', self.validateSeller);
 
-		self.validateSeller();
+		// self.validateSeller();
 	};
 	
 	this.update = function() {
@@ -60,6 +56,46 @@ function Composer() {
 			button.disabled = true;
 			button.innerText = 'Wählen Sie mindestens 1 Etikett aus';
 			self.sheetInfo.innerHTML = "&rarr; " + total + ' Etiketten auf ' + pages + ' Seiten'
+		}
+
+		var sheets = document.querySelector('.sheets');
+		sheets.innerHTML = '';
+		var sheet = null;
+	
+		for (var i = 0, j = 0; i < inputs.length; i++) {
+
+			var input = inputs[i];
+
+			if (input.value == 0) {
+				continue;
+			}
+
+			for (k = 0; k < parseInt(input.value); k++) {
+				var value = 0;
+				var label = document.createElement('div');
+				label.className = 'label';
+				if (input.name.match(/custom/)) {
+					var valueInput = input.parentNode.querySelector('input[name^=value]');
+					value = parseFloat(valueInput.value.replace(',', '.'));
+					console.log(value * 100);
+					if (isNaN(value) || ((value * 100) % 50 != 0)) {
+						continue;
+					}
+				}
+				else {
+					value = parseFloat(input.id.match(/_(\d+)$/)[1]) / 100.0;
+				}
+				label.innerText = value.toLocaleString('de', { style: 'currency', currency: 'EUR'});
+
+				if (j++ % 12 == 0) {
+					sheet = document.createElement('li');
+					sheet.className = 'sheet';
+					sheets.appendChild(sheet);
+					var sheetInner = document.createElement('div');
+					sheet.appendChild(sheetInner);
+				}
+				sheetInner.appendChild(label);
+			}
 		}
 	};
 

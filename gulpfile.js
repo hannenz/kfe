@@ -107,7 +107,8 @@ var settings = {
 	js: {
 		src: [
 			'src/js/main.js',
-			'src/js/cart_edit.js'
+			'src/js/compose_sheet.js'
+			// 'src/js/cart_edit.js'
 		],
 		dest:	pkg.project_settings.prefix + 'js/',
 		destFile:	'main.min.js'

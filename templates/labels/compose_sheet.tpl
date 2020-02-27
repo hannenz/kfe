@@ -153,5 +153,9 @@
 		<input type="hidden" name="sellerNr" value="{SESSIONVAR:seller_nr}" />
 		<input type="hidden" name="sellerEmail" value="{SESSIONVAR:seller_email}" />
 
+		<h2 class="headline">Vorschau</h2>
+		<ul class="sheets">
+		</ul>
+
 	</form>
 </section>
