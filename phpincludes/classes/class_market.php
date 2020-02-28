@@ -5,6 +5,8 @@ use KFE\Seller;
 use KFE\Item;
 use Contentomat\Model;
 use Contentomat\CmtPage;
+use Contentomat\Contentomat;
+use Contentomat\Session;
 
 class Market extends Model {
 
@@ -33,6 +35,9 @@ class Market extends Model {
 	 */
 	protected $Item;
 
+	protected $Cmt;
+	protected $Session;
+
 	/**
 	 * Abzug für Spende in Prozent
 	 *
@@ -46,6 +51,8 @@ class Market extends Model {
 		$this->CmtPage = new CmtPage();
 		$this->Seller = new Seller();
 		$this->Item = new Item();
+		$this->Cmt = Contentomat::getContentomat();
+		$this->Session = $this->Cmt->getSession();
 	}
 
 	public function getMarketsWithOpenNumberAssignment() {
@@ -174,6 +181,9 @@ class Market extends Model {
 	 * @return boolean
 	 */
 	public function numberAssignmentIsRunning($market) {
+		if (!empty($this->Session->getSessionVar('bypass'))) {
+			return true;
+		}
 
 		if ($market['market_number_assignment_is_closed']) {
 			return false;

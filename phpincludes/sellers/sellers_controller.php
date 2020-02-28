@@ -6,6 +6,7 @@ use Contentomat\Controller;
 use Contentomat\PsrAutoloader;
 use Contentomat\Mail;
 use Contentomat\CmtPage;
+use Contentomat\Logger;
 use KFE\Seller;
 use KFE\Market;
 use KFE\SellerExistsForMarketException;
@@ -235,6 +236,9 @@ class SellersController extends Controller {
 			'text' => $text,
 			'html' => $html
 		]);
+
+		Logger::log(sprintf("Sending activation mail to <%s>: %s", $email, $check ? "success" : "failed"));
+
 		if ($check !== true) {
 			echo '<pre>'; var_dump($this->Mail->getErrorMessage()); echo '</pre>'; die();
 		}
@@ -313,6 +317,7 @@ class SellersController extends Controller {
 			'text' => $text,
 			'html' => $html
 		]);
+		Logger::log(sprintf("Sending welcome mail to <%s>: %s", $seller['seller_email'], $check ? "success" : "failed"));
 
 		if (!$check) {
 			$this->parser->setParserVar('errorSendMail', true);

@@ -42,6 +42,18 @@ if (!class_exists('\KFE\MarketsController')) {
 			$this->Market->setRegistrationPageId($this->registrationPageId);
 			$this->templatesPath = $this->templatesPath . 'markets/';
 			$this->Cmt = Contentomat::getContentomat();
+			$this->Session = $this->Cmt->getSession();
+
+			if (isset($_REQUEST['bypass'])) {
+				if ((int)$_REQUEST['bypass'] == 0) {
+					$this->Session->deleteSessionVar('bypass');
+				}
+				else {
+					$this->Session->setSessionVar('bypass', true);
+				}
+				$this->Session->saveSessionVars();
+			}
+
 			$contentData = $this->Cmt->getVar('cmtContentData');
 			$this->params = array(
 				$contentData['head1'],

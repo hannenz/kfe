@@ -6,6 +6,7 @@ use Contentomat\Mail;
 use Contentomat\Contentomat;
 use Contentomat\FieldHandler;
 use Contentomat\FileHandler;
+use Contentomat\Logger;
 use \Exception;
 use \KFE\Market;
 use \KFE\Cart;
@@ -205,7 +206,7 @@ class Seller extends Model {
 		$hash = hash('sha256', sprintf('%s%04u', $email, $marketId));
 
 		// We let exceptions fall throuhgh to controller to handle it there
-		$this->save([
+		$id = $this->save([
 			'seller_email' => $email,
 			'seller_phone' => $data['seller_phone'],
 			'seller_firstname' => $data['seller_firstname'],
@@ -216,6 +217,18 @@ class Seller extends Model {
 			'seller_market_id' => $marketId,
 			'seller_registration_date' => strftime('%F-%T')
 		]);
+
+		// Just to be safe ;-)
+		Logger::log(sprintf("Registrating seller: %s, %s <%s> (%s) as seller-nr %u for market #%u, id: %u",
+			$data['seller_lastname'],
+			$data['seller_firstname'],
+			$email,
+			$data['seller_phone'],
+			$data['seller_nr'],
+			$marketId,
+			$id
+		));
+
 		return $hash;
 	}
 
@@ -265,6 +278,17 @@ class Seller extends Model {
 			'seller_is_activated' => 1,
 			'seller_activation_datetime' => strftime('%F-%T')
 		]);
+
+		// Just to be safe ;-)
+		Logger::log(sprintf("Activating seller: %s, %s <%s> as seller-nr %u for market #%u, id: %u",
+			$seller['seller_lastname'],
+			$seller['seller_firstname'],
+			$seller['seller_email'],
+			$seller['seller_nr'],
+			$seller['seller_market_id'],
+			$seller['id']
+		));
+
 
 		// Re-Read the seller's record and return it
 		$seller = $this->findById($seller['id']);

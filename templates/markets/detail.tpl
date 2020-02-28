@@ -39,7 +39,7 @@
 	<div class="stack">
 		<div class="number-assignment-info-box">
 
-			{IF("{VAR:marketNumberAssignmentIsRunning}" == "1")}
+			{IF("{VAR:marketNumberAssignmentIsRunning}" == "1" || {ISSET:bypass:SESSIONVAR})}
 				{IF("{COUNT:availableNumbers}" != "0")}
 					<p>
 						<a class="button" href="{VAR:registrationUrl}">Nummernvergabe: Hier klicken</a>
