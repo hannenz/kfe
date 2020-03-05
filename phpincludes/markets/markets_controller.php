@@ -143,6 +143,7 @@ if (!class_exists('\KFE\MarketsController')) {
 			$availableNumbers = $this->Market->getAvailableNumbers($market['id']);
 			$this->parser->setParserVar('availableNumbers', $availableNumbers);
 
+
 			$this->parser->setMultipleParserVars($market);
 			$this->content = $this->parser->parseTemplate($this->templatesPath . 'detail.tpl');
 		}

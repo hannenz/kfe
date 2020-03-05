@@ -40,7 +40,7 @@
 </div>
 {ENDIF}
 {IF({ISSET:error_other})}
-<div class="message message--error">{VAR:errorMessage}</div>
+<div class="message message--error">Fehler: {VAR:errorMessage}</div>
 {ENDIF}
 
 

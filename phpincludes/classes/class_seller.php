@@ -188,7 +188,7 @@ class Seller extends Model {
 		$this->Market = new Market();
 		$market = $this->Market->findById($marketId);
 		if (empty($market) || !$this->Market->numberAssignmentIsRunning($market)) {
-			throw new NumberAssignmetNotRunningException();
+			throw new NumberAssignmetNotRunningException("Number assignment not running");
 		}
 
 
