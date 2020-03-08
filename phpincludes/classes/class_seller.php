@@ -322,12 +322,19 @@ class Seller extends Model {
 	public function authenticate($sellerNr, $sellerEmail, $marketId) {
 
 		// First we check if the seller_nr / email combination is valid
-		$query = sprintf("SELECT * FROM %s WHERE seller_nr = %u AND seller_email = '%s' AND (seller_market_id = 0 OR seller_market_id = %u) LIMIT 1",
-			$this->tableName,
-			$sellerNr,
-			$sellerEmail,
-			$marketId
-		);
+		$query = 
+			"SELECT * FROM {$this->tableName} " .
+			"WHERE seller_nr = {$sellerNr} " .
+			"AND seller_email = '{$sellerEmail}' " .
+			"AND seller_is_activated = 1 " .
+			"AND (seller_market_id = 0 OR seller_market_id = {$marketId}) " .
+			"LIMIT 1";
+		// $query = sprintf("SELECT * FROM %s WHERE seller_nr = %u AND seller_email = '%s' AND seller_is_activated = 1 AND (seller_market_id = 0 OR seller_market_id = %u) LIMIT 1",
+		// 	$this->tableName,
+		// 	$sellerNr,
+		// 	$sellerEmail,
+		// 	$marketId
+		// );
 		$result = array_shift($this->query($query));
 		if (empty($result)) {
 			return false;
