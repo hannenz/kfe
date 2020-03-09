@@ -8,3 +8,5 @@ deploy.sh
 gulpfile.js
 package*
 dumps
+Session.vim
+mkbackup.cron.sh

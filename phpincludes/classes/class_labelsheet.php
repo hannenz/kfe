@@ -133,7 +133,7 @@ class LabelSheet {
 	 */
 	public function create($data, $filename = '') {
 		if (empty($filename)) {
-			$filename = sprintf('Etiketten-%s.pdf', strftime('%F-%H'));
+			$filename = sprintf('Kinderflohmarkt_Erbach_Etiketten_%u_%s.pdf', $this->sellerData['seller_nr'], strftime('%F-%H%M%S'));
 		}
 		// $this->pdf->AddPage();
 
