@@ -18,7 +18,7 @@ use \Contentomat\PsrAutoloader;
 use \Contentomat\ApplicationController;
 use \Contentomat\Parser;
 use \Contentomat\Contentomat;
-use \Contentomat\Session;
+// use \Contentomat\Session;
 use \KFE\Seller;
 use \KFE\Market;
 use \KFE\Cart;
@@ -55,9 +55,9 @@ if (!class_exists('\KFE\SellerBackendController')) {
 
 
 		public function init() {
-			$this->Cmt = Contentomat::getContentomat();
-			$this->Cmt->setErrorReporting('error');
-			$this->Session = $this->Cmt->getSession();
+			// $this->Cmt = Contentomat::getContentomat();
+			$this->cmt->setErrorReporting('error');
+			// $this->Session = $this->Cmt->getSession();
 			$this->Seller = new Seller();
 			$this->Market = new Market();
 			$this->Cart = new Cart();
@@ -116,16 +116,16 @@ if (!class_exists('\KFE\SellerBackendController')) {
 		protected function actionOverview() {
 			if (isset($_POST['sellerMarketId'])) {
 				$sellerMarketId = $_POST['sellerMarketId'];
-				$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
+				$this->session->setSessionVar('sellerMarketId', $sellerMarketId);
 			}
 			else {
-				$sellerMarketId = $this->Session->getSessionVar('sellerMarketId');
+				$sellerMarketId = $this->session->getSessionVar('sellerMarketId');
 			}
 
 			if (empty($sellerMarketId)) {
-				$this->Session->deleteSessionVar('sellerMarketId');
+				$this->session->deleteSessionVar('sellerMarketId');
 				$sellerMarketId = 0;
-				$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
+				$this->session->setSessionVar('sellerMarketId', $sellerMarketId);
 			}
 
 			$markets = $this->Market->findAll();
@@ -136,17 +136,17 @@ if (!class_exists('\KFE\SellerBackendController')) {
 			if ($sellerMarketId != 9999) {
 				$query = sprintf('WHERE seller_market_id=%u', (int)$sellerMarketId);
 			}
-			$this->Cmt->setVar('cmtAddQuery', $query);
+			$this->cmt->setVar('cmtAddQuery', $query);
 		}
 
 
 		protected function actionExport() {
 			if (isset($_POST['sellerMarketId'])) {
 				$sellerMarketId = $_POST['sellerMarketId'];
-				$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
+				$this->session->setSessionVar('sellerMarketId', $sellerMarketId);
 			}
 			else {
-				$sellerMarketId = $this->Session->getSessionVar('sellerMarketId');
+				$sellerMarketId = $this->session->getSessionVar('sellerMarketId');
 			}
 
 
@@ -175,10 +175,10 @@ if (!class_exists('\KFE\SellerBackendController')) {
 
 			if (isset($_REQUEST['sellerMarketId'])) {
 				$sellerMarketId = $_REQUEST['sellerMarketId'];
-				$this->Session->setSessionVar('sellerMarketId', $sellerMarketId);
+				$this->session->setSessionVar('sellerMarketId', $sellerMarketId);
 			}
 			else {
-				$sellerMarketId = $this->Session->getSessionVar('sellerMarketId');
+				$sellerMarketId = $this->session->getSessionVar('sellerMarketId');
 			}
 
 			$this->Seller->generateSumsheets([
@@ -201,6 +201,23 @@ if (!class_exists('\KFE\SellerBackendController')) {
 		}
 
 
+
+		/**
+		 * Send mail to sellers
+		 *
+		 * @return void
+		 */
+		public function actionMail() {
+			$sessionVars = $this->session->getAllSessionVars();
+			$params = $sessionVars['cmtApplicationVars'][$this->applicationID];
+			$query = $this->Seller->buildQueryFromSearchParams($params);
+			$sellers = $this->Seller->query($query);
+			echo '<pre>'; var_dump($query); echo '</pre>'; 
+			echo '<pre>'; var_dump($sellers); echo '</pre>'; die();
+		}
+		
+
+
 		/**
 		 * Creates a sumsheet for a seller, e.g. sum up all sold items by this
 		 * seller
@@ -218,7 +235,7 @@ if (!class_exists('\KFE\SellerBackendController')) {
 				$this->seller['id'],
 				$this->seller['seller_market_id'] != 0 ? $this->seller['seller_market_id'] : 1
 			);
-			$this->Cmt->setVar('sellerSumSheet', $content);
+			$this->cmt->setVar('sellerSumSheet', $content);
 		}
 	}
 }

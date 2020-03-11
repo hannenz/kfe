@@ -628,5 +628,52 @@ class Seller extends Model {
 
 		return $sales;
 	}
+
+
+	/**
+	 * Build a SQL query from the search params of AppShowtable
+	 *
+	 * @param Array 			search params (as stored in Session)
+	 * @return string 			Query
+	 */
+	public function buildQueryFromSearchParams($params) {
+		$query = sprintf("SELECT * FROM %s", $this->tableName);
+
+		if (!empty($params['search_field'][1])) {
+			$query .= ' WHERE (';
+
+			foreach ($params['search_field'] as $i => $field) {
+				if (empty($field)) {
+					break;
+				}
+				$query .= sprintf('%s %s %s', $field, $params['search_criteria'][$i], $params['search_value'][$i]);
+				if (!empty($params['search_field'][$i + 1])) {
+					$query .= sprintf(' %s ', strtoupper($params['search_link'][$i]));
+				}
+			}
+
+			$query .= ')';
+		}
+
+		$query .= sprintf(' AND seller_market_id = %u ', $this->Session->getSessionVar('sellerMarketId'));
+
+		if (!empty($params['sort_by'][1])) {
+			$query .= ' ORDER BY ';
+		}
+
+		foreach ($params['sort_by'] as $i => $sortBy) {
+			if (!empty($params['sort_by'][$i])) {
+				$query .= sprintf('%s', $params['sort_by'][$i]);
+			}
+			if (!empty($params['sort_dir'][$i])) {
+				$query .= sprintf(' %s', strtoupper($params['sort_dir'][$i]));
+			}
+			if (!empty($params['sort_by'][$i + 1])) {
+				$query .= ',';
+			}
+		}
+
+		return $query;
+	}
 }
 ?>
