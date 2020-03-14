@@ -7,6 +7,8 @@ use Contentomat\Contentomat;
 use Contentomat\FieldHandler;
 use Contentomat\FileHandler;
 use Contentomat\Logger;
+use Contentomat\CmtPage;
+use Contentomat\Parser;
 use \Exception;
 use \KFE\Market;
 use \KFE\Cart;
@@ -48,29 +50,44 @@ class Seller extends Model {
 	 */
 	protected $FieldHandler;
 
-
 	/**
 	 * @var Contentomat\FileHandler
 	 */
 	protected $FileHandler;
 
+	/**
+	 * @var Contentomat\CmtPage
+	 */
+	protected $CmtPage;
+
+	/**
+	 * @var Contentomat\Parser
+	 */
+	protected $Parser;
 
 	/**
 	 * @var KFE\Item
 	 */
 	protected $Item;
 
+	/**
+	 * @var KFE\Market
+	 */
+	protected $Market;
 
 
 	public function init() {
 		$this->Mail = new Mail();
 		$this->FieldHandler = new FieldHandler();
 		$this->FileHandler = new FileHandler();
+		$this->CmtPage = new CmtPage();
+		$this->Parser = new Parser();
 		$this->Cmt = Contentomat::getContentomat();
 		$this->Session = $this->Cmt->getSession();
 		$this->tableName = 'kfe_sellers';
 		$this->Cart = new Cart();
 		$this->Item = new Item();
+		$this->Market = new Market();
 		$this->setValidationRules([
 			'seller_firstname' => ['not-empty' => '/^.+$/'],
 			'seller_lastname' => ['not-empty' => '/^.+$/'],
@@ -637,10 +654,10 @@ class Seller extends Model {
 	 * @return string 			Query
 	 */
 	public function buildQueryFromSearchParams($params) {
-		$query = sprintf("SELECT * FROM %s", $this->tableName);
-
+		$query = sprintf("SELECT * FROM %s WHERE ", $this->tableName);
 		if (!empty($params['search_field'][1])) {
-			$query .= ' WHERE (';
+
+			$query .= "(";
 
 			foreach ($params['search_field'] as $i => $field) {
 				if (empty($field)) {
@@ -652,10 +669,10 @@ class Seller extends Model {
 				}
 			}
 
-			$query .= ')';
+			$query .= " ) AND ";
 		}
 
-		$query .= sprintf(' AND seller_market_id = %u ', $this->Session->getSessionVar('sellerMarketId'));
+		$query .= sprintf('seller_market_id = %u ', $this->Session->getSessionVar('sellerMarketId'));
 
 		if (!empty($params['sort_by'][1])) {
 			$query .= ' ORDER BY ';
@@ -674,6 +691,44 @@ class Seller extends Model {
 		}
 
 		return $query;
+	}
+
+
+
+	public function sendActivationMail($email, $hash, $activationPageId) {
+
+		$activationUrl = sprintf('http%s://%s%s%s?action=activate&hash=%s',
+			!empty($_SERVER['HTTPS']) ? 's' : '', 
+			$_SERVER['SERVER_NAME'],
+			$this->CmtPage->makePageFilePath($activationPageId),
+			$this->CmtPage->makePageFileName($activationPageId),
+			$hash
+		);
+		$this->Parser->setParserVar('email', $email);
+		$this->Parser->setParserVar('activationUrl', $activationUrl);
+		
+		$seller = $this->findByEmailAndHash($email, $hash);
+		$market = $this->Market->findById($seller['seller_market_id']);
+		$this->Parser->setMultipleParserVars($market);
+		$this->Parser->setMultipleParserVars($seller);
+
+		$text = $this->Parser->parseTemplate($this->templatesPath . "activation_mail.txt.tpl");
+		$mailContent = $this->Parser->parseTemplate($this->templatesPath . 'activation_mail.html.tpl');
+		$this->Parser->setParserVar('mailContent', $mailContent);
+		$html = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/email.tpl');
+
+		$check = $this->Mail->send([
+			'recipient' => $email,
+			'subject' => 'Kinderflohmarkt Erbach: Registrierung abschliessen',
+			'text' => $text,
+			'html' => $html
+		]);
+
+		Logger::log(sprintf("Sending activation mail to <%s>: %s", $email, $check ? "success" : "failed"));
+
+		if ($check !== true) {
+			echo '<pre>'; var_dump($this->Mail->getErrorMessage()); echo '</pre>'; die();
+		}
 	}
 }
 ?>

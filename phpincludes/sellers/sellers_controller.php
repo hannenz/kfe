@@ -209,38 +209,11 @@ class SellersController extends Controller {
 	 * @return void
 	 */
 	protected function sendActivationLink($email, $hash) {
-		$activationUrl = sprintf('http%s://%s%s%s?action=activate&hash=%s',
-			!empty($_SERVER['HTTPS']) ? 's' : '', 
-			$_SERVER['SERVER_NAME'],
-			$this->CmtPage->makePageFilePath($this->activationPageId),
-			$this->CmtPage->makePageFileName($this->activationPageId),
-			$hash
-		);
-		$this->parser->setParserVar('email', $email);
-		$this->parser->setParserVar('activationUrl', $activationUrl);
-
-		// error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
-		$seller = $this->Seller->findByEmailAndHash($email, $hash);
-		$market = $this->Market->findById($seller['seller_market_id']);
-		$this->parser->setMultipleParserVars($market);
-		$this->parser->setMultipleParserVars($seller);
-
-		$text = $this->parser->parseTemplate($this->templatesPath . "activation_mail.txt.tpl");
-		$mailContent = $this->parser->parseTemplate($this->templatesPath . 'activation_mail.html.tpl');
-		$this->parser->setParserVar('mailContent', $mailContent);
-		$html = $this->parser->parseTemplate(PATHTOWEBROOT . 'templates/email.tpl');
-
-		$check = $this->Mail->send([
-			'recipient' => $email,
-			'subject' => 'Kinderflohmarkt Erbach: Registrierung abschliessen',
-			'text' => $text,
-			'html' => $html
-		]);
-
-		Logger::log(sprintf("Sending activation mail to <%s>: %s", $email, $check ? "success" : "failed"));
-
-		if ($check !== true) {
-			echo '<pre>'; var_dump($this->Mail->getErrorMessage()); echo '</pre>'; die();
+		try {
+			$this->Seller->sendActivationMail($email, $hash, $this->activationPageId);
+		}
+		catch (Exception $e) {
+			die ($e->getMessage());
 		}
 	}
 
