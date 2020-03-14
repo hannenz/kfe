@@ -87,7 +87,6 @@ class Seller extends Model {
 		$this->tableName = 'kfe_sellers';
 		$this->Cart = new Cart();
 		$this->Item = new Item();
-		$this->Market = new Market();
 		$this->setValidationRules([
 			'seller_firstname' => ['not-empty' => '/^.+$/'],
 			'seller_lastname' => ['not-empty' => '/^.+$/'],
@@ -275,7 +274,7 @@ class Seller extends Model {
 	 * @throws ActivationFailedException
 	 * @throws Exception
 	 *
-	 * @return void
+	 * @return \KFE\Seller
 	 */
 	public function activate($hash) {
 
@@ -695,30 +694,37 @@ class Seller extends Model {
 
 
 
-	public function sendActivationMail($email, $hash, $activationPageId) {
+	public function sendActivationMail($seller, $activationPageId) {
+
+		if (
+				empty($seller) ||
+				(bool)$seller['seller_is_activated'] == true ||
+				!preg_match('/[a-fA-F0-9]/', $seller['seller_activation_hash']) ||
+				!filter_var($seller['seller_email'], FILTER_VALIDATE_EMAIL)
+			) {
+				throw new Exception("Cannot send activation link to seller.");
+		}
 
 		$activationUrl = sprintf('http%s://%s%s%s?action=activate&hash=%s',
 			!empty($_SERVER['HTTPS']) ? 's' : '', 
 			$_SERVER['SERVER_NAME'],
 			$this->CmtPage->makePageFilePath($activationPageId),
 			$this->CmtPage->makePageFileName($activationPageId),
-			$hash
+			$seller['seller_activation_hash']
 		);
-		$this->Parser->setParserVar('email', $email);
-		$this->Parser->setParserVar('activationUrl', $activationUrl);
 		
-		$seller = $this->findByEmailAndHash($email, $hash);
+		$this->Market = new Market();
 		$market = $this->Market->findById($seller['seller_market_id']);
-		$this->Parser->setMultipleParserVars($market);
-		$this->Parser->setMultipleParserVars($seller);
+		$this->Parser->setMultipleParserVars(array_merge( $market, $seller));
+		$this->Parser->setParserVar('activationUrl', $activationUrl);
 
-		$text = $this->Parser->parseTemplate($this->templatesPath . "activation_mail.txt.tpl");
-		$mailContent = $this->Parser->parseTemplate($this->templatesPath . 'activation_mail.html.tpl');
+		$text = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/sellers/activation_mail.txt.tpl');
+		$mailContent = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/sellers/activation_mail.html.tpl');
 		$this->Parser->setParserVar('mailContent', $mailContent);
 		$html = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/email.tpl');
 
 		$check = $this->Mail->send([
-			'recipient' => $email,
+			'recipient' => $seller['seller_email'],
 			'subject' => 'Kinderflohmarkt Erbach: Registrierung abschliessen',
 			'text' => $text,
 			'html' => $html

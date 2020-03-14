@@ -220,6 +220,7 @@ class SellersController extends Controller {
 
 	protected function actionActivate() {
 		$hash = $this->getvars['hash'];
+		echo '<pre>'; var_dump($hash); echo '</pre>'; die();
 		if (empty($hash)) {
 			// TODO: Handle this case!
 			die ("No hash!");

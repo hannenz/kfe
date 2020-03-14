@@ -60,9 +60,10 @@ if (!class_exists('\KFE\SellerBackendController')) {
 
 
 		public function init() {
-			// $this->Cmt = Contentomat::getContentomat();
-			$this->cmt->setErrorReporting('error');
-			// $this->Session = $this->Cmt->getSession();
+			$this->cmt->setErrorReporting('all');
+			error_reporting(E_ALL & ~E_NOTICE);
+			ini_set('display_errors', true);
+
 			$this->Seller = new Seller();
 			$this->Market = new Market();
 			$this->Cart = new Cart();
@@ -250,7 +251,12 @@ if (!class_exists('\KFE\SellerBackendController')) {
 		public function actionSendActivationMail() {
 			$sellerId = (int)$this->getvars['sellerId'];
 			$seller = $this->Seller->findById($sellerId);
-			$this->Seller->sendActivationMail($seller['seller_email'], $seller['seller_activation_hash'], $this->activationPageId);
+			if (!empty($seller)) {
+				$this->Seller->sendActivationMail($seller, $this->activationPageId);
+			}
+			else {
+				// else what ..?
+			}
 		}
 
 
@@ -263,7 +269,7 @@ if (!class_exists('\KFE\SellerBackendController')) {
 		 */
 		public function actionEdit() {
 
-			$this->Cmt->setErrorReporting('error');
+			$this->cmt->setErrorReporting('error');
 
 			$content = sprintf('<a class="cmtButton" href="?sid=%s&cmtApplicationID=%u&action=sumsheet&seller_id=%u&market_id=%u">Summenblatt erzeugen</a>',
 				SID,
