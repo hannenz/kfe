@@ -17,26 +17,15 @@ use \Contentomat\CmtPage;
 use \Contentomat\SessionHandler;
 use \Contentomat\DBCex;
 
-
-
-
-	/**
-	 * function getMicrotime()
-	 * Returns the current timestamp as microtime
-	 * @return number
-	 */
-	function getMicrotime()	{
-	   list($usec, $sec) = explode(" ", microtime());
-	   return ((float)$usec + (float)$sec);
-	}
-	//$time_start = getMicrotime();
-	
+ini_set('display_errors', true);
 
 	/*
 	 * Do some loading work
 	 */
-	require ('cmt_constants.inc');
-	require (PATHTOADMIN . 'classes/class_psrautoloader.inc');
+	require('cmt_constants.inc');
+	require(PATHTOADMIN . 'classes/class_psrautoloader.inc');
+	// Autolaoder for Composer packagse
+	require(PATHTOADMIN . 'vendor/autoload.php');
 	
 	$autoloader = new PsrAutoloader();
 	$autoloader->addNamespace('Contentomat', PATHTOWEBROOT . 'phpincludes/classes/');
@@ -108,6 +97,7 @@ use \Contentomat\DBCex;
 	define ('PAGEID', $pid);
 	define ('PAGELANG', $lang);
 	define ('PAGETITLE', $pageData['cmt_title']);
+	define ('TEMPLATEID', intval($pageData['cmt_template']));
 	// ??? define ('PAGEFILENAME', $pageFilename);
 	define ('PARENTID', $pageData['cmt_parentid']);
 	define ('CMT_MODE', 'view');
@@ -154,8 +144,8 @@ use \Contentomat\DBCex;
 	echo $parser->parse(stripslashes($pageSource));
 	
 	// Zeitmessung Ende und Ausgabe
-// 	$time_end = getMicrotime();
-// 	echo '<p>Skriptausführung: '.round(($time_end - $time_start), 3).' Sek.';
+	// $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+	// echo "<p>Skriptausführung: {$time} Sek.";
 	
 	ob_end_flush();
 ?>

@@ -222,23 +222,5 @@ class AppParser extends Parser {
 
 		return $replaceData;
 	}
-
-
-	protected function macro_FLASHMESSAGE($value, $params) {
-
-		$flashMessage = $this->session->getSessionVar('flashMessage');
-		$this->session->deleteSessionVar('flashMessage');
-		$this->session->saveSessionVars();
-
-		if (!empty($flashMessage)) {
-			$replaceData = $flashMessage;
-		}
-		return $replaceData;
-	}
-
-	protected function macro_HASFLASHMESSAGE($value, $params) {
-		$replaceData = !empty($this->session->getSessionVar('flashMessage')) ? "1" : "0";
-		return $replaceData;
-	}
 }
 ?>
