@@ -10,6 +10,11 @@ var SellersMail = function() {
 
 	this.recipientsTable;
 	this.baseUrl = $('#sellers-mail-form').attr('action');
+	this.form = document.forms.sellersMailForm;
+	this.form.addEventListener('submit', function(ev) {
+		ev.preventDefault();
+		this.send();
+	}.bind(this));
 
 	console.log('SellersMail::init', this.baseUrl);
 
@@ -75,6 +80,14 @@ SellersMail.prototype.setupRecipientsTable = function() {
 		layout: 'fitDataStretch'
 	});
 };
+
+
+SellersMail.prototype.send = function() {
+	var data = new FormData(this.form);
+	$.get(this.form.getAttribute('action'), data, function(response) {
+	});
+};
+
 
 
 $(function() {

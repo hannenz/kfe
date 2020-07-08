@@ -101,6 +101,7 @@ class SellersMailController extends ApplicationController {
 			'message' => $this->postvars['message'],
 			'batch_size' => 5
 		];
+
 		$this->Session->setSessionVar('mailBatch', $mailBatch);
 	}
 

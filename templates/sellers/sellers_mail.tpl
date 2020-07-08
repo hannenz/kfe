@@ -28,7 +28,8 @@ fieldset.settings {
 
 	<h1>Rundmail</h1>
 
-	<form id="sellers-mail-form" method="post" action="{SELFURL}">
+	<form id="sellers-mail-form" name="sellersMailForm" method="post" action="{SELFURL}">
+		<input type="hidden" name="action" value="sendBatch" />
 
 		<fieldset class="recipients">
 			<legend><span id="recipients-count">0</span> Empfänger</legend>

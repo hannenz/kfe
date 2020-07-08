@@ -1,4 +1,4 @@
-<form action="{SELFURL}" method="POST">
+<form name="sellersMailForm" action="{SELFURL}" method="POST">
 
 	<p>Verfassen Sie eine Rundmail an alle {COUNT:sellers} Verkäufer von Markt #{VAR:sellerMarketId} (inkl. Mitarbeiter)</p>
 
