@@ -68,7 +68,7 @@ var svgoOptions = {
 var settings = {
 
 	browserSync: {
-		proxy:'https://' + pkg.name + '.localhost',
+		proxy:'https://' + pkg.name + '.hannenz.localhost',
 		open: false,	// Don't open browser, change to "local" if you want or see https://browsersync.io/docs/options#option-open
 		notify: false,	// Don't notify on every change
 		https: {
@@ -130,6 +130,14 @@ var settings = {
 		destFile: 'evaluation.js'
 	},
 
+	jssellersmail: {
+		src: [
+			'src/js/sellers_mail/*.js',
+		],
+		dest: pkg.project_settings.prefix + 'js/',
+		destFile: 'sellers_mail.js'
+	},
+
 	jsvendor: {
 		src: [
 			'src/js/vendor/**/*.js',
@@ -139,7 +147,8 @@ var settings = {
 			'node_modules/quagga/dist/quagga.min.js',
 			'node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.js',
 			'node_modules/dialog-polyfill/dist/dialog-polyfill.js',
-			'node_modules/sprintf-js/dist/sprintf.min.js'
+			'node_modules/sprintf-js/dist/sprintf.min.js',
+			'node_modules/tabulator-tables/dist/js/tabulator.min.js'
 		],
 		dest:	pkg.project_settings.prefix + 'js/vendor/'
 	},
@@ -151,7 +160,8 @@ var settings = {
 			// they will be copied as is to `{prefix}/css/vendor/`, 
 			// e.g. 'node_modules/flickity/dist/flickity.min.css'
 			'node_modules/jquery.appendgrid/jquery.appendGrid-1.7.1.min.css',
-			'node_modules/dialog-polyfill/dist/dialog-polyfill.css'
+			'node_modules/dialog-polyfill/dist/dialog-polyfill.css',
+			'node_modules/tabulator-tables/dist/css/tabulator.min.css'
 
 		],
 		dest:	pkg.project_settings.prefix + 'css/vendor/'
@@ -259,6 +269,10 @@ function jsEvaluation() {
 	return doJs(settings.jsevaluation);
 }
 
+function jsSellersMail() {
+	return doJs(settings.jssellersmail);
+}
+
 
 function doJs(settings) {
 
@@ -364,6 +378,7 @@ function gulpDefault(done) {
 	gulp.watch(settings.js.src, js);
 	gulp.watch(settings.jscheckout.src, jsCheckout);
 	gulp.watch(settings.jsevaluation.src, jsEvaluation);
+	gulp.watch(settings.jssellersmail.src, jsSellersMail);
 	done();
 }
 
@@ -409,7 +424,7 @@ var exec = require('child_process').exec;
 /*
  * Task: Build all
  */
-exports.build = series(cleanDist, js, jsVendor, jsCheckout, jsEvaluation, css, cssVendor, images, sprite, icons, fonts, favicon);
+exports.build = series(cleanDist, js, jsVendor, jsCheckout, jsEvaluation, jsSellersMail, cssVendor, images, sprite, icons, fonts, favicon);
 
 exports.default = gulpDefault;
 exports.cleanDist = cleanDist;
@@ -418,6 +433,7 @@ exports.js = js;
 exports.jsVendor = jsVendor;
 exports.jsCheckout = jsCheckout;
 exports.jsEvaluation = jsEvaluation;
+exports.jsSellersMail = jsSellersMail;
 exports.cssVendor = cssVendor;
 exports.fonts = fonts;
 exports.images = images;

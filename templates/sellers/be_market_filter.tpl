@@ -52,4 +52,5 @@
 		</form>
 	</div>
 </div>
-
+<div class="cmtDialog" id="confirmSendActivationLink">
+</div>

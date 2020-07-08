@@ -208,45 +208,6 @@ if (!class_exists('\KFE\SellerBackendController')) {
 
 
 
-		/**
-		 * Send mail to sellers
-		 *
-		 * @return void
-		 */
-		public function actionMail() {
-
-			$this->Parser->setMultipleParserVars($this->postvars);
-			$this->content = $this->Parser->parseTemplate($this->templatesPath . 'compose_mail.tpl');
-			// $sessionVars = $this->session->getAllSessionVars();
-			// $params = $sessionVars['cmtApplicationVars'][$this->applicationID];
-			// $query = $this->Seller->buildQueryFromSearchParams($params);
-			// $sellers = $this->Seller->query($query);
-
-			// echo '<pre>'; var_dump($query); echo '</pre>'; 
-			// echo '<pre>'; var_dump($sellers); echo '</pre>'; die();
-		}
-		
-
-		public function actionSendMail() {
-			$sessionVars = $this->session->getAllSessionVars();
-			$params = $sessionVars['cmtApplicationVars'][$this->applicationID];
-			$query = $this->Seller->buildQueryFromSearchParams($params);
-			$sellers = $this->Seller->query($query);
-
-			$this->Parser->setParserVar('mailContent', $this->postvars['message']);
-			$html = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/email.tpl');
-
-			foreach ($sellers as $seller) {
-				$this->Mail->send([
-					'recipient' => $seller['seller_email'],
-					'subject' => $this->postvars['subject'],
-					'text' => strip_tags($html),
-					'html' => $html,
-					'fake' => true
-				]);
-			}
-		}
-
 
 		public function actionSendActivationMail() {
 			$sellerId = (int)$this->getvars['sellerId'];

@@ -136,7 +136,7 @@ class Seller extends Model {
 
 
 	/**
-	 * Returns all sellers for a given market, including employees (marletid = 0)
+	 * Returns all sellers for a given market, including employees (marketId = 0)
 	 * 
 	 * @param int 		$marketid
 	 * @return Array
@@ -735,6 +735,12 @@ class Seller extends Model {
 		if ($check !== true) {
 			echo '<pre>'; var_dump($this->Mail->getErrorMessage()); echo '</pre>'; die();
 		}
+	}
+
+
+	public function getEmployees() {
+		$employees = $this->findByMarket(0);
+		return $employees;
 	}
 }
 ?>
