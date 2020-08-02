@@ -29,7 +29,7 @@ fieldset.settings {
 	<h1>Rundmail</h1>
 
 	<form id="sellers-mail-form" name="sellersMailForm" method="post" action="{SELFURL}">
-		<input type="hidden" name="action" value="sendBatch" />
+		<input type="hidden" name="action" value="sendMail" />
 
 		<fieldset class="recipients">
 			<legend><span id="recipients-count">0</span> Empfänger</legend>
@@ -53,6 +53,7 @@ fieldset.settings {
 				</select>
 				<button id="js-add-recipients-by-market-btn" class="cmtButton cmtButtonAdd">Alle Verkäufer eines Marktes hinzufügen</button>
 				<button id="js-add-recipients-employees-btn" class="cmtButton cmtButtonAdd">Alle Mitarbeiter hinzufügen</button>
+				<button id="js-remove-all-recipients-btn" class="cmtButton cmtButtonDelete">Alle Empfänger entfernen</button>
 			</div>
 		</fieldset>
 
@@ -86,6 +87,10 @@ fieldset.settings {
 				<input type="text" name="sender_email" value="{VAR:senerEmail}" />
 			</div>
 
+		</fieldset>
+		<fieldset>
+			<legend>Versand-Fortschritt</legend>
+			<progress id="js-progress"></progress>
 		</fieldset>
 	</form>
 </section>

@@ -26,10 +26,13 @@ var SellersMail = function() {
 	var addRecipientsBtn = document.getElementById('js-add-recipients-btn');
 	var addRecipientsByMarketBtn = document.getElementById('js-add-recipients-by-market-btn');
 	var addRecipientsEmployeesBtn = document.getElementById('js-add-recipients-employees-btn');
+	var removeAllRecipientsBtn = document.getElementById('js-remove-all-recipients-btn');
 
 	addRecipientsBtn.addEventListener('click', this.onAddRecipientsBtnClicked.bind(this));
 	addRecipientsByMarketBtn.addEventListener('click', this.onAddRecipientsByMarketBtnClicked.bind(this));
 	addRecipientsEmployeesBtn.addEventListener('click', this.onAddRecipientsEmployeesBtnClicked.bind(this));
+	removeAllRecipientsBtn.addEventListener('click', this.onRemoveAllRecipientsBtnClicked.bind(this));
+
 }
 
 
@@ -64,6 +67,12 @@ SellersMail.prototype.onAddRecipientsEmployeesBtnClicked = function(ev) {
 	}.bind(this));
 };
 
+SellersMail.prototype.onRemoveAllRecipientsBtnClicked = function() {
+
+	this.recipientsTable.clearData();
+};
+
+
 SellersMail.prototype.setupRecipientsTable = function() {
 
 	console.log('setupRecipientsTable');
@@ -82,12 +91,36 @@ SellersMail.prototype.setupRecipientsTable = function() {
 };
 
 
+
 SellersMail.prototype.send = function() {
 	var data = new FormData(this.form);
-	$.get(this.form.getAttribute('action'), data, function(response) {
-	});
+	var url = this.form.getAttribute('action');
+	var tableData = this.recipientsTable.getData();
+	var ids = tableData.reduce((acc, cur) => {
+		return acc.concat(cur.id);
+	}, []);
+
+	data.set('id', ids);
+	var req = new XMLHttpRequest();
+	req.open('POST', url);
+	req.onload = function(ev) {
+		if (ev.status >= 200 && ev.status < 400) {
+			// TODO: Evaluate successful load
+			this.sendBatch();
+		}
+	}.bind(this);
+	req.send(data);
 };
 
+
+SellersMail.prototype.sendBatch = function() {
+	$.get('?action=sendMailBatch', function(response) {
+		var ret = JSON.parse(response);
+		if (ret.count < ret.total) {
+			this.sendBatch();
+		}
+	}.bind(this));
+};
 
 
 $(function() {

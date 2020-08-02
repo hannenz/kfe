@@ -87,12 +87,14 @@ class SellersMailController extends ApplicationController {
 	}
 
 
+
 	public function actionSendMail() {
+		echo '<pre>'; var_dump($_REQUEST); echo '</pre>'; die();
 		$query = sprintf("SELECT * FROM kfe_sellers WHERE id IN (%s)", join(',', $this->postvars['id']));
 
+		$this->isAjax = true;
+		$this->isJson = true;
 		$sellers = $this->Seller->query($query);
-
-
 
 		$mailBatch = [
 			'sellers' => $sellers,
@@ -111,34 +113,35 @@ class SellersMailController extends ApplicationController {
 		$this->isAjax = true;
 		$this->isJson = true;
 
-		$maillBatch = $this->Session->getSessionVar('mailBatch');
-
 		$count = 0;
 		$success = 0;
-		for ($i = 0; $i < $mailBatch['batch_size'] && $i < count($this->mailBatch['sellers']); $i++) {
-			$j = $mailBatch['iter'] + $i;
-			$seller = $mailBatch['sellers'][$j];
+		$maillBatch = $this->Session->getSessionVar('mailBatch');
+		if (!empty($mailBatch)) {
+			for ($i = 0; $i < $mailBatch['batch_size'] && $i < count($this->mailBatch['sellers']); $i++) {
+				$j = $mailBatch['iter'] + $i;
+				$seller = $mailBatch['sellers'][$j];
 
-			// Parse message, e.g. to personalize ..
-			$this->Parser->setMultipleParserVars($seller);
-			$mailContent = $this->Parser->parse($mailBatch['message']);
+				// Parse message, e.g. to personalize ..
+				$this->Parser->setMultipleParserVars($seller);
+				$mailContent = $this->Parser->parse($mailBatch['message']);
 
-			// Parse mail frame template
-			$this->Parser->setParserVar('mailContent', $mailContent);
-			$html = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/email.tpl');
+				// Parse mail frame template
+				$this->Parser->setParserVar('mailContent', $mailContent);
+				$html = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/email.tpl');
 
-			// Send mail
-			$check = $this->Mail->send([
-				'recipient' => $seller['seller_email'],
-				'subject' => $mailBatch['subject'],
-				'text' => strip_tags($mailBatch['html']),
-				'html' => $mailBatch['html'],
-				'fake' => true
-			]);
+				// Send mail
+				$check = $this->Mail->send([
+					'recipient' => $seller['seller_email'],
+					'subject' => $mailBatch['subject'],
+					'text' => strip_tags($mailBatch['html']),
+					'html' => $mailBatch['html'],
+					'fake' => true
+				]);
 
-			$count++;
-			if ($check) {
-				$success++;
+				$count++;
+				if ($check) {
+					$success++;
+				}
 			}
 		}
 
@@ -151,8 +154,6 @@ class SellersMailController extends ApplicationController {
 			'total' => count[$mailBatch]['sellers']
 		];
 	}
-
-
 }
 
 $ctl = new SellersMailController();
