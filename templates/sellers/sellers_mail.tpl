@@ -29,6 +29,19 @@ input, textarea {
 	width: 100%;
 }
 
+#sellers-mail-form {
+	transition: 150ms ease-out;
+}
+
+#sellers-mail-form.is-busy {
+	opacity: 0.2;
+	pointer-events: none;
+}
+
+					.progress-wrapper {
+						display: flex;
+					}
+
 </style>
 
 
@@ -53,7 +66,6 @@ input, textarea {
 			</table>
 
 			<div class="action-area button-bar">
-				<button id="js-add-recipients-btn" class="cmtButton cmtButtonAdd">Empfänger hinzufügen</button>
 				<select id="market-id">
 					{LOOP VAR(markets)}
 						<option value="{VAR:id}">#{VAR:id} &ndash; {DATEFMT:"{VAR:market_begin}":"%d.%m.%Y"}</option>
@@ -91,6 +103,11 @@ input, textarea {
 			</div>
 
 			<div class="form-field">
+				<label for="settings-batch-pause">Pause zwischen Versand (in Sekunden)</label>
+				<input type="text" min="1" max="100" name="batch_pause" id="settings-batch-pause" value="{VAR:batchPause}" />
+			</div>
+
+			<div class="form-field">
 				<label for="sender-mail">Absender E-Mail Adresse</label>
 				<input type="text" name="sender_email" value="{VAR:senderEmail}" />
 			</div>
@@ -98,7 +115,10 @@ input, textarea {
 		</fieldset>
 		<fieldset class="progress">
 			<legend>Versand-Fortschritt</legend>
-			<progress value="0" id="js-progress" style="width: 100%"></progress>
+			<div class="progress-wrapper">
+				<progress value="0" id="js-progress" style="width: 100%"></progress>
+				<button id="cancel">Abbrechen</button>
+			</div>
 		</fieldset>
 	</form>
 </section>

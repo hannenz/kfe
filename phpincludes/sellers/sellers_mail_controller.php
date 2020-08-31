@@ -46,7 +46,8 @@ class SellersMailController extends ApplicationController {
 		$this->parser->setParserVar('markets', $markets);
 		$this->parser->setMultipleParserVars([
 			'senderEmail' => 'info@kinderflohmarkt-erbach.de',
-			'batchSize' => 25
+			'batchSize' => 25,
+			'batchPause' => 5 * 60
 		]);
 		$tpl = $this->templatesPath . "sellers_mail.tpl";
 		$this->content = $this->parser->parseTemplate($this->templatesPath . "sellers_mail.tpl");
@@ -114,7 +115,8 @@ class SellersMailController extends ApplicationController {
 			'iter' => 0,
 			'subject' => $this->postvars['subject'],
 			'message' => $this->postvars['text'],
-			'batch_size' => $this->postvars['batch_size']
+			'batch_size' => $this->postvars['batch_size'],
+			'batch_pause' => $this->postvars['batch_pause']
 		];
 
 		$this->session->setSessionVar('mailBatch', $mailBatch);
@@ -158,20 +160,25 @@ class SellersMailController extends ApplicationController {
 					$html = $this->parser->parseTemplate(PATHTOWEBROOT . '../templates/email.tpl');
 
 					// Send mail
-					Logger::log(sprintf("Sending E-Mail to <%s>", $seller['seller_email']));
-					$check = $this->Mail->send([
-						'recipient' => 'me@hannenz.de', //$seller['seller_email'],
+					$sendParams = [
+						'recipient' => $seller['seller_email'],
 						'subject' => $subject,
 						'text' => strip_tags($mailBatch['html']),
 						'html' => $html,
-						'fake' => false
-					]);
+						'fake' => true
+					];
+
+					$check = $this->Mail->send($sendParams);
+					Logger::log(sprintf("%s E-Mail to <%s>: %s",
+						$sendParams['fake'] ? "Faking" : "Sending",
+						$sendParams['recipient'],
+						$check ? "OK" : "FAILED"
+					), $check ? LOG_LEVEL_INFO : LOG_LEVEL_WARNING);
 					if (!$check) {
-						throw new Exception(sprintf("Sending mail to <%s> failed: %s", $seller['seller_email'], $this->Mail->getErrorMessage()));
+						throw new Exception(sprintf("Sending mail to <%s> failed: %s", $sendParams['recipient'], $this->Mail->getErrorMessage()));
 					}
 
 					$success++;
-					break;
 				}
 				catch (Exception $e) {
 					Logger::warn($e->getMessage());
