@@ -17,8 +17,6 @@ use \Contentomat\CmtPage;
 use \Contentomat\SessionHandler;
 use \Contentomat\DBCex;
 
-ini_set('display_errors', true);
-
 	/*
 	 * Do some loading work
 	 */
@@ -35,7 +33,6 @@ ini_set('display_errors', true);
 
     // Session überprüfen
     $cmt = Contentomat::getContentomat();
-	$cmt->setErrorReporting('error');
 	$page = new cmtPage();
     $session = SessionHandler::getSession();
 	$db = new DBCex();

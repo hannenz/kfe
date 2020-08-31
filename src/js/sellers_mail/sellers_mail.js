@@ -22,6 +22,7 @@ var SellersMail = function() {
 
 	this.marketIdSelect = document.getElementById('market-id');
 	this.recipientsCount = document.getElementById('recipients-count');
+	this.progressbar = document.getElementById('js-progress');
 
 	var addRecipientsBtn = document.getElementById('js-add-recipients-btn');
 	var addRecipientsByMarketBtn = document.getElementById('js-add-recipients-by-market-btn');
@@ -75,24 +76,27 @@ SellersMail.prototype.onRemoveAllRecipientsBtnClicked = function() {
 
 SellersMail.prototype.setupRecipientsTable = function() {
 
-	console.log('setupRecipientsTable');
-
 	this.recipientsTable = new Tabulator('#recipients-table', {
 		columns: [
-			{ title: "ID", field: "id", sorter: "number" },
+			{ title: "ID", field: "id", sorter: "number", "visible": false  },
 			{ title: "Verk.Nr", field: "seller_nr", sorter: "number" },
 			{ title: "E-Mail", field: "seller_email", sorter: "string" },
 			{ title: "Nachname", field: "seller_lastname", sorter: "string" },
 			{ title: "Vorname", field: "seller_firstname", sorter: "string" },
+			{ title: "Gesendet", type: "checkbox" }
 		],
 		height: 300,
-		layout: 'fitDataStretch'
+		layout: 'fitDataStretch',
+		layoutColumnsOnNewData: true
 	});
 };
 
 
 
 SellersMail.prototype.send = function() {
+
+	console.log("** Send **");
+
 	var data = new FormData(this.form);
 	var url = this.form.getAttribute('action');
 	var tableData = this.recipientsTable.getData();
@@ -100,24 +104,42 @@ SellersMail.prototype.send = function() {
 		return acc.concat(cur.id);
 	}, []);
 
+	SellersMail.total = ids.length;
+
 	data.set('id', ids);
+
+	this.Send
+
 	var req = new XMLHttpRequest();
 	req.open('POST', url);
 	req.onload = function(ev) {
-		if (ev.status >= 200 && ev.status < 400) {
+
+		if (req.status >= 200 && req.status < 400) {
 			// TODO: Evaluate successful load
+			console.log("Status OK");
 			this.sendBatch();
 		}
+
 	}.bind(this);
 	req.send(data);
 };
 
 
 SellersMail.prototype.sendBatch = function() {
-	$.get('?action=sendMailBatch', function(response) {
+
+	console.log("** SendBatch **");
+
+	$.get(window.location + '&action=sendMailBatch', function(response) {
 		var ret = JSON.parse(response);
-		if (ret.count < ret.total) {
-			this.sendBatch();
+
+		console.log("Sent " + ret.count + " of " + ret.total + " E-mails");
+		this.progressbar.value = ret.count / ret.total;
+
+		if (false && ret.count < ret.total) {
+			window.setTimeout(this.sendBatch.bind(this), 1500);
+		}
+		else {
+			console.log('** Done **');
 		}
 	}.bind(this));
 };

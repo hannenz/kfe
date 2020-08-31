@@ -60,9 +60,6 @@ if (!class_exists('\KFE\SellerBackendController')) {
 
 
 		public function init() {
-			$this->cmt->setErrorReporting('all');
-			error_reporting(E_ALL & ~E_NOTICE);
-			ini_set('display_errors', true);
 
 			$this->Seller = new Seller();
 			$this->Market = new Market();
@@ -229,8 +226,6 @@ if (!class_exists('\KFE\SellerBackendController')) {
 		 * @return void
 		 */
 		public function actionEdit() {
-
-			$this->cmt->setErrorReporting('error');
 
 			$content = sprintf('<a class="cmtButton" href="?sid=%s&cmtApplicationID=%u&action=sumsheet&seller_id=%u&market_id=%u">Summenblatt erzeugen</a>',
 				SID,

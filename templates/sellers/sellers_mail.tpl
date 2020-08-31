@@ -9,11 +9,11 @@
 }
 
 fieldset.recipients {
-	grid-column: 1 / 6;
+	grid-column: 1 / 8;
 }
 
 fieldset.message {
-	grid-column: 6 / -1;
+	grid-column: 8 / -1;
 }
 
 fieldset.settings {
@@ -21,12 +21,20 @@ fieldset.settings {
 	grid-row: 2;
 }
 
+fieldset.progress {
+	grid-column: 1 / -1;
+}
+
+input, textarea {
+	width: 100%;
+}
+
 </style>
 
 
 <section id="sellers-mail">
 
-	<h1>Rundmail</h1>
+	<h1>Rundmail verfassen</h1>
 
 	<form id="sellers-mail-form" name="sellersMailForm" method="post" action="{SELFURL}">
 		<input type="hidden" name="action" value="sendMail" />
@@ -35,13 +43,13 @@ fieldset.settings {
 			<legend><span id="recipients-count">0</span> Empfänger</legend>
 
 			<table id="recipients-table">
-				<tr class="recipient">
-					<td>{VAR:id}</td>
-					<td>{VAR:seller_nr}</td>
-					<td>{VAR:seller_email}</td>
-					<td>{VAR:seller_lastname}</td>
-					<td>{VAR:seller_firstname}</td>
-				</tr>
+				<!-- <tr class="recipient"> -->
+				<!-- 	<td>{VAR:id}</td> -->
+				<!-- 	<td>{VAR:seller_nr}</td> -->
+				<!-- 	<td>{VAR:seller_email}</td> -->
+				<!-- 	<td>{VAR:seller_lastname}</td> -->
+				<!-- 	<td>{VAR:seller_firstname}</td> -->
+				<!-- </tr> -->
 			</table>
 
 			<div class="action-area button-bar">
@@ -67,7 +75,7 @@ fieldset.settings {
 			</div>
 			<div class="form-field">
 				<label for="text">Text</label><br>
-				<textarea name="text" id="text" cols="100" rows="20" required>{VAR:text}</textarea>
+				<textarea name="text" id="text" cols="" rows="20" required>{VAR:text}</textarea>
 			</div>
 			<div class="form-field">
 				<button class="cmtButton">Senden</button>
@@ -79,18 +87,18 @@ fieldset.settings {
 
 			<div class="form-field">
 				<label for="settings-batch-size">Serienlänge</label>
-				<input type="number" min="1" max="10" name="batch_size" id="settings-batch-size" value="{VAR:batchSize}" />
+				<input type="number" min="1" max="100" name="batch_size" id="settings-batch-size" value="{VAR:batchSize}" />
 			</div>
 
 			<div class="form-field">
 				<label for="sender-mail">Absender E-Mail Adresse</label>
-				<input type="text" name="sender_email" value="{VAR:senerEmail}" />
+				<input type="text" name="sender_email" value="{VAR:senderEmail}" />
 			</div>
 
 		</fieldset>
-		<fieldset>
+		<fieldset class="progress">
 			<legend>Versand-Fortschritt</legend>
-			<progress id="js-progress"></progress>
+			<progress value="0" id="js-progress" style="width: 100%"></progress>
 		</fieldset>
 	</form>
 </section>

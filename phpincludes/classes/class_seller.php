@@ -738,9 +738,32 @@ class Seller extends Model {
 	}
 
 
+	/**
+	 * Return all employees (seller_nr betw. 300 - 400 and market #0)
+	 *
+	 * @return Array
+	 * @access public
+	 */
 	public function getEmployees() {
-		$employees = $this->findByMarket(0);
+		$employees = $this->filter([
+			'seller_nr >=' => 300,
+			'seller_nr <' => 400,
+			'seller_market_id' => 0
+		])->findAll();
 		return $employees;
+	}
+
+
+	/**
+	 * Get all employees from an array of IDs
+	 *
+	 * @param Array 		Array of IDs
+	 * @return Array 		data
+	 * @access public
+	 */
+	public function findAllByIds($ids) {
+		$query = sprintf("SELECT * FROM kfe_sellers WHERE id IN (%s)", join(',', $ids));
+		return $this->query($query);
 	}
 }
 ?>

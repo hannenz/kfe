@@ -3,8 +3,10 @@ namespace KFE;
 
 use Contentomat\Mail;
 use Contentomat\ApplicationController;
+use Contentomat\Logger;
 use KFE\Seller;
 use KFE\Market;
+use \Exception;
 
 
 class SellersMailController extends ApplicationController {
@@ -20,7 +22,6 @@ class SellersMailController extends ApplicationController {
 	 */
 	protected $Market;
 
-
 	/**
 	 * @var KFE\Seller
 	 */
@@ -28,11 +29,13 @@ class SellersMailController extends ApplicationController {
 
 
 	public function init() {
+
 		$this->cmt->addAutoloadNamespace('KFE', PATHTOWEBROOT . 'phpincludes/classes');
+		$this->parser->setDefaultTemplateBasePath(PATHTOWEBROOT . "templates/sellers/");
+
 		$this->Mail = new Mail();
 		$this->Seller = new Seller();
 		$this->Market = new Market();
-		$this->parser->setDefaultTemplateBasePath(PATHTOWEBROOT . "templates/sellers/");
 	}
 
 
@@ -40,17 +43,23 @@ class SellersMailController extends ApplicationController {
 	public function actionDefault() {
 		$sellers = $this->Seller->findAll();
 		$markets = $this->Market->findAll();
-		// echo '<pre>'; var_dump($markets); echo '</pre>'; die();
 		$this->parser->setParserVar('markets', $markets);
+		$this->parser->setMultipleParserVars([
+			'senderEmail' => 'info@kinderflohmarkt-erbach.de',
+			'batchSize' => 25
+		]);
 		$tpl = $this->templatesPath . "sellers_mail.tpl";
 		$this->content = $this->parser->parseTemplate($this->templatesPath . "sellers_mail.tpl");
 	}
+
 
 
 	public function actionAddRecipient() {
 		$this->isAjax = true;
 		$this->isJson = true;
 	}
+
+
 
 	public function actionAddRecipientsByMarket() {
 		$this->isAjax = true;
@@ -69,6 +78,7 @@ class SellersMailController extends ApplicationController {
 
 	/**
 	 * Send mail to sellers ("Rundmail")
+	 * Is this action unused/deprecated?
 	 *
 	 * @return void
 	 */
@@ -89,69 +99,96 @@ class SellersMailController extends ApplicationController {
 
 
 	public function actionSendMail() {
-		echo '<pre>'; var_dump($_REQUEST); echo '</pre>'; die();
-		$query = sprintf("SELECT * FROM kfe_sellers WHERE id IN (%s)", join(',', $this->postvars['id']));
 
 		$this->isAjax = true;
 		$this->isJson = true;
-		$sellers = $this->Seller->query($query);
+
+		$sellers = [];
+		$_sellers = $this->Seller->findAllByIds(explode(',', $this->postvars['id']));
+		foreach ($_sellers as $seller) {
+			$sellers[] = $seller;
+		}
 
 		$mailBatch = [
 			'sellers' => $sellers,
 			'iter' => 0,
 			'subject' => $this->postvars['subject'],
-			'message' => $this->postvars['message'],
-			'batch_size' => 5
+			'message' => $this->postvars['text'],
+			'batch_size' => $this->postvars['batch_size']
 		];
 
-		$this->Session->setSessionVar('mailBatch', $mailBatch);
+		$this->session->setSessionVar('mailBatch', $mailBatch);
+		$this->session->saveSessionVars();
 	}
 
 
 
 	public function actionSendMailBatch() {
+
 		$this->isAjax = true;
 		$this->isJson = true;
 
-		$count = 0;
 		$success = 0;
-		$maillBatch = $this->Session->getSessionVar('mailBatch');
+		$mailBatch = $this->session->getSessionVar('mailBatch');
+
 		if (!empty($mailBatch)) {
-			for ($i = 0; $i < $mailBatch['batch_size'] && $i < count($this->mailBatch['sellers']); $i++) {
-				$j = $mailBatch['iter'] + $i;
-				$seller = $mailBatch['sellers'][$j];
 
-				// Parse message, e.g. to personalize ..
-				$this->Parser->setMultipleParserVars($seller);
-				$mailContent = $this->Parser->parse($mailBatch['message']);
+			$k = $mailBatch['batch_size'];
 
-				// Parse mail frame template
-				$this->Parser->setParserVar('mailContent', $mailContent);
-				$html = $this->Parser->parseTemplate(PATHTOWEBROOT . 'templates/email.tpl');
+			while ($mailBatch['iter'] < count($mailBatch['sellers'])) {
 
-				// Send mail
-				$check = $this->Mail->send([
-					'recipient' => $seller['seller_email'],
-					'subject' => $mailBatch['subject'],
-					'text' => strip_tags($mailBatch['html']),
-					'html' => $mailBatch['html'],
-					'fake' => true
-				]);
-
-				$count++;
-				if ($check) {
-					$success++;
+				if (--$k < 0) {
+					break;
 				}
+
+				$seller = $mailBatch['sellers'][$mailBatch['iter']];
+				try {
+
+					if (!filter_var($seller['seller_email'], FILTER_VALIDATE_EMAIL)) {
+						throw new Exception(sprintf("Invalid email: <%s>", $seller['seller_email']));
+					}
+
+					// Parse message, e.g. to personalize ..
+					$this->parser->setMultipleParserVars($seller);
+					$mailContent = $this->parser->parse(nl2br($mailBatch['message']));
+					$subject = $this->parser->parse($mailBatch['subject']);
+
+					// Parse mail frame template
+					$this->parser->setParserVar('mailContent', $mailContent);
+					$html = $this->parser->parseTemplate(PATHTOWEBROOT . '../templates/email.tpl');
+
+					// Send mail
+					Logger::log(sprintf("Sending E-Mail to <%s>", $seller['seller_email']));
+					$check = $this->Mail->send([
+						'recipient' => 'me@hannenz.de', //$seller['seller_email'],
+						'subject' => $subject,
+						'text' => strip_tags($mailBatch['html']),
+						'html' => $html,
+						'fake' => false
+					]);
+					if (!$check) {
+						throw new Exception(sprintf("Sending mail to <%s> failed: %s", $seller['seller_email'], $this->Mail->getErrorMessage()));
+					}
+
+					$success++;
+					break;
+				}
+				catch (Exception $e) {
+					Logger::warn($e->getMessage());
+				}
+
+				$mailBatch['iter']++;
 			}
 		}
 
 		// Update batch counter
-		$mailBatch['iter'] += $i;
+		$this->session->setSessionVar('mailBatch', $mailBatch);
+		$this->session->saveSessionVars();
 
 		$this->content = [
 			'success' => $success,
-			'count' => $count,
-			'total' => count[$mailBatch]['sellers']
+			'count' => $mailBatch['iter'],
+			'total' => count($mailBatch['sellers'])
 		];
 	}
 }

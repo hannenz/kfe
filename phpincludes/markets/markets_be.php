@@ -1,8 +1,6 @@
 <?php
 namespace KFE;
 
-error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
-ini_set('display_errors', true);
 
 use \Contentomat\Logger;
 use \Contentomat\Parser;

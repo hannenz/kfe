@@ -25,6 +25,8 @@ define ('CMT_DEFAULTCHARSET', 'utf-8');
 // Name des Webs
 define ('WEBNAME', 'Kinderflohmarkt Erbach');
 
+define ('CMT_ERRORREPORTING_LEVEL', 'error');
+
 // Datenbankfehler Logging
 define ('CMT_DBERRORLOG', '1');
 

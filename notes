@@ -1,3 +1,10 @@
+2020-08-30 Glossar:
+
+- Mitarbeiter (Employees): seller_nr > 300
+- Stammkunden (): seller_nr BETWEEN 110 AND 200 (exclusive, > 110 && < 200)
+
+
+
 2020-01-19
 
 [✓] E-Mail Adressen einrichten: Wiebke
