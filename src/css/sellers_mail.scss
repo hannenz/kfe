@@ -1,0 +1,136 @@
+/**
+ * src/css/sellers_mail.scss
+ *
+ * @author Johannes Braun <johannes.braun@hannenz.de>
+ * @package kfe
+ * @version 2020-09-06
+ */
+@import "settings.scss";
+
+#sellers-mail {
+
+	padding-bottom: 10rem;
+
+
+	fieldset {
+		background-color: $grey-2;
+		border: 0;
+		padding: 1.5rem;
+		margin-top: 3rem;
+	}
+
+	legend {
+		background-color: $bg-color-2;
+		color: #fff;
+		padding: 4px;
+	}
+
+	input, textarea {
+		border: 0;
+		box-shadow: none;
+		padding: 6px;
+	}
+}
+
+#sellers-mail-form {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	grid-gap: 1rem;
+}
+
+fieldset.recipients {
+	grid-column: 1 / -1;
+}
+
+fieldset.message {
+	grid-column: 4 / -1;
+	grid-row: 2;
+}
+
+fieldset.settings {
+	grid-column: 1 / 4;
+	grid-row: 2;
+}
+
+fieldset.progress {
+	grid-column: 1 / -1;
+}
+
+input, textarea {
+	width: 100%;
+}
+
+#sellers-mail-form {
+	transition: 150ms ease-out;
+}
+
+#sellers-mail-form.is-busy {
+	opacity: 0.9;
+	pointer-events: none;
+}
+
+.progress-wrapper {
+	display: flex;
+	align-items: stretch;
+
+	#form-button {
+		background-color: $primary-color;
+		background-image: none;
+		text-shadow: none;
+		color: #fff;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		flex: 1 0 auto;
+		margin: 0;
+	}
+
+}
+
+.form-field + .form-field {
+	margin-top: 1.5rem;
+}
+	
+
+.progress {
+	height: 32px;
+	width: 100%;
+	background-color: $grey-4;
+	position: relative;
+}
+
+.progress-value {
+	background-color: $bg-color-1;
+	display: inline-block;
+	height: 100%;
+	width: 50%;
+}
+
+.progress::before {
+	content: attr(data-label);
+	color: #fff;
+	font-size: 12px;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	line-height: 32px;
+}
+
+.info {
+
+	dl {
+
+		dt {
+			width: 200px;
+			float: left;
+			clear: left;
+		}
+
+		dd {
+			margin: 0;
+		}
+	}
+}

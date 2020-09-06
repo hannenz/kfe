@@ -46,8 +46,10 @@ class SellersMailController extends ApplicationController {
 		$this->parser->setParserVar('markets', $markets);
 		$this->parser->setMultipleParserVars([
 			'senderEmail' => 'info@kinderflohmarkt-erbach.de',
-			'batchSize' => 25,
-			'batchPause' => 5 * 60
+			'batchSize' => 5, // 25,
+			'batchPause' => 5, // 5 * 60
+			'subject' => 'Test-Betreff',
+			'text' => 'Die ist nur eine Test-Mail. Bitte ignorieren.'
 		]);
 		$tpl = $this->templatesPath . "sellers_mail.tpl";
 		$this->content = $this->parser->parseTemplate($this->templatesPath . "sellers_mail.tpl");
@@ -132,6 +134,7 @@ class SellersMailController extends ApplicationController {
 
 		$success = 0;
 		$mailBatch = $this->session->getSessionVar('mailBatch');
+
 
 		if (!empty($mailBatch)) {
 

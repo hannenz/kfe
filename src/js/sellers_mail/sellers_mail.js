@@ -73,13 +73,13 @@ SellersMail.prototype.setupRecipientsTable = function() {
 			{ formatter: "rowSelection", titleFormatter: "rowSelection", align: "center", headerSort: false },
 			{ title: "ID", field: "id", sorter: "number", "visible": false  },
 			{ title: "Verk.Nr", field: "seller_nr", sorter: "number" },
-			{ title: "E-Mail", field: "seller_email", sorter: "string" },
 			{ title: "Nachname", field: "seller_lastname", sorter: "string" },
-			{ title: "Vorname", field: "seller_firstname", sorter: "string" }
+			{ title: "Vorname", field: "seller_firstname", sorter: "string" },
+			{ title: "E-Mail", field: "seller_email", sorter: "string" }
 		],
 		height: 300,
-		layout: 'fitDataTable',
-		layoutColumnsOnNewData: true,
+		layout: 'fitDataStretch',
+		layoutColumnsOnNewData: true
 	});
 };
 
@@ -89,7 +89,7 @@ SellersMail.prototype.send = function() {
 
 	this.batchPause = parseInt(document.querySelector('[name=batch_pause]').value);
 
-	this.form.classList.add('is-busy');
+	// this.form.classList.add('is-busy');
 
 	var data = new FormData(this.form);
 	var url = this.form.getAttribute('action');
@@ -99,6 +99,8 @@ SellersMail.prototype.send = function() {
 	}, []);
 
 	data.set('id', ids);
+
+	this.disableAll();
 
 	var req = new XMLHttpRequest();
 	req.open('POST', url);
@@ -119,29 +121,43 @@ SellersMail.prototype.sendBatch = function() {
 	$.get(window.location + '&action=sendMailBatch', function(response) {
 		var ret = JSON.parse(response);
 
-		this.progressbar.innerText = "Sent " + ret.count + " of " + ret.total + " E-mails";
-		this.progressbar.value = ret.count / ret.total;
+		this.progressbar.dataset.label = "Sent " + ret.count + " of " + ret.total + " E-mails";
+		this.progressbar.querySelector('.progress-value').style.width = ret.count / ret.total * 100 + '%';
 
 		if (ret.count < ret.total) {
 
-			// var seconds = this.batchPause;
-			// var iv = window.setInterval(function() {
-            //
-			// 	this.progressbar.innerText = "Waiting " + (seconds) + " seconds …";
-            //
-			// 	if (seconds-- < 0) {
-			// 		this.sendBatch().bind(this);
-			// 		window.clearInterval(iv);
-			// 	}
-			// }.bind(this), 1000);
+			var seconds = this.batchPause;
+			var iv = window.setInterval((that) => {
 
-			window.setTimeout(this.sendBatch.bind(this), this.batchPause * 1000);
+				var message = "Waiting " + (seconds) + " seconds …";
+				this.progressbar.dataset.label =  message;
+
+				if (seconds-- == 0) {
+					that.sendBatch();
+					window.clearInterval(iv);
+				}
+			}, 1000, this);
 		}
 		else {
-			this.form.classList.remove('is-busy');
+			// this.form.classList.remove('is-busy');
+			this.enableAll();
 		}
 	}.bind(this));
 };
+
+SellersMail.prototype.disableAll = function() {
+	var inputs = this.form.querySelectorAll('input, textarea');
+	inputs.forEach( (el) => {
+		el.setAttribute('disabled', 'disabled');
+	});
+}
+
+SellersMail.prototype.enableAll = function() {
+	var inputs = this.form.querySelectorAll('input, textarea');
+	inputs.forEach( (el) => {
+		el.removeAttribute('disabled');
+	});
+}
 
 
 $(function() {
