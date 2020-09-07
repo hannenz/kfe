@@ -1,9 +1,3 @@
-<script src="{PATHTOWEBROOT}/dist/js/sellers_mail.js"></script>
-<script src="{PATHTOWEBROOT}/dist/js/vendor/tabulator.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{PATHTOWEBROOT}/dist/css/vendor/tabulator.min.css" />
-<link rel="stylesheet" type="text/css" href="{PATHTOWEBROOT}/dist/css/sellers_mail.css" />
-
-
 <section id="sellers-mail">
 
 	<h1>Rundmail verfassen</h1>
@@ -26,9 +20,8 @@
 				<button id="js-add-recipients-employees-btn" class="cmtButton cmtButtonAdd">Alle Mitarbeiter hinzufügen</button>
 				<button id="js-remove-all-recipients-btn" class="cmtButton cmtButtonDelete">Alle Empfänger entfernen</button>
 			</div>
+
 		</fieldset>
-
-
 
 		<fieldset class="message">
 			<legend>Nachricht verfassen</legend>
@@ -56,13 +49,14 @@
 			</div>
 			<div class="form-field">
 
-				<div class="progress">
-					<div class="progress-wrapper">
-						<div id="js-progress" class="progress" data-label="">
-							<span class="progress-value" style="width: 0%"></span>
-						</div>
-						<button id="form-button" class="cmtButton">Senden</button>
+				<div class="progress-wrapper">
+					<div id="js-progress" class="progress" data-label="">
+						<span class="progress-value" style="width: 0%;"></span>
 					</div>
+					<button id="form-button" class="nocmtButton">
+						<span class="button-label button-label--send">Senden</span>
+						<span class="button-label button-label--abort">Abbrechen</span>
+					</button>
 				</div>
 
 			</div>
@@ -89,3 +83,9 @@
 		</fieldset>
 	</form>
 </section>
+
+<script src="{PATHTOWEBROOT}/dist/js/sellers_mail.js"></script>
+<script src="{PATHTOWEBROOT}/dist/js/vendor/tabulator.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{PATHTOWEBROOT}/dist/css/vendor/tabulator.min.css" />
+<link rel="stylesheet" type="text/css" href="{PATHTOWEBROOT}/dist/css/sellers_mail.css" />
+

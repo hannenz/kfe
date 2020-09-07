@@ -8,12 +8,28 @@
 
 var SellersMail = function() {
 
+	this.isBusy = false;
+
 	this.recipientsTable;
 	this.baseUrl = $('#sellers-mail-form').attr('action');
 	this.form = document.forms.sellersMailForm;
-	this.form.addEventListener('submit', function(ev) {
+
+	this.formButton = document.getElementById('form-button');
+	this.formButton.disabled = true;
+	console.log(this.formButton);
+	this.formButton.addEventListener('click', function(ev) {
+	// this.form.addEventListener('submit', function(ev) {
 		ev.preventDefault();
-		this.send();
+		console.log("Click!");
+		if (!this.isBusy) {
+			this.isBusy = true;
+			this.form.classList.add('is-busy');
+			this.send();
+		}
+		else {
+			this.isBusy = false;
+			this.form.classList.remove('is-busy');
+		}
 	}.bind(this));
 
 	this.setupRecipientsTable.bind(this)();
@@ -27,7 +43,14 @@ var SellersMail = function() {
 	var removeAllRecipientsBtn = document.getElementById('js-remove-all-recipients-btn');
 
 	addRecipientsByMarketBtn.addEventListener('click', this.onAddRecipientsByMarketBtnClicked.bind(this));
-	addRecipientsEmployeesBtn.addEventListener('click', this.onAddRecipientsEmployeesBtnClicked.bind(this));
+	addRecipientsEmployeesBtn.addEventListener('click', (ev) => {
+		ev.preventDefault();
+		this.onAddRecipientsEmployeesBtnClicked();
+	});
+
+	// For testing only!!
+	this.onAddRecipientsEmployeesBtnClicked();
+
 	removeAllRecipientsBtn.addEventListener('click', this.onRemoveAllRecipientsBtnClicked.bind(this));
 }
 
@@ -49,7 +72,6 @@ SellersMail.prototype.onAddRecipientsByMarketBtnClicked = function(ev) {
 
 SellersMail.prototype.onAddRecipientsEmployeesBtnClicked = function(ev) {
 
-	ev.preventDefault();
 
 	$.get(this.baseUrl + '&action=addRecipientsEmployees',  function(response) {
 		var data = JSON.parse(response);
@@ -79,7 +101,11 @@ SellersMail.prototype.setupRecipientsTable = function() {
 		],
 		height: 300,
 		layout: 'fitDataStretch',
-		layoutColumnsOnNewData: true
+		layoutColumnsOnNewData: true,
+		// En-/Disable submit button depending on nr. of selected sellers
+		rowSelectionChanged: function(data, rows) {
+			this.formButton.disabled = (rows.length == 0);
+		}.bind(this)
 	});
 };
 
