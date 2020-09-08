@@ -6,30 +6,31 @@
  * @version 2020-07-05
  */
 
-var SellersMail = function() {
+const State = {
+	INITIAL: 'initial',
+	RUNNING: 'running',
+	PAUSED: 'paused',
+	ABORTED: 'aborted',
+	FINISHED: 'finished'
+};
 
-	this.isBusy = false;
+var SellersMail = function() {
 
 	this.recipientsTable;
 	this.baseUrl = $('#sellers-mail-form').attr('action');
 	this.form = document.forms.sellersMailForm;
 
 	this.formButton = document.getElementById('form-button');
+
 	this.formButton.disabled = true;
-	console.log(this.formButton);
+
+	this.state = State.INITIAL;
+	this.isBusy = false;
+
 	this.formButton.addEventListener('click', function(ev) {
 	// this.form.addEventListener('submit', function(ev) {
 		ev.preventDefault();
-		console.log("Click!");
-		if (!this.isBusy) {
-			this.isBusy = true;
-			this.form.classList.add('is-busy');
-			this.send();
-		}
-		else {
-			this.isBusy = false;
-			this.form.classList.remove('is-busy');
-		}
+		this.onFormButtonClicked();
 	}.bind(this));
 
 	this.setupRecipientsTable.bind(this)();
@@ -45,7 +46,7 @@ var SellersMail = function() {
 	addRecipientsByMarketBtn.addEventListener('click', this.onAddRecipientsByMarketBtnClicked.bind(this));
 	addRecipientsEmployeesBtn.addEventListener('click', (ev) => {
 		ev.preventDefault();
-		this.onAddRecipientsEmployeesBtnClicked();
+		this.onAddRecipientsEmployeesBtnClicked().bind(this);
 	});
 
 	// For testing only!!
@@ -54,6 +55,26 @@ var SellersMail = function() {
 	removeAllRecipientsBtn.addEventListener('click', this.onRemoveAllRecipientsBtnClicked.bind(this));
 }
 
+SellersMail.prototype.onFormButtonClicked = function() {
+	switch (this.state) {
+		case State.INITIAL:
+			this.isBusy = true;
+			this.form.classList.add('is-busy');
+			this.send();
+			this.state = State.RUNNING;
+			break;
+		case State.RUNNING:
+			this.isBusy = false;
+			// this.form.classList.remove('is-busy');
+			this.state = State.ABORTED;
+			this.progressbar.dataset.label = "Aborted";
+
+			// We keep the UI disabled
+			// this.enableAll();
+			this.formButton.disabled = true;
+			break;
+	}
+}
 
 
 SellersMail.prototype.onAddRecipientsByMarketBtnClicked = function(ev) {
@@ -113,6 +134,9 @@ SellersMail.prototype.setupRecipientsTable = function() {
 
 SellersMail.prototype.send = function() {
 
+	this.state = State.RUNNING;
+
+	this.progressbar.dataset.label = "Sending next batch of E-Mails";
 	this.batchPause = parseInt(document.querySelector('[name=batch_pause]').value);
 
 	// this.form.classList.add('is-busy');
@@ -145,6 +169,10 @@ SellersMail.prototype.send = function() {
 SellersMail.prototype.sendBatch = function() {
 
 	$.get(window.location + '&action=sendMailBatch', function(response) {
+		if (this.state != State.RUNNING) {
+			return;
+		}
+
 		var ret = JSON.parse(response);
 
 		this.progressbar.dataset.label = "Sent " + ret.count + " of " + ret.total + " E-mails";
@@ -155,18 +183,30 @@ SellersMail.prototype.sendBatch = function() {
 			var seconds = this.batchPause;
 			var iv = window.setInterval((that) => {
 
-				var message = "Waiting " + (seconds) + " seconds …";
-				this.progressbar.dataset.label =  message;
+				if (this.state != State.RUNNING) {
+					window.clearInterval(iv);
+					return;
+				}
 
-				if (seconds-- == 0) {
+				if (seconds <= 0) {
 					that.sendBatch();
 					window.clearInterval(iv);
+					return;
 				}
+
+				var message = "Waiting " + (seconds) + " seconds …";
+				this.progressbar.dataset.label =  message;
+				seconds--;
+
 			}, 1000, this);
 		}
 		else {
-			// this.form.classList.remove('is-busy');
-			this.enableAll();
+			if (this.state!= State.ABORTED) {
+				// DONE!
+				this.enableAll();
+				this.state = State.FINISHED;
+				this.progressbar.dataset.label = "Done.";
+			}
 		}
 	}.bind(this));
 };
