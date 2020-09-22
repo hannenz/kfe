@@ -46,8 +46,8 @@ class SellersMailController extends ApplicationController {
 		$this->parser->setParserVar('markets', $markets);
 		$this->parser->setMultipleParserVars([
 			'senderEmail' => 'info@kinderflohmarkt-erbach.de',
-			'batchSize' => 5, // 25,
-			'batchPause' => 5, // 5 * 60
+			'batchSize' => 20,
+			'batchPause' => 5 * 60,
 			'subject' => 'Test-Betreff',
 			'text' => 'Die ist nur eine Test-Mail. Bitte ignorieren.'
 		]);
@@ -168,7 +168,7 @@ class SellersMailController extends ApplicationController {
 						'subject' => $subject,
 						'text' => strip_tags($mailBatch['html']),
 						'html' => $html,
-						'fake' => true
+						'fake' => false
 					];
 
 					$check = $this->Mail->send($sendParams);

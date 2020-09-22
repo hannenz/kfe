@@ -8,6 +8,16 @@ use Contentomat\CmtPage;
 use Contentomat\Contentomat;
 use Contentomat\Session;
 
+abstract class MarketState {
+	const INACTIVE = 0;
+	const UPCOMING = 1;
+	const NEXT_UPCOMING = 2;
+	const RUNNING = 3;
+	const CANCELLED = 4;
+	const PAST = 5;
+}
+
+
 class Market extends Model {
 
 	/**
