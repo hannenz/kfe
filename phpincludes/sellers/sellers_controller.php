@@ -105,7 +105,7 @@ class SellersController extends Controller {
 	 *
 	 * @return void
 	 */
-	protected function actionDefault() {
+	public function actionDefault() {
 		$this->changeAction('registrate');
 	}
 
