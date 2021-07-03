@@ -73,8 +73,7 @@ define ('INCLUDEPATHTOADMIN', INCLUDEPATH.ADMINPATH);
 
 define ('PATHTOTMP', INCLUDEPATH . 'tmp' . DIRECTORY_SEPARATOR);
 
-
-@require_once(PATHTOADMIN . 'includes' . DIRECTORY_SEPARATOR . 'logger.inc');
+require_once(PATHTOADMIN . 'includes' . DIRECTORY_SEPARATOR . 'logger.inc');
 // Log Level (see admin/classes/class_logger.php for available values and their meanings)
 // Only log messages with this or higher log level
 define ('CMT_LOG_LEVEL', LOG_LEVEL_INFO);
