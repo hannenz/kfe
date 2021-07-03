@@ -696,14 +696,26 @@ class Seller extends Model {
 
 	public function sendActivationMail($seller, $activationPageId) {
 
-		if (
-				empty($seller) ||
-				(bool)$seller['seller_is_activated'] == true ||
-				!preg_match('/[a-fA-F0-9]/', $seller['seller_activation_hash']) ||
-				!filter_var($seller['seller_email'], FILTER_VALIDATE_EMAIL)
-			) {
-				throw new Exception("Cannot send activation link to seller.");
+		if (empty($seller)) {
+			throw new Exception('Seller is empty');
 		}
+		if ((bool)$seller['seller_is_activated'] == true) {
+			throw new Exception('Seller is already activated');
+		}
+		if (!preg_match('/a-fA-F0-9]/', $seller['seller_activation_hash'])) {
+			throw new Exception('Invalid hash');
+		}
+		if (!filter_var($seller['seller_email'], FILTER_VALIDATE_EMAIL)) {
+			throw new Exception('Invalid email: ' . $seller['seller_email']);
+		}
+		// if (
+		// 		empty($seller) ||
+		// 		(bool)$seller['seller_is_activated'] == true ||
+		// 		!preg_match('/[a-fA-F0-9]/', $seller['seller_activation_hash']) ||
+		// 		!filter_var($seller['seller_email'], FILTER_VALIDATE_EMAIL)
+		// 	) {
+		// 		throw new Exception("Cannot send activation link to seller.");
+		// }
 
 		$activationUrl = sprintf('http%s://%s%s%s?action=activate&hash=%s',
 			!empty($_SERVER['HTTPS']) ? 's' : '', 
