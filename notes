@@ -1,3 +1,34 @@
+---------------------------------------------------------------------------
+2021-07-02
+Rekonstruiere:
+
+Laut Backend gab es diese Märkte:
+12.10.2019 		hat stattgefunden
+14.03.2020 		laut Mail v. 1.09. an nummernvergabe@kinderflohmarkt-erbach.de ist der bereits wegen Corona ausgefallen ?!!?
+17.10.2020 		cancelled (wegen Corona)
+20.03.2021		cancelled (wegen Corona)
+12.06.2021 		cancelled (wegen Mitarbeitermangel)
+
+nach dieser Rekonstruktion müsste es aber bereits einen Markt im Frühjahr 2019 gegeben haben, da ich sicher bin, dass bereits 2 Märkte mit dem CMT System ausgetragen wurden.
+---------------------------------------------------------------------------
+
+
+2021-07-02
+Möglichkeiten zum Upgrade:
+CMT 1.21.0
+-> Export built-in (Verkäufer)
+-> REST Api könnte zwischen Kasse und Backend eingesetzt werden (ist das eine gute Idee?)
+	Vorteil: Kasse könnte losgelöste SPA sein (Vue.js ?!?)
+	Nachteil: Vorgang und Items müssten getrennt übertragen werden, keine (Rück-)kopplung möglich
+				Never change a running system. Läuft ja eigentlich gut so wie es ist
+-> Javascript als Module, als echte Klassen implementieren (`class`)
+-> Vorgänge -> Items könnten als Tabellentabellen implementiert werden (Speed) oder (wieder) als JSON-Tabelle (Convenience)
+-> deploy script
+-> backup / cron einrichten (aktuellste Version)
+-> Rundmail an Verkäfer fertig umsetzen
+
+
+
 2020-08-30 Glossar:
 
 - Mitarbeiter (Employees): seller_nr > 300
