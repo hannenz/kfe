@@ -1,0 +1,37 @@
+{
+	"production": {
+		"mode": "ssh",
+		"hostname": "kinderflohmarkt-erbach.de@ssh.kinderflohmarkt-erbach.de",
+		"ftp_hostname": "",
+		"ftp_username": "",
+		"ftp_password": "",
+		"remote_dir": "/www",
+		"local_dir": ".",
+		"db_settings_file": "admin/settings_db.inc",
+		"deploy_dirs": [
+			"phpincludes",
+			"templates",
+			"dist",
+			"index.php",
+			"cmt_constants.inc",
+			"robots.txt",
+			".htaccess"
+		],
+		"fetch_dirs": [
+			"media"
+		],
+		"deployignore": [
+			".git*",
+			"node_modules",
+			"package.json",
+			"package-lock.json",
+			"*.map",
+			"Session.vim",
+			"*~",
+			"*.sw?",
+			".DS_Store"
+		],
+		"fetchignore": [
+		]
+	}
+}
