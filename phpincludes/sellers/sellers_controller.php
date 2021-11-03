@@ -210,7 +210,7 @@ class SellersController extends Controller {
 	 */
 	protected function sendActivationLink($email, $hash) {
 		try {
-			$this->Seller->sendActivationMail($email, $hash, $this->activationPageId);
+			$this->Seller->sendActivationMail($email, $this->activationPageId);
 		}
 		catch (Exception $e) {
 			die ($e->getMessage());

@@ -694,7 +694,8 @@ class Seller extends Model {
 
 
 
-	public function sendActivationMail($seller, $activationPageId) {
+	public function sendActivationMail($email, $activationPageId) {
+		$seller = $this->filter(['seller_email' => $email])->findOne();
 
 		if (empty($seller)) {
 			throw new Exception('Seller is empty');
@@ -702,7 +703,7 @@ class Seller extends Model {
 		if ((bool)$seller['seller_is_activated'] == true) {
 			throw new Exception('Seller is already activated');
 		}
-		if (!preg_match('/a-fA-F0-9]/', $seller['seller_activation_hash'])) {
+		if (!preg_match('/^[a-fA-F0-9]{64}$/', $seller['seller_activation_hash'])) {
 			throw new Exception('Invalid hash');
 		}
 		if (!filter_var($seller['seller_email'], FILTER_VALIDATE_EMAIL)) {
@@ -748,6 +749,7 @@ class Seller extends Model {
 			echo '<pre>'; var_dump($this->Mail->getErrorMessage()); echo '</pre>'; die();
 		}
 	}
+
 
 
 	/**
