@@ -7,7 +7,6 @@ use KFE\Seller;
 use Contentomat\Logger;
 use Contentomat\Contentomat;
 use Contentomat\Controller;
-use Contentomat\PsrAutoloader;
 
 use \Exception;
 
@@ -180,9 +179,6 @@ class CartsController extends Controller {
 	}
 }
 
-$al = new PsrAutoloader();
-$al->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");
-$al->addNamespace('KFE', PATHTOWEBROOT . "phpincludes/classes");
 
 $ctl = new CartsController();
 $content = $ctl->work();

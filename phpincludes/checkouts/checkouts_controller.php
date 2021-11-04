@@ -5,7 +5,6 @@ use KFE\Market;
 use KFE\Seller;
 use Contentomat\Contentomat;
 use Contentomat\ApplicationController;
-use Contentomat\PsrAutoloader;
 use Contentomat\Logger;
 use KFE\Cart;
 
@@ -179,11 +178,6 @@ class CheckoutsController extends ApplicationController {
 
 	}
 }
-
-
-$al = new PsrAutoloader();
-$al->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");
-$al->addNamespace('KFE', PATHTOWEBROOT . "phpincludes/classes");
 
 $ctl = new CheckoutsController();
 $content = $ctl->work();

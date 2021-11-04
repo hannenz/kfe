@@ -3,7 +3,6 @@ namespace KFE;
 
 use Contentomat\Contentomat;
 use Contentomat\Controller;
-use Contentomat\PsrAutoloader;
 use KFE\LabelSheet;
 use KFE\Market;
 use KFE\Seller;
@@ -146,10 +145,6 @@ class LabelsController extends Controller {
 		$this->content = compact('success');
 	}
 }
-
-$autoLoader = new PsrAutoloader();
-$autoLoader->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");
-$autoLoader->addNamespace('KFE', PATHTOWEBROOT . "phpincludes/classes");
 
 $ctl = new LabelsController();
 $content = $ctl->work();

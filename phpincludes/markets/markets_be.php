@@ -4,7 +4,6 @@ namespace KFE;
 
 use \Contentomat\Logger;
 use \Contentomat\Parser;
-use \Contentomat\PsrAutoloader;
 use \Contentomat\ApplicationController;
 use \KFE\Market;
 use \KFE\Seller;
@@ -138,10 +137,6 @@ class MarketBackendController extends ApplicationController {
 		}
 	}
 }
-
-$autoLoader = new PsrAutoloader();
-$autoLoader->addNamespace('Contentomat', INCLUDEPATHTOADMIN . 'classes');
-$autoLoader->addNamespace('KFE', PATHTOWEBROOT . 'phpincludes/classes');
 
 $ctl = new MarketBackendController();
 $content = $ctl->work();

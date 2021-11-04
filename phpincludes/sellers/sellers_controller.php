@@ -3,7 +3,6 @@ namespace KFE;
 
 use Contentomat\Contentomat;
 use Contentomat\Controller;
-use Contentomat\PsrAutoloader;
 use Contentomat\Mail;
 use Contentomat\CmtPage;
 use Contentomat\Logger;
@@ -381,10 +380,6 @@ class SellersController extends Controller {
 		return $this->changeAction('login');
 	}
 }
-
-$autoLoader = new PsrAutoloader();
-$autoLoader->addNamespace('Contentomat', INCLUDEPATHTOADMIN . "classes");
-$autoLoader->addNamespace('KFE', PATHTOWEBROOT . "phpincludes/classes");
 
 $ctl = new SellersController();
 $content = $ctl->work();

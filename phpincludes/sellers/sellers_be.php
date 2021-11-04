@@ -14,7 +14,6 @@ if (!defined("CMT_APPLAUNCHER")) {
 	exit();
 }
 
-use \Contentomat\PsrAutoloader;
 use \Contentomat\ApplicationController;
 use \Contentomat\Parser;
 use \Contentomat\Contentomat;
@@ -239,9 +238,6 @@ if (!class_exists('\KFE\SellerBackendController')) {
 }
 
 
-$autoLoader = new PsrAutoloader();
-$autoLoader->addNamespace('Contentomat', INCLUDEPATHTOADMIN . 'classes');
-$autoLoader->addNamespace('KFE', PATHTOWEBROOT . 'phpincludes/classes');
 
 $ctl = new SellerBackendController();
 // $sellerSumSheet = $ctl->work();

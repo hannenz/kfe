@@ -4,7 +4,6 @@ namespace KFE;
 use KFE\Market;
 use Contentomat\Controller;
 use Contentomat\Contentomat;
-use Contentomat\PsrAutoloader;
 
 
 if (!class_exists('\KFE\MarketsController')) {
@@ -159,9 +158,6 @@ if (!class_exists('\KFE\MarketsController')) {
 	}
 }
 
-$autoLoad = new PsrAutoloader();
-$autoLoad->addNamespace('KFE', PATHTOWEBROOT . 'phpincludes/classes');
-$autoLoad->addNamespace('Contentomat', INCLUDEPATHTOADMIN , 'classes');
 $ctl = new MarketsController();
 $content = $ctl->work();
 ?>

@@ -1,7 +1,6 @@
 <?php
 namespace KFE;
 
-use Contentomat\PsrAutoloader;
 use Contentomat\MLog\Posts;
 use Contentomat\Controller;
 
@@ -13,6 +12,7 @@ class MLogController extends Controller {
 	protected $Post;
 
 	public function init() {
+		$this->cmt->addAutoloadNamespace('Contentomat\MLog\\', INCLUDEPATHTOADMIN.'classes/app_mlog');
 		$this->Post = new Posts();
 		$this->templatesPath = PATHTOWEBROOT . 'templates/mlog/';
 	}
@@ -24,8 +24,5 @@ class MLogController extends Controller {
 	}
 }
 
-$autoload = new PsrAutoloader();
-$autoload->addNamespace('Contentomat', INCLUDEPATHTOADMIN . 'classes');
-$autoload->addNamespace('Contentomat\MLog', INCLUDEPATHTOADMIN . 'classes/app_mlog');
 $ctl = new MLogController();
 $content = $ctl->work();
