@@ -54,3 +54,4 @@ sitemap.xml
 phpincludes/vendor
 *.sql.gz
 fetch-backups
+/contentomat
