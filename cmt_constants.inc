@@ -26,7 +26,7 @@ setConstant('WEBNAME', 'Kinderflohmarkt Erbach');
 setConstant('APP_NAMESPACE', 'KFE');
 
 // Error reporting level: One of 'all', 'warning', 'strict' or 'error'
-setConstant('CMT_ERRORREPORTING_LEVEL', 'warning');
+setConstant('CMT_ERRORREPORTING_LEVEL', 'none');
 
 /**
  * Localasation settings

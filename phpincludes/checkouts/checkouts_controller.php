@@ -60,6 +60,7 @@ class CheckoutsController extends ApplicationController {
 		$this->Market = new Market();
 		$this->Seller = new Seller();
 		$this->Cart = new Cart();
+
 		$this->parser->setDefaultTemplateBasePath(PATHTOWEBROOT . "templates/checkouts/");
 
 		if (!empty($_REQUEST['marketId'])) {

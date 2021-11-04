@@ -45,7 +45,7 @@ Checkout.prototype.init = function() {
 Checkout.prototype.setup = function() {
 
 	this.setupBarcodeScanner();
-	this.setupCameraBarcodeScanner();
+	// this.setupCameraBarcodeScanner();
 	this.setupOnlineOffline();
 	this.setupBeforeUnload();
 

@@ -80,7 +80,7 @@
 	</div>
 
 	<p>
-		<input type="checkbox" id="live-cbx" /><label for="live-cbx">Live Monitor</label>
+		<input type="checkbox" id="live-cbx" checked /><label for="live-cbx">Live Monitor</label>
 	</p>
 
 	<div id="heartbeat">↻</div>

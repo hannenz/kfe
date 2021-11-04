@@ -41,25 +41,37 @@
 
 		var src = null;
 
-		document.getElementById('live-cbx').addEventListener('change', function() {
+		let liveCheckbox = document.getElementById('live-cbx');
+		liveCheckbox.addEventListener('change', function() {
 			if (this.checked) {
-				console.log("Starintg live poll");
-				src = new EventSource(url);
-				src.addEventListener('error', function(ev) {
-					console.log("Event Stream Error");
-				});
-				src.addEventListener('ping', onPing);
+				startPoll();
 			}
 			else {
-				console.log("Stopping live poll");
-				src.removeEventListener('ping', onPing);
-				src.close();
+				stopPoll();
 			}
 		});
 
+		if (liveCheckbox.checked) {
+			startPoll();
+		}
+
+		function startPoll() {
+			src = new EventSource(url);
+			src.addEventListener('error', function(ev) {
+				console.log('Event Stream Error');
+			});
+			src.addEventListener('ping', onPing);
+		}
+
+		function stopPoll() {
+			src.removeEventListener('ping', onPing);
+			src.close();
+		}
+
+
 		function onPing(event) {
 			var data = JSON.parse(event.data);
-			console.log(data);
+			// console.log(data);
 
 			pieTurnover.dataset.values = data.turnoverSellers + ' ' + data.turnoverEmployees;
 			document.getElementById('turnover-total').innerHTML = (data.turnoverSellers + data.turnoverEmployees).toLocaleString('de', localeStringOptions);

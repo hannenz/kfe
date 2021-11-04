@@ -7,7 +7,7 @@
 		"ftp_password": "",
 		"remote_dir": "/www",
 		"local_dir": ".",
-		"db_settings_file": "admin/settings_db.inc",
+		"db_settings_file": "contentomat/settings_db.inc",
 		"deploy_dirs": [
 			"phpincludes",
 			"templates",

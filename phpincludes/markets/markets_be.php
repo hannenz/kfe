@@ -13,11 +13,11 @@ use \KFE\Item;
 
 class MarketBackendController extends ApplicationController {
 
-
-	// /**
-	// /* @var Contentomat\Parser;
-	//  */
-	// protected $Parser;
+	/**
+	 * @var int	
+	 * Interval in secods for server-side-events / loop
+	 */
+	protected $delay = 5;
 
 	/**
 	 * @var KFE\Market
@@ -66,7 +66,7 @@ class MarketBackendController extends ApplicationController {
 	protected function actionDefault() {
 		$MyParser = new \Contentomat\Parser();
 		$MyParser->setParserVar('marketId', $this->marketId);
-		$markets = $this->Market->findAll();
+		$markets = $this->Market->order(['market_begin' => 'desc'])->findAll();
 		$MyParser->setParserVar('markets', $markets);
 		$this->content = $MyParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/default.tpl');
 	}
@@ -96,12 +96,16 @@ class MarketBackendController extends ApplicationController {
 		$MyParser->setParserVar('marketId', $this->marketId);
 		// $MyParser->setParserVar('marketDateFmt', strftime('%d.%m.%Y', strtotime($market['market_begin'])));
 
-		$MyParser->setParserVar('loopUrl', sprintf('https://%s/admin/cmt_applauncher.php?sid=%s&cmtApplicationID=%u&action=evaluateLoop&marketId=%u',
+		$applicationId = 151;
+
+		$loopUrl = sprintf('https://%s/%sApplicationLauncher.php?sid=%s&cmtApplicationID=%u&action=evaluateLoop&marketId=%u',
 			$_SERVER['SERVER_NAME'],
+			ADMINPATH,
 			SID,
-			$this->applicationID,
+			$applicationId,
 			$this->marketId
-		));
+		);
+		$MyParser->setParserVar('loopUrl', $loopUrl);
 
 		$this->content = $MyParser->parseTemplate(PATHTOWEBROOT . 'templates/markets/be/evaluation.tpl');
 	}
@@ -116,9 +120,8 @@ class MarketBackendController extends ApplicationController {
 			return;
 		}
 
-		$delay = 2;
 		if (!empty($this->getvars['delay'])) {
-			$delay = (int)$this->getvars['delay'];
+			$this->delay = (int)$this->getvars['delay'];
 		}
 		// Logger::log(sprintf('Entering actionEvaluateLoop, marketId: %u, delay: %u s', $this->marketId, $delay));
 
@@ -133,7 +136,7 @@ class MarketBackendController extends ApplicationController {
 			echo "\n\n";
 			ob_end_flush();
 			flush();
-			sleep ($delay);
+			sleep ($this->delay);
 		}
 	}
 }
