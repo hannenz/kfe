@@ -56,6 +56,9 @@ class CartsController extends Controller {
 	 */
 	public function actionDefault() {
 		try {
+			$carts = $this->Cart->findAll();
+			$this->parser->setParserVar('carts', $carts);
+			$this->content = $this->parser->parseTemplate($this->templatesPath.'index.tpl');
 		}
 		catch(Exception $e) {
 			die ($e->getMessage());

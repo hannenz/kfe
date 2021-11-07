@@ -145,4 +145,5 @@ setConstant('CMT_LOG_TARGET', LOG_TARGET_FILE);
 // Path to Log File, if log target LOG_TARGET_FILE is selected (must be writable by web server user)
 setConstant('CMT_LOG_FILE', PATHTOTMP . 'logs' . DIRECTORY_SEPARATOR . 'contentomat.log');
 
+define('CMT_FAKEMAIL', true);
 ?>

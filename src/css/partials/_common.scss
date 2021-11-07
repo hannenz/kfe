@@ -37,3 +37,19 @@ td, th, caption {
 		vertical-align: bottom;;
 	}
 }
+
+.noisy {
+	height: 400px;
+	background-image: linear-gradient(to right, var(--primary-color), transparent), url('/dist/img/noise.svg');
+	// filter: contrast(170%) brightness(1000%);
+}
+
+.overlay {
+	background: var(--bg-color);
+	mix-blend-mode: multiply;
+}
+
+.isolate {
+	isolation: isolate;
+}
+

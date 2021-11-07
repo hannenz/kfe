@@ -41,12 +41,9 @@
 						</select>
 						<button class="cmtButton" type="submit" name="action" value="export">Exportieren</button>
 					</div>
-					<div class="serviceElementContainer">
-						<button class="cmtButton" type="submit" name="action" value="sumsheets">Summenblätter</button>
-					</div>
-					<div class="serviceElementContainer">
-						<button class="cmtButton" type="submit" name="action" value="mail">Rundmail</button>
-					</div>
+					<!-- <div class="serviceElementContainer"> -->
+					<!-- 	<button class="cmtButton" type="submit" name="action" value="sumsheets">Summenblätter</button> -->
+					<!-- </div> -->
 				</div>
 			</div>
 		</form>

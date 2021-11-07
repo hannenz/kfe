@@ -44,13 +44,14 @@ var SellersMail = function() {
 	var removeAllRecipientsBtn = document.getElementById('js-remove-all-recipients-btn');
 
 	addRecipientsByMarketBtn.addEventListener('click', this.onAddRecipientsByMarketBtnClicked.bind(this));
+	addRecipientsEmployeesBtn.addEventListener('click', this.onAddRecipientsEmployeesBtnClicked.bind(this));
 	addRecipientsEmployeesBtn.addEventListener('click', (ev) => {
 		ev.preventDefault();
 		this.onAddRecipientsEmployeesBtnClicked().bind(this);
 	});
 
 	// For testing only!!
-	this.onAddRecipientsEmployeesBtnClicked();
+	// this.onAddRecipientsEmployeesBtnClicked();
 
 	removeAllRecipientsBtn.addEventListener('click', this.onRemoveAllRecipientsBtnClicked.bind(this));
 }
@@ -93,6 +94,7 @@ SellersMail.prototype.onAddRecipientsByMarketBtnClicked = function(ev) {
 
 SellersMail.prototype.onAddRecipientsEmployeesBtnClicked = function(ev) {
 
+	console.log("Adding employees");
 
 	$.get(this.baseUrl + '&action=addRecipientsEmployees',  function(response) {
 		var data = JSON.parse(response);

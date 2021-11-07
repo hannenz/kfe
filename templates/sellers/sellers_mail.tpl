@@ -84,7 +84,7 @@
 	</form>
 </section>
 
-<script src="{PATHTOWEBROOT}/dist/js/sellers_mail.js"></script>
+<script src="{PATHTOWEBROOT}/dist/js/SellersMail.js"></script>
 <script src="{PATHTOWEBROOT}/dist/js/vendor/tabulator.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{PATHTOWEBROOT}/dist/css/vendor/tabulator.min.css" />
 <link rel="stylesheet" type="text/css" href="{PATHTOWEBROOT}/dist/css/sellers_mail.css" />

@@ -58,7 +58,7 @@
 		function startPoll() {
 			src = new EventSource(url);
 			src.addEventListener('error', function(ev) {
-				console.log('Event Stream Error');
+				console.error('Event Stream Error');
 			});
 			src.addEventListener('ping', onPing);
 		}

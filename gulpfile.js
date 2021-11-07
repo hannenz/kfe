@@ -133,10 +133,19 @@ var settings = {
 
 	jssellersmail: {
 		src: [
-			'src/js/sellers_mail/*.js',
+			// 'src/js/sellers_mail/*.js',
+			'src/js/sellers_mail/SellersMail.js',
 		],
 		dest: pkg.project_settings.prefix + 'js/',
-		destFile: 'sellers_mail.js'
+		destFile: 'SellersMail.js'
+	},
+
+	jscirculars: {
+		src: [
+			'src/js/circulars/*.js',
+		],
+		dest: pkg.project_settings.prefix + 'js/',
+		destFile: 'Circulars.js'
 	},
 
 	jsvendor: {
@@ -200,7 +209,7 @@ var settings = {
 	},
 
 	favicons: {
-		src: 'src/img/favicon.svg',
+		src: 'src/img/favicon.png',
 		dest: pkg.project_settings.prefix + 'img/favicons/',
 		background: '#ffffff'
 	}
@@ -272,6 +281,10 @@ function jsEvaluation() {
 
 function jsSellersMail() {
 	return doJs(settings.jssellersmail);
+}
+
+function jsCirculars() {
+	return doJs(settings.jscirculars);
 }
 
 
@@ -380,6 +393,7 @@ function gulpDefault(done) {
 	gulp.watch(settings.jscheckout.src, jsCheckout);
 	gulp.watch(settings.jsevaluation.src, jsEvaluation);
 	gulp.watch(settings.jssellersmail.src, jsSellersMail);
+	gulp.watch(settings.jscirculars.src, jsCirculars);
 	done();
 }
 
@@ -425,7 +439,7 @@ var exec = require('child_process').exec;
 /*
  * Task: Build all
  */
-exports.build = series(cleanDist, js, jsVendor, jsCheckout, jsEvaluation, jsSellersMail, cssVendor, images, sprite, icons, fonts, favicon);
+exports.build = series(cleanDist, js, jsVendor, jsCheckout, jsEvaluation, jsSellersMail, jsCirculars, cssVendor, images, sprite, icons, fonts, favicon);
 
 exports.default = gulpDefault;
 exports.cleanDist = cleanDist;
@@ -435,6 +449,7 @@ exports.jsVendor = jsVendor;
 exports.jsCheckout = jsCheckout;
 exports.jsEvaluation = jsEvaluation;
 exports.jsSellersMail = jsSellersMail;
+exports.jsCirculars = jsCirculars;
 exports.cssVendor = cssVendor;
 exports.fonts = fonts;
 exports.images = images;

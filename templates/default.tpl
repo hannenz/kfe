@@ -8,7 +8,7 @@
 	<meta name="keywords" content="{PAGEVAR:cmt_meta_keywords:recursive}">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<link rel="shortcut icon" href="/favicon.png" />
+	<link rel="shortcut icon" href="/dist/img/favicons/favicon-16x16.png" />
 
 	<link rel="stylesheet" type="text/css" href="/dist/css/main.css" />
 
@@ -18,6 +18,11 @@
 	{ENDIF}
 </head>
 <body>
+
+	<div class="isolate">
+		<div class="noisy">Make some noise!</div>
+		<div class="overlay"> </div>
+	</div>
 
 	{INCLUDE:PATHTOWEBROOT.'templates/partials/header.tpl'}
 
