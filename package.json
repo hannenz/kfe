@@ -36,7 +36,7 @@
     "gulp-svgstore": "^7.0.1",
     "gulp-uglify": "^3.0.2",
     "gulp-util": "^3.0.8",
-    "moment": "^2.24.0"
+    "moment": "^2.29.2"
   },
   "dependencies": {
     "jquery.appendgrid": "^1.7.1",
